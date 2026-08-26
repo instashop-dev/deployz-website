@@ -27,6 +27,8 @@ const {
         <div class="nav-links">
           <a href="/docs">Docs</a>
           <a href="/blog">Blog</a>
+          <a class="nav-auth" href="https://app.deployz.dev/sign-in">Sign in</a>
+          <a class="nav-signup" href="https://app.deployz.dev/sign-up">Sign up</a>
         </div>
       </nav>
     </header>
@@ -149,6 +151,24 @@ const {
 
   .nav-links a:hover {
     color: var(--fg);
+    text-decoration: none;
+  }
+
+  .nav-auth {
+    color: var(--fg);
+    font-weight: 500;
+  }
+
+  .nav-signup {
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.5rem;
+  }
+
+  .nav-signup:hover {
+    background: #9a3412;
     text-decoration: none;
   }
 
