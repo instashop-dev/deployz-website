@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": "allow",
+  "references": {
+    "deployz": {
+      "path": "../deployz",
+      "description": "Deployz MVP monorepo (pnpm + Turborepo): apps/web, apps/api, packages/contracts, db, cdk, analysis, relay, fixture, copy-map. Use for product implementation details, shared Zod contracts, Drizzle schema, and the AWS CDK stack."
+    }
+  }
+}
