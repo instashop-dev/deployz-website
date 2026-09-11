@@ -1,25 +1,57 @@
 ---
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Documentation — Deployz">
-  <h1>Documentation</h1>
-  <p>Deployz deploys and operates your application inside each customer's AWS account.</p>
+<Base title="Documentation — Deployz" description="Get started with Deployz and review the requirements for customer-owned AWS deployments.">
+  <div class="mx-auto max-w-3xl">
+    <header class="max-w-2xl">
+      <Badge variant="outline">Documentation</Badge>
+      <h1 class="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">Documentation</h1>
+      <p class="mt-4 text-lg leading-8">Deployz deploys and operates your application inside each customer's AWS account.</p>
+    </header>
 
-  <h2>Getting started</h2>
-  <ol>
-    <li><strong>Connect your application.</strong> Define the deployment: container image, database, and environment settings.</li>
-    <li><strong>Create an install link.</strong> The customer uses the link to install your product into their AWS account.</li>
-    <li><strong>Operate.</strong> Deployz monitors, upgrades, and diagnoses every deployment.</li>
-  </ol>
+    <nav aria-label="On this page" class="mt-10 rounded-xl border p-4">
+      <p class="text-sm font-medium text-foreground">On this page</p>
+      <div class="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        <a class="min-h-11 content-center text-muted-foreground hover:text-foreground hover:underline focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50" href="#getting-started">Getting started</a>
+        <a class="min-h-11 content-center text-muted-foreground hover:text-foreground hover:underline focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50" href="#requirements">Requirements</a>
+      </div>
+    </nav>
 
-  <h2>Requirements</h2>
-  <ul>
-    <li>Each customer needs an AWS account.</li>
-    <li>The application must use the supported deployment architecture.</li>
-  </ul>
+    <section id="getting-started" class="scroll-mt-8 py-12">
+      <h2 class="text-2xl font-semibold tracking-tight">Getting started</h2>
+      <ol class="mt-6 grid gap-6">
+        <li class="grid grid-cols-[2rem_1fr] gap-3">
+          <span class="font-mono text-sm text-muted-foreground">01</span>
+          <p><strong class="text-foreground">Connect your application.</strong> Define the deployment: container image, database, and environment settings.</p>
+        </li>
+        <li class="grid grid-cols-[2rem_1fr] gap-3">
+          <span class="font-mono text-sm text-muted-foreground">02</span>
+          <p><strong class="text-foreground">Create an install link.</strong> The customer uses the link to install your product into their AWS account.</p>
+        </li>
+        <li class="grid grid-cols-[2rem_1fr] gap-3">
+          <span class="font-mono text-sm text-muted-foreground">03</span>
+          <p><strong class="text-foreground">Operate.</strong> Deployz monitors, upgrades, and diagnoses every deployment.</p>
+        </li>
+      </ol>
+    </section>
 
-  <div class="note">
-    <p>These docs are a placeholder for the MVP. More content will follow.</p>
+    <Separator />
+
+    <section id="requirements" class="scroll-mt-8 py-12">
+      <h2 class="text-2xl font-semibold tracking-tight">Requirements</h2>
+      <ul class="mt-6 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-foreground">
+        <li>Each customer needs an AWS account.</li>
+        <li>The application must use the supported deployment architecture.</li>
+      </ul>
+    </section>
+
+    <Alert>
+      <AlertTitle>MVP documentation</AlertTitle>
+      <AlertDescription>These docs are a placeholder for the MVP. More content will follow.</AlertDescription>
+    </Alert>
   </div>
 </Base>

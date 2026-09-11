@@ -1,4 +1,9 @@
 ---
+import { buttonVariants } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import '@/styles/globals.css';
+
 interface Props {
   title: string;
   description?: string;
@@ -8,6 +13,10 @@ const {
   title,
   description = 'Deployz deploys and operates your product inside every customer AWS account. Connect once, share a Deploy to Your AWS link, and let Deployz run the deployment layer.',
 } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const canonicalURL = new URL(pathname, Astro.site);
+const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 ---
 
 <!doctype html>
@@ -18,223 +27,54 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body>
-    <header class="site-header">
-      <nav>
-        <a class="brand" href="/">deployz</a>
-        <div class="nav-links">
-          <a href="/docs">Docs</a>
-          <a href="/blog">Blog</a>
-          <a class="nav-auth" href="https://app.deployz.dev/sign-in">Sign in</a>
-          <a class="nav-signup" href="https://app.deployz.dev/sign-up">Sign up</a>
+  <body class="flex min-h-screen flex-col">
+    <a
+      class="fixed top-3 left-3 z-50 -translate-y-20 rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0 focus:outline-none focus:ring-3 focus:ring-ring/50"
+      href="#main-content"
+    >
+      Skip to content
+    </a>
+    <header>
+      <nav
+        aria-label="Primary navigation"
+        class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-3 px-4 py-3 min-[300px]:grid-cols-[1fr_auto] sm:px-6 md:flex md:min-h-16 md:px-8"
+      >
+        <a
+          class="flex min-h-11 items-center text-base font-semibold tracking-tight text-foreground focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          href="/"
+        >
+          deployz
+        </a>
+        <div class="flex items-center justify-start gap-1 min-[300px]:justify-end md:order-3 md:ml-auto">
+          <a class={cn(buttonVariants({ variant: 'ghost' }), 'min-h-11')} href="https://app.deployz.dev/sign-in">Sign in</a>
+          <a class={cn(buttonVariants(), 'min-h-11')} href="https://app.deployz.dev/sign-up">Sign up</a>
+        </div>
+        <div class="col-span-1 flex items-center gap-1 min-[300px]:col-span-2 md:order-2 md:col-auto md:ml-5">
+          <a class={cn(buttonVariants({ variant: isCurrent('/docs') ? 'secondary' : 'ghost' }), 'min-h-11')} href="/docs" aria-current={isCurrent('/docs') ? 'page' : undefined}>Docs</a>
+          <a class={cn(buttonVariants({ variant: isCurrent('/blog') ? 'secondary' : 'ghost' }), 'min-h-11')} href="/blog" aria-current={isCurrent('/blog') ? 'page' : undefined}>Blog</a>
         </div>
       </nav>
     </header>
-    <main>
+    <Separator />
+    <main id="main-content" class="mx-auto w-full max-w-6xl flex-1 px-4 py-16 sm:px-6 md:px-8 md:py-20">
       <slot />
     </main>
-    <footer class="site-footer">
-      <span>© {new Date().getFullYear()} Deployz</span>
-      <a href="https://deployz.dev">deployz.dev</a>
+    <Separator />
+    <footer class="mx-auto flex min-h-20 w-full max-w-6xl flex-col justify-center gap-2 px-4 py-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-8">
+      <span>&copy; {new Date().getFullYear()} Deployz</span>
+      <a
+        class="flex min-h-11 items-center text-foreground hover:underline focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        href="https://deployz.dev"
+      >
+        deployz.dev
+      </a>
     </footer>
   </body>
 </html>
-
-<style is:global>
-  :root {
-    --bg: #ffffff;
-    --fg: #101828;
-    --muted: #475467;
-    --accent: #c2410c;
-    --accent-soft: #fff3ea;
-    --border: #e4e7ec;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  html {
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    color: var(--fg);
-    background: var(--bg);
-    line-height: 1.6;
-  }
-
-  body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  main {
-    width: 100%;
-    max-width: 46rem;
-    margin: 0 auto;
-    padding: 3rem 1.25rem 4rem;
-    flex: 1;
-  }
-
-  a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin: 0 0 1rem;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-    letter-spacing: -0.01em;
-    margin: 2.5rem 0 0.75rem;
-  }
-
-  h3 {
-    font-size: 1.05rem;
-    margin: 0 0 0.5rem;
-  }
-
-  p {
-    color: var(--muted);
-  }
-
-  .site-header {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .site-header nav {
-    max-width: 46rem;
-    margin: 0 auto;
-    padding: 1rem 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .brand {
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: var(--fg);
-    letter-spacing: -0.02em;
-  }
-
-  .brand::before {
-    content: '';
-    display: inline-block;
-    width: 0.65rem;
-    height: 0.65rem;
-    margin-right: 0.45rem;
-    background: var(--accent);
-    border-radius: 2px;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 1.25rem;
-  }
-
-  .nav-links a {
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  .nav-links a:hover {
-    color: var(--fg);
-    text-decoration: none;
-  }
-
-  .nav-auth {
-    color: var(--fg);
-    font-weight: 500;
-  }
-
-  .nav-signup {
-    background: var(--accent);
-    color: #ffffff;
-    font-weight: 600;
-    padding: 0.4rem 0.9rem;
-    border-radius: 0.5rem;
-  }
-
-  .nav-signup:hover {
-    background: #9a3412;
-    text-decoration: none;
-  }
-
-  .site-footer {
-    border-top: 1px solid var(--border);
-    max-width: 46rem;
-    width: 100%;
-    margin: 0 auto;
-    padding: 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    color: var(--muted);
-    font-size: 0.875rem;
-  }
-
-  .button {
-    display: inline-block;
-    background: var(--accent);
-    color: #ffffff;
-    font-weight: 600;
-    padding: 0.65rem 1.4rem;
-    border-radius: 0.5rem;
-  }
-
-  .button:hover {
-    background: #9a3412;
-    text-decoration: none;
-  }
-
-  .button.ghost {
-    background: transparent;
-    color: var(--fg);
-    border: 1px solid var(--border);
-  }
-
-  .button.ghost:hover {
-    border-color: var(--fg);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: 1rem;
-  }
-
-  .card {
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-  }
-
-  .card p {
-    margin: 0;
-    font-size: 0.925rem;
-  }
-
-  .note {
-    border-left: 3px solid var(--accent);
-    background: var(--accent-soft);
-    padding: 0.75rem 1rem;
-    border-radius: 0 0.5rem 0.5rem 0;
-    font-size: 0.925rem;
-  }
-
-  .note,
-  .note p {
-    color: var(--fg);
-  }
-</style>
