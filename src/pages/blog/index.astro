@@ -1,24 +1,38 @@
 ---
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Blog — Deployz">
-  <h1>Blog</h1>
+<Base title="Blog — Deployz" description="Updates about Deployz and customer-owned AWS deployments.">
+  <div class="mx-auto max-w-3xl">
+    <header class="max-w-2xl">
+      <Badge variant="outline">Updates</Badge>
+      <h1 class="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">Blog</h1>
+      <p class="mt-4 text-lg leading-8">Notes on building Deployz and making customer-owned deployments easier to operate.</p>
+    </header>
 
-  <article>
-    <h2 style="margin-bottom: 0.25rem;">Introducing Deployz</h2>
-    <p style="margin-top: 0; font-size: 0.875rem;"><time datetime="2026-08-25">August 25, 2026</time></p>
-    <p>
-      Small B2B software companies hear this question more and more: "Can your software run inside
-      our AWS account?" Until now, the answer was a custom engineering project — infrastructure
-      templates, IAM, networking, upgrades, monitoring, and a support load that grows with every
-      customer.
-    </p>
-    <p>
-      Deployz turns that project into a product feature. Connect your application once, give each
-      customer a "Deploy to Your AWS" link, and Deployz handles provisioning, updates, monitoring,
-      and diagnostics for every deployment.
-    </p>
-    <p>We are building the MVP now. Follow this blog for progress notes.</p>
-  </article>
+    <article class="mt-12">
+      <Card>
+        <CardHeader className="border-b">
+          <p class="text-sm text-muted-foreground"><time datetime="2026-08-25">August 25, 2026</time></p>
+          <CardTitle><h2 class="text-xl">Introducing Deployz</h2></CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-5 text-base leading-7">
+          <p>
+            Small B2B software companies hear this question more and more: "Can your software run inside
+            our AWS account?" Until now, the answer was a custom engineering project — infrastructure
+            templates, IAM, networking, upgrades, monitoring, and a support load that grows with every
+            customer.
+          </p>
+          <p>
+            Deployz turns that project into a product feature. Connect your application once, give each
+            customer a "Deploy to Your AWS" link, and Deployz handles provisioning, updates, monitoring,
+            and diagnostics for every deployment.
+          </p>
+          <p>We are building the MVP now. Follow this blog for progress notes.</p>
+        </CardContent>
+      </Card>
+    </article>
+  </div>
 </Base>

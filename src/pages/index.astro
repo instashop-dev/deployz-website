@@ -1,48 +1,88 @@
 ---
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import Base from '../layouts/Base.astro';
 ---
 
 <Base title="Deployz — Ship your product into every customer's AWS account">
-  <section>
-    <h1>Deploy your SaaS into customer-owned AWS</h1>
-    <p>
+  <section class="max-w-3xl py-8 md:py-16">
+    <Badge variant="outline">Customer-owned AWS</Badge>
+    <h1 class="mt-6 text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+      Deploy your SaaS into customer-owned AWS
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg leading-8 text-pretty">
       Connect your application once. Deployz provisions, updates, monitors, and manages a
       private deployment in each customer's account — with no DevOps team.
     </p>
-    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem;">
-      <a class="button" href="/docs">Get started</a>
-      <a class="button ghost" href="#how-it-works">How it works</a>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a class={cn(buttonVariants({ size: 'lg' }), 'min-h-11')} href="/docs">Get started</a>
+      <a class={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'min-h-11')} href="#how-it-works">How it works</a>
     </div>
   </section>
 
-  <section id="how-it-works">
-    <h2>How it works</h2>
-    <ol>
-      <li><strong>Connect.</strong> Define your application deployment once.</li>
-      <li><strong>Share.</strong> Give each customer a "Deploy to Your AWS" link.</li>
-      <li><strong>Operate.</strong> Deployz provisions, upgrades, monitors, and diagnoses every deployment.</li>
+  <section id="how-it-works" class="py-12 md:py-16">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-semibold tracking-tight">How it works</h2>
+      <p class="mt-3 leading-7">One connection gives every customer a clear path to a managed deployment.</p>
+    </div>
+    <ol class="mt-8 grid gap-6 md:grid-cols-3">
+      <li class="border-t pt-5">
+        <span class="font-mono text-xs text-muted-foreground">01</span>
+        <h3 class="mt-3 font-semibold">Connect</h3>
+        <p class="mt-2 text-sm leading-6">Define your application deployment once.</p>
+      </li>
+      <li class="border-t pt-5">
+        <span class="font-mono text-xs text-muted-foreground">02</span>
+        <h3 class="mt-3 font-semibold">Share</h3>
+        <p class="mt-2 text-sm leading-6">Give each customer a "Deploy to Your AWS" link.</p>
+      </li>
+      <li class="border-t pt-5">
+        <span class="font-mono text-xs text-muted-foreground">03</span>
+        <h3 class="mt-3 font-semibold">Operate</h3>
+        <p class="mt-2 text-sm leading-6">Deployz provisions, upgrades, monitors, and diagnoses every deployment.</p>
+      </li>
     </ol>
   </section>
 
-  <section>
-    <h2>Why Deployz</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Customer-owned, vendor-managed</h3>
-        <p>Your product runs in the customer's own AWS account. You keep control of the full lifecycle.</p>
+  <section class="py-12 md:py-16">
+    <h2 class="text-2xl font-semibold tracking-tight">Why Deployz</h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <CardTitle><h3>Customer-owned, vendor-managed</h3></CardTitle>
+          <CardDescription>Your product runs in the customer's own AWS account. You keep control of the full lifecycle.</CardDescription>
+        </CardHeader>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle><h3>The full deployment layer</h3></CardTitle>
+          <CardDescription>Infrastructure, IAM, networking, upgrades, rollbacks, monitoring, and troubleshooting — as a service.</CardDescription>
+        </CardHeader>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle><h3>One architecture, done well</h3></CardTitle>
+          <CardDescription>Deployz supports one opinionated architecture. Applications that fit get near zero-DevOps installs.</CardDescription>
+        </CardHeader>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle><h3>Small team, many deployments</h3></CardTitle>
+          <CardDescription>Track and operate every customer deployment from one place, without a platform team.</CardDescription>
+        </CardHeader>
+      </Card>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-16">
+    <div class="flex flex-col items-start justify-between gap-6 border-y py-10 md:flex-row md:items-center">
+      <div class="max-w-2xl">
+        <h2 class="text-2xl font-semibold tracking-tight">Start with the deployment model</h2>
+        <p class="mt-3 leading-7">See how Deployz connects your application to customer-owned AWS accounts.</p>
       </div>
-      <div class="card">
-        <h3>The full deployment layer</h3>
-        <p>Infrastructure, IAM, networking, upgrades, rollbacks, monitoring, and troubleshooting — as a service.</p>
-      </div>
-      <div class="card">
-        <h3>One architecture, done well</h3>
-        <p>Deployz supports one opinionated architecture. Applications that fit get near zero-DevOps installs.</p>
-      </div>
-      <div class="card">
-        <h3>Small team, many deployments</h3>
-        <p>Track and operate every customer deployment from one place, without a platform team.</p>
-      </div>
+      <a class={cn(buttonVariants({ size: 'lg' }), 'min-h-11 shrink-0')} href="/docs">Read the docs</a>
     </div>
   </section>
 </Base>

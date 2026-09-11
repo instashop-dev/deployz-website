@@ -5,3 +5,5 @@ dev-out.log
 dev-err.log
 .omo/
 .codegraph/
+test-results/
+playwright-report/

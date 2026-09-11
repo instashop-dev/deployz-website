@@ -1,7 +1,7 @@
 # deployz-website
 
 Marketing site, documentation, and blog for Deployz — https://deployz.dev.
-Built with Astro. Fully static output.
+Built with Astro, Tailwind CSS, React, and standard shadcn/ui components. The output is fully static and does not hydrate React in the browser.
 
 ## Develop
 
@@ -11,6 +11,16 @@ npm run dev
 ```
 
 Local preview: http://localhost:4321
+
+## Verify
+
+```text
+npm run check
+npm run build
+npm run test:e2e
+```
+
+The browser tests run the production preview at mobile, tablet, and desktop viewport sizes.
 
 ## Deploy on Cloudflare (Workers static assets)
 
