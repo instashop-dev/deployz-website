@@ -1,0 +1,299 @@
+---
+import { ArrowDown, ArrowRight, ArrowUpRight, EyeOff, KeyRound, Unplug, UserCheck } from 'lucide-react';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import Base from '../layouts/Base.astro';
+
+const ownership = [
+  { area: 'Application source', vendor: 'Owns', customer: 'No access needed', deployz: 'Read-only' },
+  { area: 'Application releases', vendor: 'Creates and selects', customer: 'Runs', deployz: 'Builds and stores the images' },
+  { area: 'AWS account', vendor: 'No access, no credentials', customer: 'Owns and controls', deployz: 'No credentials. Instructs the connector.' },
+  { area: 'AWS infrastructure bill', vendor: 'Not charged', customer: 'Pays AWS directly', deployz: 'Does not resell AWS' },
+  { area: 'Application data', vendor: 'Defines the application behavior', customer: 'Controls', deployz: 'Does not receive' },
+  { area: 'Deployment operations', vendor: 'Starts', customer: 'Authorizes, and can remove', deployz: 'Coordinates and reports' },
+];
+
+const lifecycle = [
+  {
+    event: 'Failed first installation',
+    result: 'The deployment shows as failed with a diagnosis. The vendor can retry. A retry deletes the failed resources and creates them again.',
+  },
+  {
+    event: 'Failed update',
+    result: 'If a new version fails its health checks, the previous version continues to run. Database migrations are not reversed.',
+  },
+  {
+    event: 'Rollback',
+    result: 'The vendor selects an earlier successful release and deploys it. A rollback does not run migrations and does not change customer data.',
+  },
+  {
+    event: 'Disconnect',
+    result: 'Disconnect removes the application resources. It keeps the database, its credentials, and the stored files. Retained resources can continue to cause AWS charges.',
+  },
+  {
+    event: 'Data purge',
+    result: 'Purge is a separate step that the vendor confirms. It permanently deletes the retained data and does not make a final snapshot.',
+  },
+  {
+    event: 'Connector removal',
+    result: "The connector stays in the customer's account until the customer deletes it in its AWS console.",
+  },
+];
+---
+
+<Base
+  title="Deployz Security and Architecture — Customer-Owned AWS Deployment"
+  description="Understand how Deployz separates customer infrastructure ownership, application data control, vendor releases, and deployment access."
+>
+  <section class="grid gap-10 pt-6 pb-6 md:pt-10 md:pb-8 lg:grid-cols-[1fr_22rem] lg:items-center lg:gap-8 lg:pt-16 lg:pb-12">
+    <div class="max-w-3xl min-w-0">
+      <h1 class="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+        Customer-owned infrastructure. Vendor-controlled releases.
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-pretty">
+        The application runs in the customer's AWS account. Deployz holds no AWS credentials and
+        does not receive application data.
+      </p>
+      <a class={cn(buttonVariants({ size: 'lg' }), 'mt-6 h-auto min-h-11 shrink text-center whitespace-normal')} href="/docs">Read the technical documentation</a>
+    </div>
+    <svg aria-hidden="true" class="hidden w-full lg:block" viewBox="0 0 352 240" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="1" width="250" height="238" rx="16" class="fill-muted stroke-muted-foreground" stroke-dasharray="4 4" />
+      <path d="M38 20l12 4v9c0 8-5 13-12 16-7-3-12-8-12-16v-9z" class="fill-background stroke-foreground" />
+      <path d="M33 34l4 4 7-8" class="stroke-foreground" />
+      <text x="60" y="39" class="fill-foreground" font-size="13" font-weight="500" stroke="none">Customer's AWS account</text>
+      <path d="M54 116v44M126 116v44M200 116v44" class="stroke-muted-foreground" />
+      <rect x="24" y="72" width="60" height="44" rx="8" class="fill-background stroke-foreground" />
+      <path d="M36 86h36M36 94h36M36 102h20" class="stroke-muted-foreground" />
+      <path d="M104 80v28c0 3.9 9.8 7 22 7s22-3.1 22-7V80" class="fill-background stroke-foreground" />
+      <ellipse cx="126" cy="80" rx="22" ry="7" class="fill-background stroke-foreground" />
+      <path d="M104 94c0 3.9 9.8 7 22 7s22-3.1 22-7" class="stroke-foreground" />
+      <path d="M176 74h48l-6 42h-36z" class="fill-background stroke-foreground" />
+      <path d="M178 88h44" class="stroke-foreground" />
+      <rect x="24" y="160" width="204" height="52" rx="10" class="fill-background stroke-foreground" />
+      <circle cx="48" cy="186" r="8" class="stroke-foreground" />
+      <path d="M45 186l2.5 2.5 4.5-5" class="stroke-foreground" />
+      <text x="66" y="190.5" class="fill-foreground" font-size="13" font-weight="500" stroke="none">Deployz connector</text>
+      <path d="M228 186h52M274 180l6 6-6 6" class="stroke-foreground" />
+      <rect x="284" y="160" width="67" height="52" rx="10" class="fill-foreground stroke-foreground" />
+      <text x="317.5" y="190.5" text-anchor="middle" class="fill-background" font-size="12" font-weight="600" stroke="none">Deployz</text>
+      <path d="M317 160v-40h-46" class="stroke-muted-foreground" stroke-dasharray="3 4" />
+      <path d="M255 114l12 12M267 114l-12 12" class="stroke-foreground" />
+      <text x="351" y="100" text-anchor="end" class="fill-muted-foreground" font-size="12" stroke="none">No inbound calls</text>
+      <text x="351" y="232" text-anchor="end" class="fill-muted-foreground" font-size="12" stroke="none">Outbound only</text>
+    </svg>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="max-w-3xl text-2xl font-semibold tracking-tight text-balance sm:text-3xl">What the connector can and cannot do in the customer's AWS account</h2>
+    <div class="mt-6 grid gap-3 md:mt-8 lg:grid-cols-[1fr_auto_18rem] lg:items-stretch">
+      <div class="rounded-xl border p-5">
+        <p class="text-xs font-medium tracking-wide">Customer's AWS account</p>
+        <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+          <li class="rounded-lg border px-3 py-2 text-sm">Application container</li>
+          <li class="rounded-lg border px-3 py-2 text-sm">PostgreSQL database</li>
+          <li class="rounded-lg border px-3 py-2 text-sm">Redis-compatible cache</li>
+          <li class="rounded-lg border px-3 py-2 text-sm">S3 file storage</li>
+          <li class="rounded-lg border border-foreground px-3 py-2 text-sm font-medium sm:col-span-2">Deployz connector, installed by the customer</li>
+        </ul>
+        <p class="mt-3 text-sm leading-normal text-muted-foreground">The data, the files, and the logs stay here.</p>
+      </div>
+      <div class="flex items-center justify-center gap-2 text-muted-foreground lg:flex-col">
+        <ArrowDown className="size-5 lg:hidden" />
+        <ArrowRight className="hidden size-5 lg:block" />
+        <p class="text-xs font-medium tracking-wide">Outbound calls only</p>
+      </div>
+      <div class="rounded-xl border p-5">
+        <p class="text-xs font-medium tracking-wide">Deployz</p>
+        <ul class="mt-3 grid gap-2 text-sm leading-normal">
+          <li>Sends deployment instructions</li>
+          <li>Receives status and errors</li>
+          <li>Holds no AWS credentials</li>
+        </ul>
+      </div>
+    </div>
+    <ul class="mt-8 grid gap-x-8 md:grid-cols-2">
+      <li class="grid grid-cols-[auto_1fr] gap-x-3 border-t py-5">
+        <UserCheck className="mt-1 size-5" />
+        <div>
+          <h3 class="font-semibold">The customer starts the connection</h3>
+          <p class="mt-1 text-sm leading-normal text-muted-foreground">From its own AWS console. Deployz does not see or store AWS credentials.</p>
+        </div>
+      </li>
+      <li class="grid grid-cols-[auto_1fr] gap-x-3 border-t py-5">
+        <ArrowUpRight className="mt-1 size-5" />
+        <div>
+          <h3 class="font-semibold">Outbound connection only</h3>
+          <p class="mt-1 text-sm leading-normal text-muted-foreground">The connector calls Deployz. Deployz does not call into the account.</p>
+        </div>
+      </li>
+      <li class="grid grid-cols-[auto_1fr] gap-x-3 border-t py-5">
+        <KeyRound className="mt-1 size-5" />
+        <div>
+          <h3 class="font-semibold">Scoped, but substantial, permissions</h3>
+          <p class="mt-1 text-sm leading-normal text-muted-foreground">The connector creates network, compute, database, cache, storage, and access resources. Write access applies only to resources tagged for the installation, and a permissions boundary caps it.</p>
+        </div>
+      </li>
+      <li class="grid grid-cols-[auto_1fr] gap-x-3 border-t py-5">
+        <EyeOff className="mt-1 size-5" />
+        <div>
+          <h3 class="font-semibold">No access to application logs</h3>
+          <p class="mt-1 text-sm leading-normal text-muted-foreground">The connector has no permission to read them.</p>
+        </div>
+      </li>
+      <li class="grid grid-cols-[auto_1fr] gap-x-3 border-t py-5">
+        <Unplug className="mt-1 size-5" />
+        <div>
+          <h3 class="font-semibold">The customer can remove the connection</h3>
+          <p class="mt-1 text-sm leading-normal text-muted-foreground">The customer deletes the connector in its AWS console. Deployz then shows the deployment as disconnected.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Who owns and controls what</h2>
+    <div class="mt-6 grid md:mt-8">
+      {ownership.map((row) => (
+        <div class="grid gap-3 border-t py-4 md:grid-cols-4 md:gap-6">
+          <h3 class="font-semibold">{row.area}</h3>
+          <div>
+            <p class="text-xs font-medium tracking-wide text-muted-foreground">SaaS vendor</p>
+            <p class="mt-1 text-sm leading-normal">{row.vendor}</p>
+          </div>
+          <div>
+            <p class="text-xs font-medium tracking-wide text-muted-foreground">Vendor's customer</p>
+            <p class="mt-1 text-sm leading-normal">{row.customer}</p>
+          </div>
+          <div>
+            <p class="text-xs font-medium tracking-wide text-muted-foreground">Deployz</p>
+            <p class="mt-1 text-sm leading-normal">{row.deployz}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <div class="rounded-xl bg-muted p-6 md:p-10">
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Application data stays in the customer's account</h2>
+      <div class="mt-6 grid gap-8 md:mt-8 md:grid-cols-2">
+        <div>
+          <h3 class="text-lg font-semibold">Deployz receives</h3>
+          <ul class="mt-4 grid list-disc gap-2 pl-5 text-sm">
+            <li>Installation ID, AWS account ID, and AWS region</li>
+            <li>Release version and deployment state</li>
+            <li>Infrastructure status and resource identifiers</li>
+            <li>Deployment timestamps and health state</li>
+            <li>Structured AWS deployment errors</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold">Deployz does not receive</h3>
+          <ul class="mt-4 grid list-disc gap-2 pl-5 text-sm">
+            <li>PostgreSQL data</li>
+            <li>Cache contents</li>
+            <li>Stored files</li>
+            <li>Application logs</li>
+            <li>The application runtime and its in-memory data</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-8 grid gap-3 text-sm leading-normal md:grid-cols-2 md:gap-8">
+        <p>
+          Secrets: values that you enter in Deployz are written to AWS Secrets Manager in the
+          customer's account. Deployz does not store them in plain text. It stores non-secret
+          configuration values.
+        </p>
+        <p>
+          Default URL: traffic to the default deployz.dev URL passes through the Deployz DNS proxy
+          before it reaches the load balancer in the customer's account.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-8 py-6 md:grid-cols-2 md:py-10">
+    <div>
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Releases without repository access</h2>
+      <p class="mt-3 leading-relaxed">
+        The customer's AWS account pulls a versioned container image from the Deployz registry.
+        Access starts at installation and ends at removal. A container image is not a
+        source-protection mechanism.
+      </p>
+    </div>
+    <div>
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">How Deployz uses AI during analysis</h2>
+      <p class="mt-3 leading-relaxed">
+        Deployz can send limited repository excerpts to an AI service to resolve open questions.
+        It redacts values that look like secrets first. The AI service does not call AWS and does
+        not change deployments.
+      </p>
+    </div>
+  </section>
+
+  <section class="grid gap-8 py-6 md:grid-cols-2 md:items-center md:gap-12 md:py-8 lg:py-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">If Deployz is unavailable, the application continues to run</h2>
+      <p class="mt-3 leading-relaxed">
+        A healthy environment continues to serve traffic. Its database, cache, and storage stay
+        available. New deployments, updates, status refreshes, recovery actions, and deletion
+        controls can be temporarily unavailable. An operation that is in progress can require
+        reconciliation when Deployz returns.
+      </p>
+    </div>
+    <svg role="img" aria-label="Deployz is offline. The application in the customer's AWS account continues to serve traffic." class="w-full" viewBox="0 0 400 170" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="45" width="100" height="70" rx="12" class="stroke-muted-foreground" stroke-dasharray="4 4" />
+      <text x="51" y="77" text-anchor="middle" class="fill-muted-foreground" font-size="13" font-weight="500" stroke="none">Deployz</text>
+      <text x="51" y="95" text-anchor="middle" class="fill-muted-foreground" font-size="13" stroke="none">offline</text>
+      <path d="M101 80h59" class="stroke-muted-foreground" stroke-dasharray="3 4" />
+      <path d="M124 74l12 12M136 74l-12 12" class="stroke-foreground" />
+      <rect x="160" y="20" width="150" height="120" rx="12" class="fill-muted stroke-foreground" />
+      <rect x="178" y="58" width="52" height="44" rx="8" class="fill-background stroke-foreground" />
+      <path d="M188 72h32M188 80h32M188 88h18" class="stroke-muted-foreground" />
+      <path d="M230 80h20" class="stroke-foreground" />
+      <path d="M250 66v28c0 3.3 8 6 18 6s18-2.7 18-6V66" class="fill-background stroke-foreground" />
+      <ellipse cx="268" cy="66" rx="18" ry="6" class="fill-background stroke-foreground" />
+      <circle cx="298" cy="32" r="10" class="fill-foreground stroke-foreground" />
+      <path d="M293.5 32l3 3 6-6" class="stroke-background" />
+      <path d="M392 60h-72M326 54l-6 6 6 6M392 80h-72M326 74l-6 6 6 6M392 100h-72M326 94l-6 6 6 6" class="stroke-foreground" />
+      <text x="235" y="160" text-anchor="middle" class="fill-foreground" font-size="13" font-weight="500" stroke="none">Customer's AWS account</text>
+      <text x="358" y="160" text-anchor="middle" class="fill-foreground" font-size="13" font-weight="500" stroke="none">Traffic</text>
+    </svg>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="max-w-3xl text-2xl font-semibold tracking-tight text-balance sm:text-3xl">What happens when an operation fails or an environment is removed</h2>
+    <div class="mt-6 max-w-3xl border-b md:mt-8">
+      {lifecycle.map((item) => (
+        <details class="border-t">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-semibold [&::-webkit-details-marker]:hidden after:shrink-0 after:text-lg after:leading-none after:text-muted-foreground after:transition-transform after:duration-150 after:content-['+'] open:after:rotate-45 focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">{item.event}</summary>
+          <p class="pb-4 leading-normal text-muted-foreground">{item.result}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Who operates Deployz</h2>
+      <p class="mt-3 leading-relaxed">
+        Tejas Sangoi and the bootstrapped team at Thalia Technologies build and operate Deployz.
+        The same team has operated CSVBox, Spreadr, and other SaaS products in production for
+        years.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <div class="flex flex-col items-start justify-between gap-6 border-y py-10 md:flex-row md:items-center">
+      <div class="max-w-2xl">
+        <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Does your customer's security team have questions?</h2>
+        <p class="mt-3 leading-relaxed">Send them this page. It describes the access, the data, and the failure behavior.</p>
+      </div>
+      <div class="flex flex-wrap gap-3 md:shrink-0">
+        <a class={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="/docs">Read the technical documentation</a>
+        <a class={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="/docs#supported-architecture">View supported architecture</a>
+      </div>
+    </div>
+  </section>
+</Base>

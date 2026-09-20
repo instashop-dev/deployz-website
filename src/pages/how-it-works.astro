@@ -1,0 +1,188 @@
+---
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import Base from '../layouts/Base.astro';
+
+const supported = [
+  'One web or API container',
+  'PostgreSQL 16',
+  'Redis-compatible cache',
+  'S3 file storage',
+  'HTTPS and custom domains',
+  'A dedicated network for each customer',
+  'No Kubernetes',
+];
+---
+
+<Base
+  title="How Deployz Works — Private SaaS Deployment on AWS"
+  description="Connect your repository, prepare a version, invite your customer, and deploy your SaaS into a customer-owned AWS account."
+>
+  <section class="grid gap-10 pt-6 pb-6 md:pt-10 md:pb-8 lg:grid-cols-[1fr_22rem] lg:items-center lg:gap-8 lg:pt-16 lg:pb-12">
+    <div class="max-w-3xl min-w-0">
+      <h1 class="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+        One workflow for every customer deployment
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-pretty">
+        You connect your repository one time. Then each new customer is one installation link, not
+        a new infrastructure project.
+      </p>
+      <a class={cn(buttonVariants({ size: 'lg' }), 'mt-6 h-auto min-h-11 shrink text-center whitespace-normal')} href="/get-started">Check my application</a>
+    </div>
+    <svg aria-hidden="true" class="hidden w-full lg:block" viewBox="0 0 352 232" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="1" width="96" height="80" rx="12" class="fill-background stroke-foreground" />
+      <text x="11" y="19" class="fill-muted-foreground font-mono" font-size="11" stroke="none">01</text>
+      <path d="M41 37l-10 10 10 10M57 37l10 10-10 10" class="stroke-foreground" />
+      <rect x="128" y="1" width="96" height="80" rx="12" class="fill-background stroke-foreground" />
+      <text x="138" y="19" class="fill-muted-foreground font-mono" font-size="11" stroke="none">02</text>
+      <path d="M158 37l3 3 5-6" class="stroke-foreground" />
+      <path d="M172 37h24" class="stroke-muted-foreground" />
+      <path d="M158 47l3 3 5-6" class="stroke-foreground" />
+      <path d="M172 47h24" class="stroke-muted-foreground" />
+      <path d="M158 57l3 3 5-6" class="stroke-foreground" />
+      <path d="M172 57h24" class="stroke-muted-foreground" />
+      <rect x="255" y="1" width="96" height="80" rx="12" class="fill-background stroke-foreground" />
+      <text x="265" y="19" class="fill-muted-foreground font-mono" font-size="11" stroke="none">03</text>
+      <rect x="279" y="37" width="48" height="20" rx="10" class="fill-muted stroke-foreground" />
+      <circle cx="290" cy="47" r="3" class="stroke-foreground" />
+      <path d="M298 47h20" class="stroke-foreground" />
+      <path d="M103 41h16M115 37l4 4-4 4M230 41h16M242 37l4 4-4 4" class="stroke-muted-foreground" />
+      <rect x="1" y="121" width="96" height="80" rx="12" class="fill-foreground stroke-foreground" />
+      <text x="11" y="139" class="fill-background font-mono" font-size="11" stroke="none">04</text>
+      <rect x="27" y="159" width="26" height="16" rx="8" class="stroke-background" />
+      <rect x="45" y="159" width="26" height="16" rx="8" class="stroke-background" />
+      <rect x="128" y="121" width="96" height="80" rx="12" class="fill-background stroke-foreground" />
+      <text x="138" y="139" class="fill-muted-foreground font-mono" font-size="11" stroke="none">05</text>
+      <rect x="154" y="165" width="44" height="22" rx="6" class="fill-muted stroke-muted-foreground" stroke-dasharray="4 4" />
+      <path d="M176 149v20M170 163l6 6 6-6" class="stroke-foreground" />
+      <rect x="255" y="121" width="96" height="80" rx="12" class="fill-background stroke-foreground" />
+      <text x="265" y="139" class="fill-muted-foreground font-mono" font-size="11" stroke="none">06</text>
+      <path d="M289 167a14 14 0 0 1 24-10M313 151v6h-6" class="stroke-foreground" />
+      <path d="M317 167a14 14 0 0 1-24 10M293 183v-6h6" class="stroke-foreground" />
+      <path d="M103 161h16M115 157l4 4-4 4M230 161h16M242 157l4 4-4 4" class="stroke-muted-foreground" />
+      <path d="M303 85v18H49v10M45 109l4 4 4-4" class="stroke-muted-foreground" />
+      <text x="49" y="222" text-anchor="middle" class="fill-foreground" font-size="12" font-weight="500" stroke="none">Your customer</text>
+    </svg>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Six steps. Your customer takes part in one.</h2>
+    <ol class="mt-6 grid gap-x-8 md:mt-8 md:grid-cols-2">
+      <li class="border-t py-5">
+        <p class="flex flex-wrap items-center gap-2">
+          <span class="font-mono text-sm text-muted-foreground">01</span>
+          <Badge variant="outline" className="h-auto whitespace-normal">You</Badge>
+        </p>
+        <h3 class="mt-3 text-lg font-semibold">Connect your repository</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">Connect GitHub and select the repository. The access is read-only.</p>
+      </li>
+      <li class="border-t py-5">
+        <p class="flex flex-wrap items-center gap-2">
+          <span class="font-mono text-sm text-muted-foreground">02</span>
+          <Badge variant="outline" className="h-auto whitespace-normal">Deployz · usually a few minutes</Badge>
+        </p>
+        <h3 class="mt-3 text-lg font-semibold">Get the readiness report</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">You see what passed, what needs attention, and what blocks deployment.</p>
+        <details class="mt-2">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden after:shrink-0 after:text-lg after:leading-none after:text-muted-foreground after:transition-transform after:duration-150 after:content-['+'] open:after:rotate-45 focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">What the analysis checks</summary>
+          <ul class="grid list-disc gap-2 pb-2 pl-5 text-sm text-muted-foreground marker:text-foreground">
+            <li>Container build configuration</li>
+            <li>Application port</li>
+            <li>Health-check endpoint</li>
+            <li>Runtime environment variables</li>
+            <li>PostgreSQL requirement</li>
+            <li>Redis requirement</li>
+            <li>File-storage use</li>
+            <li>Build, start, and migration commands</li>
+            <li>Components outside the supported architecture</li>
+          </ul>
+        </details>
+      </li>
+      <li class="border-t py-5">
+        <p class="flex flex-wrap items-center gap-2">
+          <span class="font-mono text-sm text-muted-foreground">03</span>
+          <Badge variant="outline" className="h-auto whitespace-normal">You</Badge>
+        </p>
+        <h3 class="mt-3 text-lg font-semibold">Build a versioned release</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">Select a version number and a commit. Deployz builds the application image.</p>
+      </li>
+      <li class="border-t py-5">
+        <p class="flex flex-wrap items-center gap-2">
+          <span class="font-mono text-sm text-muted-foreground">04</span>
+          <Badge variant="outline" className="h-auto whitespace-normal">You and your customer</Badge>
+        </p>
+        <h3 class="mt-3 text-lg font-semibold">Send your customer one link</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">The customer reviews the access and connects their AWS account. They do not need a Deployz account.</p>
+      </li>
+      <li class="border-t py-5">
+        <p class="flex flex-wrap items-center gap-2">
+          <span class="font-mono text-sm text-muted-foreground">05</span>
+          <Badge variant="outline" className="h-auto whitespace-normal">Deployz · typically 20 to 45 minutes</Badge>
+        </p>
+        <h3 class="mt-3 text-lg font-semibold">Deploy the application</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">Deployz creates the AWS infrastructure and deploys the release. Both sides follow the progress in plain language.</p>
+      </li>
+      <li class="border-t py-5">
+        <p class="flex flex-wrap items-center gap-2">
+          <span class="font-mono text-sm text-muted-foreground">06</span>
+          <Badge variant="outline" className="h-auto whitespace-normal">You</Badge>
+        </p>
+        <h3 class="mt-3 text-lg font-semibold">Ship updates and stay in control</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">You start each update. If a new version fails its health checks, the previous version continues to run.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Who does what</h2>
+    <div class="mt-6 grid gap-8 md:mt-8 md:grid-cols-2">
+      <div class="border-t pt-5">
+        <h3 class="text-lg font-semibold">You</h3>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-muted-foreground marker:text-foreground">
+          <li>Connect the repository</li>
+          <li>Create releases and select the version for each customer</li>
+          <li>Send the installation link</li>
+          <li>Start each installation, update, rollback, and removal</li>
+        </ul>
+      </div>
+      <div class="border-t pt-5">
+        <h3 class="text-lg font-semibold">Your customer</h3>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-muted-foreground marker:text-foreground">
+          <li>Owns the AWS account and controls the data</li>
+          <li>Reviews the access, then launches the connector</li>
+          <li>Pays AWS directly for the infrastructure</li>
+          <li>Can remove the connector from their AWS account</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="currently-supported" class="scroll-mt-8 py-6 md:py-8 lg:py-12">
+    <div class="rounded-xl bg-muted p-6 md:p-10">
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Currently supported</h2>
+      <p class="mt-3 max-w-2xl leading-relaxed">Deployz supports one application architecture on AWS.</p>
+      <ul class="mt-6 flex flex-wrap gap-2">
+        {supported.map((item) => (
+          <li><Badge variant="outline" className="h-auto bg-background text-sm whitespace-normal">{item}</Badge></li>
+        ))}
+      </ul>
+      <p class="mt-6 max-w-2xl leading-relaxed">
+        Not supported today: other cloud providers, Kubernetes, serverless, more than one
+        service, background workers, other databases, message brokers, disk volumes, existing
+        customer VPCs, and GPU workloads.
+      </p>
+      <a class={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'mt-6 h-auto min-h-11 shrink text-center whitespace-normal')} href="/docs#supported-architecture">Read the full specification</a>
+    </div>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <div class="flex flex-col items-start justify-between gap-6 border-y py-10 md:flex-row md:items-center">
+      <div class="max-w-2xl">
+        <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Is your application ready? Find out in a few minutes.</h2>
+        <p class="mt-3 leading-relaxed">The analysis is free, and no card is necessary.</p>
+      </div>
+      <a class={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-11 shrink-0 text-center whitespace-normal')} href="/get-started">Check my application</a>
+    </div>
+  </section>
+</Base>

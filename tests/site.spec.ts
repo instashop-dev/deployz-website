@@ -8,6 +8,10 @@ const baselineOnly = process.env.SITE_CONTRACT_MODE === 'baseline';
 
 const routes = [
   { path: '/', label: 'home' },
+  { path: '/how-it-works', label: 'how-it-works' },
+  { path: '/security', label: 'security' },
+  { path: '/pricing', label: 'pricing' },
+  { path: '/get-started', label: 'get-started' },
   { path: '/blog', label: 'blog' },
   { path: '/docs', label: 'docs' },
   { path: '/404', label: 'not-found' },
@@ -17,7 +21,15 @@ type EvidenceRoute = Route | { readonly path: '/does-not-exist'; readonly label:
 
 const authLinks = [
   { name: 'Sign in', href: 'https://app.deployz.dev/sign-in' },
-  { name: 'Sign up', href: 'https://app.deployz.dev/sign-up' },
+  { name: 'Connect my application', href: 'https://app.deployz.dev/sign-up' },
+] as const;
+
+const pageTitles = [
+  { path: '/', title: "Deployz — Deploy Your SaaS in Your Customer's AWS Account" },
+  { path: '/how-it-works', title: 'How Deployz Works — Private SaaS Deployment on AWS' },
+  { path: '/security', title: 'Deployz Security and Architecture — Customer-Owned AWS Deployment' },
+  { path: '/pricing', title: 'Deployz Pricing — Simple Private Deployment Pricing' },
+  { path: '/get-started', title: 'Get Started with Deployz — Check Your Application' },
 ] as const;
 
 async function recordRouteEvidence(
@@ -95,7 +107,7 @@ test.describe('public design-system contract', () => {
   });
 
   test('marks the current primary navigation link', async ({ page }) => {
-    for (const route of ['/blog', '/docs'] as const) {
+    for (const route of ['/how-it-works', '/security', '/pricing', '/docs'] as const) {
       await page.goto(route);
       const navigation = page.getByRole('navigation', { name: /primary/i });
       await expect(navigation.locator(`a[href="${route}"]`)).toHaveAttribute('aria-current', 'page');
@@ -103,26 +115,87 @@ test.describe('public design-system contract', () => {
   });
 
   test('uses the product authentication destinations', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/get-started');
+    const main = page.getByRole('main');
 
     for (const authLink of authLinks) {
-      await expect(page.getByRole('link', { name: authLink.name })).toHaveAttribute('href', authLink.href);
+      await expect(main.getByRole('link', { name: authLink.name })).toHaveAttribute('href', authLink.href);
+    }
+  });
+
+  test('sets the approved title, description, and canonical URL on each core page', async ({ page }) => {
+    for (const { path, title } of pageTitles) {
+      await page.goto(path);
+
+      await expect(page).toHaveTitle(title);
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\S/);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new URL(path === '/' ? path : `${path}/`, 'https://deployz.dev').href);
+    }
+  });
+
+  test('sends the primary call to action to the get started page', async ({ page }) => {
+    for (const { path } of pageTitles.filter((entry) => entry.path !== '/get-started')) {
+      await page.goto(path);
+      const actions = page.getByRole('link', { name: 'Check my application' });
+
+      expect(await actions.count()).toBeGreaterThan(0);
+      for (const action of await actions.all()) {
+        await expect(action).toHaveAttribute('href', '/get-started');
+      }
+    }
+  });
+
+  test('has no placeholder links or internal product-stage words', async ({ page }) => {
+    for (const route of routes) {
+      await page.goto(route.path);
+
+      await expect(page.locator('a[href="#"], a[href=""], a:not([href])')).toHaveCount(0);
+      await expect(page.locator('body')).not.toContainText(/(MVP|beta|early access|experimental|work in progress)/i);
+    }
+  });
+
+  test('serves every brand icon that the page head and the web manifest reference', async ({ page, request }) => {
+    await page.goto('/');
+    const paths = await page
+      .locator('link[rel~="icon"], link[rel="apple-touch-icon"], link[rel="mask-icon"], link[rel="manifest"]')
+      .evaluateAll((links) => links.map((link) => new URL((link as HTMLLinkElement).href).pathname));
+    const manifest = await (await request.get('/site.webmanifest')).json();
+    paths.push(...manifest.icons.map((icon: { src: string }) => icon.src));
+
+    expect(paths.length).toBeGreaterThan(0);
+    for (const path of paths) {
+      expect((await request.get(path)).status(), path).toBe(200);
+    }
+  });
+
+  test('resolves every internal link', async ({ page, request }) => {
+    const paths = new Set<string>();
+    for (const route of routes) {
+      await page.goto(route.path);
+      const hrefs = await page.locator('a[href^="/"]').evaluateAll((links) =>
+        links.map((link) => new URL((link as HTMLAnchorElement).href).pathname),
+      );
+      hrefs.forEach((href) => paths.add(href));
+    }
+
+    for (const path of paths) {
+      expect((await request.get(path)).status(), path).toBe(200);
     }
   });
 
   test('shows a keyboard focus indicator on an auth action', async ({ page }) => {
     await page.goto('/');
-    const signUp = page.getByRole('link', { name: 'Sign up' });
+    const primaryAction = page.getByRole('navigation', { name: /primary/i }).getByRole('link', { name: 'Check my application' });
 
     for (let index = 0; index < 12; index += 1) {
       await page.keyboard.press('Tab');
-      if (await signUp.evaluate((element) => element === document.activeElement)) {
+      if (await primaryAction.evaluate((element) => element === document.activeElement)) {
         break;
       }
     }
 
-    await expect(signUp).toBeFocused();
-    const hasVisibleFocus = await signUp.evaluate((element) => {
+    await expect(primaryAction).toBeFocused();
+    const hasVisibleFocus = await primaryAction.evaluate((element) => {
       const styles = getComputedStyle(element);
       return styles.outlineStyle !== 'none' || styles.boxShadow !== 'none';
     });
@@ -237,7 +310,16 @@ test.describe('public design-system contract', () => {
   });
 
   test('ships static HTML without hydrated Astro or React output', async () => {
-    const files = ['dist/index.html', 'dist/blog/index.html', 'dist/docs/index.html', 'dist/404.html'] as const;
+    const files = [
+      'dist/index.html',
+      'dist/how-it-works/index.html',
+      'dist/security/index.html',
+      'dist/pricing/index.html',
+      'dist/get-started/index.html',
+      'dist/blog/index.html',
+      'dist/docs/index.html',
+      'dist/404.html',
+    ] as const;
     const output = await Promise.all(files.map(async (file) => readFile(file, 'utf8')));
 
     for (const html of output) {

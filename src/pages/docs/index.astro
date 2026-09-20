@@ -1,5 +1,4 @@
 ---
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Base from '../../layouts/Base.astro';
@@ -10,31 +9,32 @@ import Base from '../../layouts/Base.astro';
     <header class="max-w-2xl">
       <Badge variant="outline">Documentation</Badge>
       <h1 class="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">Documentation</h1>
-      <p class="mt-4 text-lg leading-8">Deployz deploys and operates your application inside each customer's AWS account.</p>
+      <p class="mt-4 text-lg">Deployz deploys your application inside each customer's AWS account.</p>
     </header>
 
     <nav aria-label="On this page" class="mt-10 rounded-xl border p-4">
-      <p class="text-sm font-medium text-foreground">On this page</p>
+      <p class="text-sm font-medium">On this page</p>
       <div class="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
         <a class="min-h-11 content-center text-muted-foreground hover:text-foreground hover:underline focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50" href="#getting-started">Getting started</a>
         <a class="min-h-11 content-center text-muted-foreground hover:text-foreground hover:underline focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50" href="#requirements">Requirements</a>
+        <a class="min-h-11 content-center text-muted-foreground hover:text-foreground hover:underline focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50" href="#supported-architecture">Supported architecture</a>
       </div>
     </nav>
 
     <section id="getting-started" class="scroll-mt-8 py-12">
-      <h2 class="text-2xl font-semibold tracking-tight">Getting started</h2>
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Getting started</h2>
       <ol class="mt-6 grid gap-6">
         <li class="grid grid-cols-[2rem_1fr] gap-3">
           <span class="font-mono text-sm text-muted-foreground">01</span>
-          <p><strong class="text-foreground">Connect your application.</strong> Define the deployment: container image, database, and environment settings.</p>
+          <p class="text-muted-foreground"><strong class="text-foreground">Connect your application.</strong> Connect GitHub and select the repository. Deployz analyzes it and shows what is ready and what you must change.</p>
         </li>
         <li class="grid grid-cols-[2rem_1fr] gap-3">
           <span class="font-mono text-sm text-muted-foreground">02</span>
-          <p><strong class="text-foreground">Create an install link.</strong> The customer uses the link to install your product into their AWS account.</p>
+          <p class="text-muted-foreground"><strong class="text-foreground">Send an installation link.</strong> Build a release, then send the link. The customer uses it to install your product in their AWS account.</p>
         </li>
         <li class="grid grid-cols-[2rem_1fr] gap-3">
           <span class="font-mono text-sm text-muted-foreground">03</span>
-          <p><strong class="text-foreground">Operate.</strong> Deployz monitors, upgrades, and diagnoses every deployment.</p>
+          <p class="text-muted-foreground"><strong class="text-foreground">Operate.</strong> Release updates, view status, and diagnose failures from Deployz.</p>
         </li>
       </ol>
     </section>
@@ -42,16 +42,76 @@ import Base from '../../layouts/Base.astro';
     <Separator />
 
     <section id="requirements" class="scroll-mt-8 py-12">
-      <h2 class="text-2xl font-semibold tracking-tight">Requirements</h2>
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Requirements</h2>
       <ul class="mt-6 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-foreground">
         <li>Each customer needs an AWS account.</li>
         <li>The application must use the supported deployment architecture.</li>
       </ul>
     </section>
 
-    <Alert>
-      <AlertTitle>MVP documentation</AlertTitle>
-      <AlertDescription>These docs are a placeholder for the MVP. More content will follow.</AlertDescription>
-    </Alert>
+    <Separator />
+
+    <section id="supported-architecture" class="scroll-mt-8 py-12">
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Supported architecture</h2>
+      <p class="mt-3 leading-relaxed">
+        Deployz supports one application architecture on AWS. An application that fits this
+        architecture can use the full workflow.
+      </p>
+      <dl class="mt-6 grid gap-x-8 md:grid-cols-2">
+        <div class="border-t py-5">
+          <dt class="font-semibold">Application</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">One Linux web or API container, built from the Dockerfile in your repository. CPU workloads only.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">AWS regions</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">Each customer environment runs in one AWS region from the Deployz region list.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">PostgreSQL</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">Optional. One encrypted Amazon RDS for PostgreSQL 16 instance in private subnets, with automated backups kept for 7 days.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">Redis</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">Optional. One Redis-compatible cache node (Amazon ElastiCache for Valkey). TLS connections, cluster mode, and Redis Stack modules are not currently supported.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">File storage</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">One encrypted, versioned Amazon S3 bucket. Deployz provides object storage, not attachable disk volumes.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">HTTPS and custom domains</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">Each deployment gets an HTTPS URL on a deployz.dev subdomain with no DNS work. A custom domain is optional. You or your customer add the DNS records, and the default URL stays available.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">Networking</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">Deployz creates a new, dedicated network for each customer environment. The database and cache run in private subnets.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">Health checks</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">Your application must expose an HTTP health-check endpoint. A deployment becomes ready only after its health check passes.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">Updates and rollback</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">You start each update. If a new version fails its health checks, the previous version continues to run. You can also redeploy an earlier successful release. Database migrations are not reversed.</dd>
+        </div>
+        <div class="border-t py-5">
+          <dt class="font-semibold">Removal</dt>
+          <dd class="mt-2 text-sm leading-normal text-muted-foreground">Disconnect removes the application resources and keeps the database, its credentials, and the stored files. Purge is a separate, confirmed step that permanently deletes the retained data. The customer removes the connector in its own AWS console.</dd>
+        </div>
+      </dl>
+
+      <h3 class="mt-8 text-lg font-semibold">Not currently supported</h3>
+      <ul class="mt-4 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-foreground md:grid-cols-2 md:gap-x-8">
+        <li>Cloud providers other than AWS</li>
+        <li>Kubernetes and serverless applications</li>
+        <li>Deployment into an existing customer VPC</li>
+        <li>Background workers and scheduled jobs</li>
+        <li>Applications with more than one service</li>
+        <li>Databases other than PostgreSQL, such as MySQL, MongoDB, and SQLite</li>
+        <li>Message brokers, such as Kafka and RabbitMQ</li>
+        <li>Attachable persistent disk volumes</li>
+        <li>GPU workloads</li>
+      </ul>
+    </section>
   </div>
 </Base>

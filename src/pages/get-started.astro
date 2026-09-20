@@ -1,0 +1,127 @@
+---
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Get Started with Deployz — Check Your Application"
+  description="Connect your repository and find out in a few minutes if your SaaS application is ready for deployment in customer-owned AWS accounts. The evaluation is free."
+>
+  <section class="grid gap-10 pt-6 pb-6 md:pt-10 md:pb-8 lg:grid-cols-[1fr_22rem] lg:items-center lg:gap-8 lg:pt-16 lg:pb-12">
+    <div class="max-w-3xl min-w-0">
+      <h1 class="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+        Find out in a few minutes if your application is ready
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-pretty">
+        Connect your repository. Deployz tells you what is ready and what you must change. The
+        evaluation is free, and no card is necessary.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a class={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="https://app.deployz.dev/sign-up">Connect my application</a>
+        <a class={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="https://app.deployz.dev/sign-in">Sign in</a>
+      </div>
+    </div>
+    <svg aria-hidden="true" class="hidden w-full lg:block" viewBox="0 0 352 232" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="1" width="350" height="230" rx="14" class="fill-background stroke-foreground" />
+      <rect x="24" y="22" width="130" height="10" rx="5" class="fill-foreground" stroke="none" />
+      <rect x="24" y="40" width="200" height="6" rx="3" class="fill-border" stroke="none" />
+      <path d="M1 62h350" class="stroke-border" />
+      <rect x="24" y="79" width="92" height="8" rx="4" class="fill-foreground" stroke="none" />
+      <rect x="138" y="79" width="110" height="8" rx="4" class="fill-border" stroke="none" />
+      <rect x="280" y="74" width="48" height="18" rx="9" class="stroke-muted-foreground" />
+      <path d="M299 83l3.5 3.5 6.5-7" class="stroke-foreground" />
+      <path d="M24 99h304" class="stroke-border" />
+      <rect x="24" y="111" width="70" height="8" rx="4" class="fill-foreground" stroke="none" />
+      <rect x="138" y="111" width="80" height="8" rx="4" class="fill-border" stroke="none" />
+      <rect x="280" y="106" width="48" height="18" rx="9" class="stroke-muted-foreground" />
+      <path d="M299 115l3.5 3.5 6.5-7" class="stroke-foreground" />
+      <path d="M24 131h304" class="stroke-border" />
+      <rect x="24" y="143" width="104" height="8" rx="4" class="fill-foreground" stroke="none" />
+      <rect x="138" y="143" width="120" height="8" rx="4" class="fill-border" stroke="none" />
+      <rect x="280" y="138" width="48" height="18" rx="9" class="stroke-muted-foreground" />
+      <path d="M299 147l3.5 3.5 6.5-7" class="stroke-foreground" />
+      <path d="M24 163h304" class="stroke-border" />
+      <rect x="24" y="175" width="84" height="8" rx="4" class="fill-foreground" stroke="none" />
+      <rect x="138" y="175" width="96" height="8" rx="4" class="fill-border" stroke="none" />
+      <rect x="280" y="170" width="48" height="18" rx="9" class="stroke-muted-foreground" />
+      <path d="M299 179l3.5 3.5 6.5-7" class="stroke-foreground" />
+      <path d="M24 195h304" class="stroke-border" />
+      <rect x="24" y="207" width="64" height="8" rx="4" class="fill-foreground" stroke="none" />
+      <rect x="138" y="207" width="130" height="8" rx="4" class="fill-border" stroke="none" />
+      <rect x="280" y="202" width="48" height="18" rx="9" class="fill-foreground stroke-foreground" />
+      <path d="M304 207v5M304 215.5h.01" class="stroke-background" />
+    </svg>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Four steps to your readiness report</h2>
+    <ol class="mt-6 grid gap-6 sm:grid-cols-2 md:mt-8 lg:grid-cols-4">
+      <li class="border-t pt-5">
+        <span class="font-mono text-sm text-muted-foreground">01</span>
+        <h3 class="mt-3 text-lg font-semibold">Create your account</h3>
+        <p class="mt-2 text-sm leading-normal text-muted-foreground">Sign up, or sign in if you already have an account.</p>
+      </li>
+      <li class="border-t pt-5">
+        <span class="font-mono text-sm text-muted-foreground">02</span>
+        <h3 class="mt-3 text-lg font-semibold">Connect GitHub</h3>
+        <p class="mt-2 text-sm leading-normal text-muted-foreground">Authorize the Deployz GitHub connection. It has read-only access to the repository contents.</p>
+      </li>
+      <li class="border-t pt-5">
+        <span class="font-mono text-sm text-muted-foreground">03</span>
+        <h3 class="mt-3 text-lg font-semibold">Select a repository</h3>
+        <p class="mt-2 text-sm leading-normal text-muted-foreground">Select the application repository. The analysis starts immediately and usually takes a few minutes.</p>
+      </li>
+      <li class="border-t pt-5">
+        <span class="font-mono text-sm text-muted-foreground">04</span>
+        <h3 class="mt-3 text-lg font-semibold">Review the result</h3>
+        <p class="mt-2 text-sm leading-normal text-muted-foreground">See what passed, what needs attention, and what blocks deployment.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">What the analysis does and does not do</h2>
+    <div class="mt-6 grid gap-8 md:mt-8 md:grid-cols-2">
+      <div class="border-t pt-5">
+        <h3 class="text-lg font-semibold">Deployz does</h3>
+        <ul class="mt-4 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-foreground">
+          <li>Read the default branch of the repository that you select</li>
+          <li>Find the container build, port, health check, commands, and environment variables</li>
+          <li>Find the PostgreSQL, Redis, and file-storage requirements</li>
+          <li>Show what passed, what needs attention, and what blocks deployment</li>
+          <li>Send limited repository excerpts to an AI service when a question stays open. Deployz redacts values that look like secrets first.</li>
+        </ul>
+      </div>
+      <div class="border-t pt-5">
+        <h3 class="text-lg font-semibold">Deployz does not</h3>
+        <ul class="mt-4 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-foreground">
+          <li>Write to your repository. The GitHub connection is read-only.</li>
+          <li>Give your customer access to your repository</li>
+          <li>Ask for a card or start a charge</li>
+          <li>Need access to an AWS account for the analysis</li>
+        </ul>
+      </div>
+    </div>
+    <a class={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'mt-8 h-auto min-h-11 shrink text-center whitespace-normal')} href="/#example-report">See an example report</a>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">After the analysis</h2>
+    <ol class="mt-6 grid max-w-3xl gap-6 md:mt-8">
+      <li class="grid grid-cols-[2rem_1fr] gap-3">
+        <span class="font-mono text-sm text-muted-foreground">01</span>
+        <p class="text-muted-foreground"><strong class="text-foreground">Build a release.</strong> Correct the items that block deployment, then build the first version. One test deployment of your own application is free.</p>
+      </li>
+      <li class="grid grid-cols-[2rem_1fr] gap-3">
+        <span class="font-mono text-sm text-muted-foreground">02</span>
+        <p class="text-muted-foreground"><strong class="text-foreground">Send your customer one link.</strong> The customer reviews the access and connects their AWS account. They do not need a Deployz account.</p>
+      </li>
+      <li class="grid grid-cols-[2rem_1fr] gap-3">
+        <span class="font-mono text-sm text-muted-foreground">03</span>
+        <p class="text-muted-foreground"><strong class="text-foreground">Deploy.</strong> The first deployment typically takes 20 to 45 minutes. The charges start with your first customer environment.</p>
+      </li>
+    </ol>
+    <a class={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'mt-8 h-auto min-h-11 shrink text-center whitespace-normal')} href="/docs#supported-architecture">View supported architecture</a>
+  </section>
+</Base>

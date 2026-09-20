@@ -1,0 +1,159 @@
+---
+import { buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import Base from '../layouts/Base.astro';
+
+const examples = [
+  { environments: '1', price: '$68' },
+  { environments: '5', price: '$144' },
+  { environments: '10', price: '$239' },
+  { environments: '25', price: '$524' },
+];
+
+const questions = [
+  {
+    question: 'What is an active customer environment?',
+    answer: "One Deployz-managed installation of your application in a customer's AWS account that is ready and that you have not removed. Each environment counts separately.",
+  },
+  {
+    question: 'What is free?',
+    answer: 'Sign-up, analysis, release builds, and one test deployment of your own application for each application. No card is necessary.',
+  },
+  {
+    question: 'When does the $49 charge start?',
+    answer: 'The monthly base charge starts with your first customer environment.',
+  },
+  {
+    question: 'When does the $19 charge start and stop?',
+    answer: 'It starts when the environment first becomes ready. It stops when you start its removal or when the customer removes the connection.',
+  },
+  {
+    question: 'Who pays for AWS?',
+    answer: "Your customer. Infrastructure is created in the customer's AWS account, and AWS charges the customer directly. Deployz pricing does not include AWS infrastructure costs.",
+  },
+];
+---
+
+<Base
+  title="Deployz Pricing — Simple Private Deployment Pricing"
+  description="Deployz costs $49 a month plus $19 for each active customer environment. The evaluation is free, and the charges start with your first customer environment."
+>
+  <section class="grid gap-10 pt-6 pb-6 md:pt-10 md:pb-8 lg:grid-cols-[1fr_22rem] lg:items-center lg:gap-8 lg:pt-16 lg:pb-12">
+    <div class="max-w-3xl min-w-0">
+      <h1 class="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+        $49 a month. $19 for each customer environment. Free until your first one.
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-pretty">
+        One plan. No card for the evaluation. Your customer pays AWS directly.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a class={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="/get-started">Check my application</a>
+      </div>
+      <p class="mt-4 text-sm leading-normal text-muted-foreground">Free analysis. No card.</p>
+    </div>
+    <svg aria-hidden="true" class="hidden w-full lg:block" viewBox="0 0 352 238" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="7" width="59" height="56" rx="10" class="stroke-muted-foreground" stroke-dasharray="4 4" />
+      <path d="M24.5 35h12M30.5 29v12" class="stroke-muted-foreground" />
+      <rect x="73" y="7" width="59" height="56" rx="10" class="stroke-muted-foreground" stroke-dasharray="4 4" />
+      <path d="M96.5 35h12M102.5 29v12" class="stroke-muted-foreground" />
+      <rect x="1" y="77" width="59" height="56" rx="10" class="fill-muted stroke-foreground" />
+      <text x="30.5" y="110" text-anchor="middle" class="fill-foreground tabular-nums" font-size="14" font-weight="600" stroke="none">$19</text>
+      <rect x="73" y="77" width="59" height="56" rx="10" class="fill-muted stroke-foreground" />
+      <text x="102.5" y="110" text-anchor="middle" class="fill-foreground tabular-nums" font-size="14" font-weight="600" stroke="none">$19</text>
+      <rect x="146" y="77" width="59" height="56" rx="10" class="fill-muted stroke-foreground" />
+      <text x="175.5" y="110" text-anchor="middle" class="fill-foreground tabular-nums" font-size="14" font-weight="600" stroke="none">$19</text>
+      <rect x="219" y="77" width="59" height="56" rx="10" class="fill-muted stroke-foreground" />
+      <text x="248.5" y="110" text-anchor="middle" class="fill-foreground tabular-nums" font-size="14" font-weight="600" stroke="none">$19</text>
+      <rect x="292" y="77" width="59" height="56" rx="10" class="fill-muted stroke-foreground" />
+      <text x="321.5" y="110" text-anchor="middle" class="fill-foreground tabular-nums" font-size="14" font-weight="600" stroke="none">$19</text>
+      <rect x="1" y="147" width="350" height="60" rx="10" class="fill-foreground stroke-foreground" />
+      <text x="176" y="182" text-anchor="middle" class="fill-background tabular-nums" font-size="16" font-weight="600" stroke="none">$49 a month</text>
+      <text x="176" y="230" text-anchor="middle" class="fill-muted-foreground" font-size="12" stroke="none">5 customer environments = $144 a month</text>
+    </svg>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <div class="grid gap-8 md:grid-cols-2 md:items-start">
+      <Card>
+        <CardHeader>
+          <CardTitle><h2>One plan</h2></CardTitle>
+          <CardDescription>All features are included. There are no tiers.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>
+            <span class="text-4xl font-semibold tracking-tight tabular-nums">$49</span>
+            <span class="text-base">/month</span>
+          </p>
+          <p class="mt-2 text-base">
+            plus <span class="font-semibold tabular-nums">$19</span> per active customer environment/month
+          </p>
+          <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {examples.map((example) => (
+              <div class="flex flex-col-reverse rounded-lg border p-3">
+                <dt class="text-xs leading-normal text-muted-foreground">{example.environments} {example.environments === '1' ? 'customer' : 'customers'}</dt>
+                <dd class="text-lg font-semibold tabular-nums">{example.price}</dd>
+              </div>
+            ))}
+          </dl>
+          <a class={cn(buttonVariants({ size: 'lg' }), 'mt-6 h-auto min-h-11 shrink text-center whitespace-normal w-full')} href="/get-started">Check my application</a>
+        </CardContent>
+        <CardFooter>
+          <p class="text-sm leading-normal text-muted-foreground">The evaluation is free. The charges start with your first customer environment.</p>
+        </CardFooter>
+      </Card>
+      <div>
+        <h2 class="text-lg font-semibold">Included</h2>
+        <ul class="mt-4 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-foreground">
+          <li>Readiness analysis and release builds</li>
+          <li>One free test deployment of your own application</li>
+          <li>A guided installation link for each customer</li>
+          <li>PostgreSQL, cache, file storage, HTTPS, custom domains</li>
+          <li>Updates, retries, and rollbacks</li>
+          <li>Status, failure diagnosis, and removal controls</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="max-w-3xl text-2xl font-semibold tracking-tight text-balance sm:text-3xl">You pay only for customer environments that work</h2>
+    <ul class="mt-6 grid gap-6 md:mt-8 md:grid-cols-3">
+      <li class="border-t pt-5">
+        <h3 class="text-lg font-semibold">No charge for a failed installation</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">An installation that does not become ready costs nothing.</p>
+      </li>
+      <li class="border-t pt-5">
+        <h3 class="text-lg font-semibold">No charge for each deployment</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">Updates, retries, and rollbacks have no additional charge.</p>
+      </li>
+      <li class="border-t pt-5">
+        <h3 class="text-lg font-semibold">A failed payment never stops a customer</h3>
+        <p class="mt-2 leading-normal text-muted-foreground">Existing environments continue to run. Only new environments are blocked.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Billing questions</h2>
+    <div class="mt-6 max-w-3xl border-b md:mt-8">
+      {questions.map((item) => (
+        <details class="border-t">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-semibold [&::-webkit-details-marker]:hidden after:shrink-0 after:text-lg after:leading-none after:text-muted-foreground after:transition-transform after:duration-150 after:content-['+'] open:after:rotate-45 focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">{item.question}</summary>
+          <p class="pb-4 leading-normal text-muted-foreground">{item.answer}</p>
+        </details>
+      ))}
+    </div>
+    <p class="mt-6 text-sm leading-normal text-muted-foreground">Prices are in US dollars and are billed monthly.</p>
+  </section>
+
+  <section class="py-6 md:py-8 lg:py-12">
+    <div class="flex flex-col items-start justify-between gap-6 border-y py-10 md:flex-row md:items-center">
+      <div class="max-w-2xl">
+        <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Start free. Pay when your first customer environment starts.</h2>
+        <p class="mt-3 leading-relaxed">Get the readiness report in a few minutes. No card is necessary.</p>
+      </div>
+      <a class={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-11 text-center whitespace-normal shrink-0')} href="/get-started">Check my application</a>
+    </div>
+  </section>
+</Base>

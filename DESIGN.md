@@ -2,14 +2,14 @@
 
 ## 0. Research Log
 
-- Existing-site extraction: `src/layouts/Base.astro` defines the current public shell and six local tokens. The public routes are `/`, `/blog`, `/docs`, and `/404`.
+- Existing-site extraction: `src/layouts/Base.astro` defines the current public shell and six local tokens. The public routes are `/`, `/how-it-works`, `/security`, `/pricing`, `/get-started`, `/blog`, `/docs`, and `/404`.
 - Dashboard source: `apps/web/components.json`, `apps/web/src/app/globals.css`, and `docs/ui-system.md` define the radix-nova, neutral, CSS-variable, Inter, Lucide, and direct-composition rules.
 - Public reference: the Vercel reference supplies restrained hierarchy, compact navigation, direct calls to action, and generous whitespace only. Do not copy its assets, trademark, copy, fonts, or exact tokens.
 - Skipped lanes: lazyweb and image drafts are not needed. This is an existing public site with an approved dashboard token source and one constrained layout reference.
 
 ## 1. Atmosphere & Identity
 
-Deployz is quiet, direct, and technical. It uses the dashboard's neutral shadcn foundation so the public site feels like a clear entry to the product. The signature is clear content hierarchy: concise navigation, one direct page purpose, generous section space, and neutral surfaces that make product information easy to scan.
+Deployz is quiet, direct, and technical. It uses the dashboard's neutral shadcn foundation so the public site feels like a clear entry to the product. The signature is clear content hierarchy: concise navigation, one direct page purpose, compact section space, and neutral surfaces that make product information easy to scan.
 
 ## 2. Color
 
@@ -47,15 +47,17 @@ The public site uses the dashboard font direction. Load Inter locally. Do not ma
 | --- | --- | --- | --- | --- | --- |
 | Display | `clamp(2.25rem, 6vw, 3rem)` | 600 | 1.1 | `-0.02em` | Home-page statement |
 | Page title | `2.25rem` | 600 | 1.2 | `-0.02em` | One `h1` per route |
-| Section title | `1.5rem` | 600 | 1.3 | `-0.01em` | `h2` |
-| Card title | `1.125rem` | 600 | 1.4 | `0` | Card and article title |
-| Body | `1rem` | 400 | 1.6 | `0` | Standard reading text |
+| Section title | `1.5rem`, then `1.875rem` from 640 pixels | 600 | 1.33, then 1.2 | `-0.025em` | `h2` |
+| Card title | `1.125rem` | 600 | 1.55 | `0` | `h3`, card, and article title |
+| Lead | `1.125rem` | 400 | 1.55 | `0` | Text below a page title |
+| Body | `1rem` | 400 | 1.625 | `0` | Standard reading text |
 | Supporting text | `0.875rem` | 400 | 1.5 | `0` | Metadata and supporting copy |
 | Technical label | `0.75rem` | 500 | 1.4 | `0.02em` | Code label or small identifier |
 
 - Sans stack: `Inter Variable`, `Inter`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `"Segoe UI"`, `sans-serif`.
 - Mono stack: `ui-monospace`, `"SFMono-Regular"`, `Consolas`, `"Liberation Mono"`, `monospace`.
 - Body text is never smaller than `0.875rem`.
+- Paragraph text uses `--foreground`. Apply `text-muted-foreground` at the use site only for supporting text: text below a card title, metadata, and notes.
 - Use `font-semibold` and `tracking-tight` for page titles. This matches the dashboard title rule.
 - Use mono text only where it improves technical recognition. Do not use it as decoration.
 
@@ -74,12 +76,15 @@ Spacing uses a 4-pixel base. Use these intent tokens through the matching Tailwi
 | `space-12` | `3rem` | Section separation on small screens |
 | `space-16` | `4rem` | Section separation on medium screens |
 | `space-20` | `5rem` | Hero or large section separation |
+| `space-24` | `6rem` | Section separation on large screens |
 
 - The site shell uses a centered content width of `72rem` and inline padding of `1rem` at 375 pixels, `1.5rem` at 768 pixels, and `2rem` at 1280 pixels.
 - The content shell uses `48rem` for blog articles and reading content. Docs may use the site width when lists need more space.
+- Section separation is the total gap between two sections. `main` and each `section` share it. Do not apply the full value to both.
+- Marketing pages use three section tiers. A standard section gap is `space-12`, then `space-16` from 768 pixels, then `space-24` from 1024 pixels. A group that supports the section before it, such as the home-page stat strip, uses `space-8`, `space-12`, and `space-16`. The gap from a section title to its content is `space-6`, then `space-8` from 768 pixels.
 - Use a single-column content flow at 375 pixels. Keep primary navigation and auth actions visible in a two-row static header.
 - At 768 pixels, use the medium layout: a horizontal header and two-column supporting grids where content has two peer items.
-- At 1280 pixels, retain the same content order, center the site shell, and use the full `72rem` width. Do not add a wider layout only for decoration.
+- At 1280 pixels, retain the same content order, center the site shell, and use the full `72rem` width. Do not add a wider layout only for decoration. From 1024 pixels, the home-page hero puts the control diagram in a second column.
 - Use CSS grid and flex mechanics directly for wrapping and intrinsic sizing. Do not turn browser mechanics into new tokens.
 - Each public interactive use must be at least 44 pixels high. Apply `min-h-11` at the use site. Apply `min-w-11` to icon-only controls. Do not edit generated shadcn component source to meet this rule.
 
@@ -117,7 +122,7 @@ Use only direct shadcn composition. Generated primitive source stays unchanged. 
 ### Alert
 
 - **Structure:** generated `Alert`, `AlertTitle`, and `AlertDescription`.
-- **Applicable variants:** default for the docs MVP notice and destructive only for true destructive or error content.
+- **Applicable variants:** default for an informational notice and destructive only for true destructive or error content.
 - **Spacing:** use `space-3` inside the alert content.
 - **States:** static informational or destructive state. Do not add dismiss, loading, or toast behavior.
 - **Accessibility:** the message must state its meaning in text. Do not rely on color or an icon alone.
@@ -132,18 +137,27 @@ Use only direct shadcn composition. Generated primitive source stays unchanged. 
 - **Accessibility:** omit a decorative separator from the accessibility tree when the generated primitive supports it. Do not use it as the only grouping cue.
 - **Motion:** no motion is required.
 
+### Illustration
+
+- **Structure:** inline SVG in the page file. Use a line drawing that explains the product: the control diagram, a workflow, an account boundary, or a price. Do not add decoration that explains nothing.
+- **Applicable variants:** monochrome only. Use a 1.5-pixel stroke with round caps to match the Lucide icons. Use `fill-*` and `stroke-*` token utilities only: `foreground`, `background`, `muted`, `muted-foreground`, and `border`.
+- **Spacing:** a page-title illustration uses the second hero column (`20rem` to `22rem`) from 1024 pixels and is hidden below that width. An illustration in a card or a section scales with its container.
+- **States:** static only.
+- **Accessibility:** use `aria-hidden="true"` when the adjacent text gives the same information. Use `role="img"` and an `aria-label` when the drawing carries meaning. Keep text in the SVG at 11 pixels or larger at the rendered size.
+- **Motion:** no motion.
+
 ### Site Shell
 
 - **Structure:** skip link, `header`, named primary `nav`, one `main` with a stable target id, and `footer`.
 - **Spacing:** use the site shell width and breakpoints from Section 4.
-- **States:** active Docs or Blog navigation uses `aria-current="page"`. Every navigation and auth link has default, hover, active, and focus-visible states.
+- **States:** the active primary navigation link uses `aria-current="page"`. Every navigation and auth link has default, hover, active, and focus-visible states.
 - **Accessibility:** the skip link becomes visible on keyboard focus and targets `main`. Header actions use the 44-pixel target rule.
 - **Motion:** no menu drawer or client behavior. Header reflow is static at breakpoints.
 
 ### Content Shell
 
-- **Structure:** page `h1`, optional lead text, content sections, and semantic route content. Blog lists use `article` and `time`. Docs preserve lists and the MVP notice.
-- **Spacing:** use `space-8` for related groups and `space-12` through `space-20` for sections.
+- **Structure:** page `h1`, optional lead text, content sections, and semantic route content. Blog lists use `article` and `time`. Docs preserve lists.
+- **Spacing:** use `space-8` for related groups and `space-12` through `space-24` for sections.
 - **States:** content is static. Links inside content have default, hover, active, and focus-visible states.
 - **Accessibility:** each route has one `h1`, logical heading order, readable line length, and no horizontal overflow at the required viewports.
 - **Motion:** no entrance or scroll animation.

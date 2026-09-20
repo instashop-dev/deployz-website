@@ -3,6 +3,7 @@ dist/
 .astro/
 dev-out.log
 dev-err.log
+astro-dev.log
 .omo/
 .codegraph/
 test-results/
