@@ -1,10 +1,25 @@
 ---
-import { ArrowDown, ArrowRight, ClipboardCheck, Repeat, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Check, ClipboardCheck, Minus, Repeat, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import Base from '../layouts/Base.astro';
+
+const terminalLines = [
+  { text: 'deployz install --customer acme-corp', prompt: true },
+  { text: '→ customer AWS account connected', dim: true },
+  { text: '✓ repository analyzed · 12 checks passed' },
+  { text: '✓ stack provisioned in customer VPC' },
+  { text: '✓ application deployed · v2.41.0' },
+  { text: 'updates managed by deployz · customer keeps the keys', dim: true },
+];
+
+const control = [
+  { label: 'You', title: 'Your application', text: 'You select each release.' },
+  { label: 'Deployz', title: 'Installation and updates', text: 'Deployz deploys it and reports the status.' },
+  { label: 'Your customer', title: 'Their AWS account', text: 'They own the infrastructure and the data.' },
+];
 
 const stats = [
   { value: 'A few minutes', label: 'Usual time for the analysis' },
@@ -50,93 +65,66 @@ const questions = [
 ---
 
 <Base title="Deployz — Deploy Your SaaS in Your Customer's AWS Account">
-  <section class="grid gap-10 pt-6 pb-4 md:pt-10 md:pb-6 lg:grid-cols-[1fr_22rem] lg:items-center lg:gap-8 lg:pt-16 lg:pb-8">
-    <div class="max-w-3xl">
-      <Badge variant="outline" className="h-auto whitespace-normal">Bring your own cloud (BYOC) for B2B SaaS</Badge>
-      <h1 class="mt-4 text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+  <section class="relative pt-2 pb-8 md:pb-10 lg:pt-4 lg:pb-12">
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-grid-dots [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,black,transparent)]" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 hero-glow" aria-hidden="true"></div>
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="reveal inline-flex items-center rounded-full border border-border bg-muted/50 px-3.5 py-1.5 font-mono text-[0.7rem] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+        Bring your own cloud (BYOC) for B2B SaaS
+      </p>
+      <h1 class="reveal mt-6 text-[2.5rem] leading-[1.05] font-semibold tracking-[-0.035em] text-balance sm:text-6xl lg:text-7xl" style="--reveal-delay:60ms">
         Your customer wants your SaaS in their AWS account. Say yes.
       </h1>
-      <p class="mt-4 max-w-2xl text-lg text-pretty">
+      <p class="reveal mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-pretty text-muted-foreground" style="--reveal-delay:120ms">
         Deployz installs and updates your application in each customer's AWS account. You do not
         build a deployment platform.
       </p>
-      <div class="mt-6 flex flex-wrap gap-3">
+      <div class="reveal mt-8 flex flex-wrap justify-center gap-3" style="--reveal-delay:180ms">
         <a class={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="/get-started">Check my application</a>
         <a class={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="/how-it-works">See how it works</a>
       </div>
-      <p class="mt-4 text-sm leading-normal text-muted-foreground">Free analysis. No card. Read-only GitHub access.</p>
+      <p class="reveal mt-4 font-mono text-xs tracking-wide text-muted-foreground" style="--reveal-delay:240ms">Free analysis. No card. Read-only GitHub access.</p>
+    </div>
+    <div class="reveal mx-auto mt-12 max-w-3xl lg:mt-16" style="--reveal-delay:160ms">
+      <div class="overflow-hidden rounded-xl bg-surface-inverse shadow-e3 ring-1 ring-foreground/10">
+        <div class="flex items-center gap-2 border-b border-surface-inverse-foreground/10 px-4 py-3">
+          <span class="size-2.5 rounded-full bg-surface-inverse-foreground/20" aria-hidden="true"></span>
+          <span class="size-2.5 rounded-full bg-surface-inverse-foreground/20" aria-hidden="true"></span>
+          <span class="size-2.5 rounded-full bg-surface-inverse-foreground/20" aria-hidden="true"></span>
+          <p class="ml-2 font-mono text-xs text-surface-inverse-foreground/60">deployz — acme-corp · eu-central-1</p>
+          <span class="ml-auto inline-flex items-center gap-1.5 rounded-full border border-surface-inverse-foreground/20 px-2 py-0.5 font-mono text-[0.65rem] tracking-wide text-surface-inverse-foreground/70">
+            <span class="size-1.5 animate-pulse rounded-full bg-surface-inverse-foreground/70" aria-hidden="true"></span>
+            LIVE
+          </span>
+        </div>
+        <pre class="px-5 py-6 font-mono text-[0.8rem] leading-7 break-words whitespace-pre-wrap sm:text-sm"><code>{terminalLines.map((line) => (
+          <span class={line.dim || line.prompt ? '' : 'text-surface-inverse-foreground'}>
+            {line.prompt ? <span class="text-surface-inverse-foreground/60">$ </span> : null}
+            <span class={line.dim ? 'text-surface-inverse-foreground/60' : ''}>{line.text}</span>{'\n'}
+          </span>
+        ))}</code></pre>
+      </div>
     </div>
     <ol
       aria-label="How control is divided between you, Deployz, and your customer"
-      class="grid gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch lg:grid-cols-1"
+      class="reveal mx-auto mt-8 grid max-w-4xl gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3 lg:mt-10" style="--reveal-delay:80ms"
     >
-      <li class="rounded-xl border p-5">
-        <svg aria-hidden="true" class="mb-4 h-16 w-full" viewBox="0 0 240 64" preserveAspectRatio="xMinYMid meet" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="5" width="92" height="54" rx="6" class="fill-background stroke-foreground" />
-          <path d="M1 17h92" class="stroke-foreground" />
-          <path d="M9 11h.01M15 11h.01M21 11h.01" class="stroke-foreground" stroke-width="3" />
-          <path d="M10 27h34M18 35h44M18 43h32M10 51h24" class="stroke-muted-foreground" />
-          <path d="M101 32h22" class="stroke-muted-foreground" stroke-dasharray="3 4" />
-          <path d="M121 28l4 4-4 4" class="stroke-muted-foreground" />
-          <rect x="133" y="19" width="70" height="26" rx="13" class="fill-muted stroke-foreground" />
-          <circle cx="147" cy="32" r="3" class="stroke-foreground" />
-          <path d="M157 32h34" class="stroke-foreground" />
-        </svg>
-        <p class="text-xs font-medium tracking-wide">You</p>
-        <p class="mt-2 font-semibold">Your application</p>
-        <p class="mt-1 text-sm leading-normal text-muted-foreground">You select each release.</p>
-      </li>
-      <li aria-hidden="true" class="flex items-center justify-center text-muted-foreground">
-        <ArrowDown className="size-5 md:hidden lg:block" />
-        <ArrowRight className="hidden size-5 md:block lg:hidden" />
-      </li>
-      <li class="rounded-xl border p-5">
-        <svg aria-hidden="true" class="mb-4 h-16 w-full" viewBox="0 0 240 64" preserveAspectRatio="xMinYMid meet" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M33 32h38M97 32h38" class="stroke-foreground" />
-          <path d="M161 32h38" class="stroke-muted-foreground" stroke-dasharray="3 4" />
-          <circle cx="20" cy="32" r="12" class="fill-foreground stroke-foreground" />
-          <path d="M15 32l3.5 3.5 7-7" class="stroke-background" />
-          <circle cx="84" cy="32" r="12" class="fill-foreground stroke-foreground" />
-          <path d="M79 32l3.5 3.5 7-7" class="stroke-background" />
-          <circle cx="148" cy="32" r="12" class="fill-background stroke-border" />
-          <path d="M148 20a12 12 0 0 1 12 12" class="stroke-foreground" />
-          <circle cx="212" cy="32" r="12" class="stroke-muted-foreground" stroke-dasharray="3 4" />
-        </svg>
-        <p class="text-xs font-medium tracking-wide">Deployz</p>
-        <p class="mt-2 font-semibold">Installation and updates</p>
-        <p class="mt-1 text-sm leading-normal text-muted-foreground">Deployz deploys it and reports the status.</p>
-      </li>
-      <li aria-hidden="true" class="flex items-center justify-center text-muted-foreground">
-        <ArrowDown className="size-5 md:hidden lg:block" />
-        <ArrowRight className="hidden size-5 md:block lg:hidden" />
-      </li>
-      <li class="rounded-xl border p-5">
-        <svg aria-hidden="true" class="mb-4 h-16 w-full" viewBox="0 0 240 64" preserveAspectRatio="xMinYMid meet" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="1" width="238" height="62" rx="10" class="fill-muted stroke-muted-foreground" stroke-dasharray="4 4" />
-          <rect x="20" y="18" width="28" height="28" rx="5" class="fill-background stroke-foreground" />
-          <path d="M27 27h14M27 32h14M27 37h8" class="stroke-muted-foreground" />
-          <path d="M76 22v20c0 2.8 6.3 5 14 5s14-2.2 14-5V22" class="fill-background stroke-foreground" />
-          <ellipse cx="90" cy="22" rx="14" ry="5" class="fill-background stroke-foreground" />
-          <path d="M76 32c0 2.8 6.3 5 14 5s14-2.2 14-5" class="stroke-foreground" />
-          <rect x="134" y="19" width="32" height="7" rx="3.5" class="fill-background stroke-foreground" />
-          <rect x="134" y="29" width="32" height="7" rx="3.5" class="fill-background stroke-foreground" />
-          <rect x="134" y="39" width="32" height="7" rx="3.5" class="fill-background stroke-foreground" />
-          <path d="M192 20h28l-4 26h-20z" class="fill-background stroke-foreground" />
-          <path d="M193.5 30h25" class="stroke-foreground" />
-        </svg>
-        <p class="text-xs font-medium tracking-wide">Your customer</p>
-        <p class="mt-2 font-semibold">Their AWS account</p>
-        <p class="mt-1 text-sm leading-normal text-muted-foreground">They own the infrastructure and the data.</p>
-      </li>
+      {control.map((item) => (
+        <li class="bg-background p-5">
+          <p class="font-mono text-[0.7rem] font-medium tracking-[0.14em] text-muted-foreground uppercase">{item.label}</p>
+          <p class="mt-2 font-semibold">{item.title}</p>
+          <p class="mt-1 text-sm leading-normal text-muted-foreground">{item.text}</p>
+        </li>
+      ))}
     </ol>
   </section>
 
-  <section aria-label="Deployz in numbers" class="pt-4 pb-6 md:pt-6 md:pb-8 lg:pt-8 lg:pb-12">
-    <dl class="grid gap-6 rounded-xl bg-muted p-6 sm:grid-cols-2 md:p-8 lg:grid-cols-4">
+  <section aria-label="Deployz in numbers" class="pb-6 md:pb-8 lg:pb-12">
+    <dl class="reveal grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border lg:grid-cols-4">
       {stats.map((stat) => (
-        <div class="flex flex-col-reverse justify-end gap-1">
-          <dt class="text-sm leading-normal">{stat.label}</dt>
-          <dd class="text-3xl font-semibold tracking-tight">{stat.value}</dd>
+        <div class="flex flex-col-reverse justify-end gap-1.5 bg-background p-5 md:p-6">
+          <dt class="text-sm leading-normal text-muted-foreground">{stat.label}</dt>
+          <dd class="font-mono text-xl font-medium tracking-tight tabular-nums md:text-2xl">{stat.value}</dd>
         </div>
       ))}
     </dl>
@@ -144,7 +132,8 @@ const questions = [
 
   <section class="py-6 md:py-8 lg:py-12">
     <div class="max-w-2xl">
-      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Your product is ready. Your deployment model isn't.</h2>
+      <p class="font-mono text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">The problem</p>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Your product is ready. Your deployment model isn't.</h2>
       <p class="mt-3 leading-relaxed">
         "Can your software run in our AWS account?" One question can turn a sale into a platform
         project:
@@ -159,32 +148,42 @@ const questions = [
   </section>
 
   <section class="py-6 md:py-8 lg:py-12">
-    <h2 class="max-w-3xl text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Offer private deployment without becoming an infrastructure company</h2>
-    <ul class="mt-6 grid gap-6 md:mt-8 md:grid-cols-3">
-      <li class="border-t pt-5">
-        <ShieldCheck className="size-6" />
-        <h3 class="mt-3 text-lg font-semibold">Close the deals that security reviews stop</h3>
-        <p class="mt-2 leading-normal text-muted-foreground">A guided path for each customer to run your SaaS in their AWS account.</p>
+    <div class="max-w-2xl">
+      <p class="font-mono text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">What you get</p>
+      <h2 class="mt-3 max-w-3xl text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Offer private deployment without becoming an infrastructure company</h2>
+    </div>
+    <ul class="mt-6 grid gap-4 md:mt-8 md:gap-5 lg:grid-cols-3">
+      <li class="reveal group rounded-xl border bg-card p-6 shadow-e1 transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-e2 md:p-8 lg:col-span-2 lg:row-span-2">
+        <div class="grid size-11 place-items-center rounded-lg border border-border bg-muted/60">
+          <ShieldCheck className="size-5" aria-hidden="true" />
+        </div>
+        <h3 class="mt-6 text-lg font-semibold">Close the deals that security reviews stop</h3>
+        <p class="mt-2 max-w-md leading-normal text-muted-foreground">A guided path for each customer to run your SaaS in their AWS account.</p>
       </li>
-      <li class="border-t pt-5">
-        <ClipboardCheck className="size-6" />
-        <h3 class="mt-3 text-lg font-semibold">Know the answer before you promise</h3>
+      <li class="reveal group rounded-xl border bg-card p-6 shadow-e1 transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-e2" style="--reveal-delay:60ms">
+        <div class="grid size-11 place-items-center rounded-lg border border-border bg-muted/60">
+          <ClipboardCheck className="size-5" aria-hidden="true" />
+        </div>
+        <h3 class="mt-5 text-lg font-semibold">Know the answer before you promise</h3>
         <p class="mt-2 leading-normal text-muted-foreground">The free analysis shows what is ready and what blocks deployment.</p>
       </li>
-      <li class="border-t pt-5">
-        <Repeat className="size-6" />
-        <h3 class="mt-3 text-lg font-semibold">One workflow for customer 1 and customer 50</h3>
+      <li class="reveal group rounded-xl border bg-card p-6 shadow-e1 transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-e2" style="--reveal-delay:120ms">
+        <div class="grid size-11 place-items-center rounded-lg border border-border bg-muted/60">
+          <Repeat className="size-5" aria-hidden="true" />
+        </div>
+        <h3 class="mt-5 text-lg font-semibold">One workflow for customer 1 and customer 50</h3>
         <p class="mt-2 leading-normal text-muted-foreground">The same isolated environment each time. No new project.</p>
       </li>
     </ul>
   </section>
 
-  <section id="example-report" class="scroll-mt-8 py-6 md:py-8 lg:py-12">
+  <section id="example-report" class="scroll-mt-24 py-6 md:py-8 lg:py-12">
     <div class="max-w-2xl">
-      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">See what the analysis tells you</h2>
+      <p class="font-mono text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">Readiness report</p>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">See what the analysis tells you</h2>
       <p class="mt-3 leading-relaxed">Connect your repository. A few minutes later, you know what to change. This is an example report.</p>
     </div>
-    <Card className="mt-6 md:mt-8">
+    <Card className="reveal mt-6 shadow-e1 md:mt-8">
       <CardHeader>
         <CardTitle><h3>Example application: Acme Analytics</h3></CardTitle>
         <CardDescription>12 checks · 1 action needed · 1 configuration item required</CardDescription>
@@ -217,26 +216,29 @@ const questions = [
   </section>
 
   <section class="py-6 md:py-8 lg:py-12">
-    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">From repository to customer AWS in four steps</h2>
+    <div class="max-w-2xl">
+      <p class="font-mono text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">Process</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">From repository to customer AWS in four steps</h2>
+    </div>
     <ol class="mt-6 grid gap-6 sm:grid-cols-2 md:mt-8 lg:grid-cols-4">
-      <li class="border-t pt-5">
-        <span class="font-mono text-sm text-muted-foreground">01</span>
-        <h3 class="mt-3 text-lg font-semibold">Connect your repository</h3>
+      <li class="reveal border-t pt-5">
+        <span class="grid size-9 place-items-center rounded-md border bg-muted/50 font-mono text-sm font-medium text-muted-foreground">01</span>
+        <h3 class="mt-4 text-lg font-semibold">Connect your repository</h3>
         <p class="mt-2 leading-normal text-muted-foreground">Read-only GitHub access.</p>
       </li>
-      <li class="border-t pt-5">
-        <span class="font-mono text-sm text-muted-foreground">02</span>
-        <h3 class="mt-3 text-lg font-semibold">Read the readiness report</h3>
+      <li class="reveal border-t pt-5" style="--reveal-delay:60ms">
+        <span class="grid size-9 place-items-center rounded-md border bg-muted/50 font-mono text-sm font-medium text-muted-foreground">02</span>
+        <h3 class="mt-4 text-lg font-semibold">Read the readiness report</h3>
         <p class="mt-2 leading-normal text-muted-foreground">Usually ready in a few minutes.</p>
       </li>
-      <li class="border-t pt-5">
-        <span class="font-mono text-sm text-muted-foreground">03</span>
-        <h3 class="mt-3 text-lg font-semibold">Send your customer one link</h3>
+      <li class="reveal border-t pt-5" style="--reveal-delay:120ms">
+        <span class="grid size-9 place-items-center rounded-md border bg-muted/50 font-mono text-sm font-medium text-muted-foreground">03</span>
+        <h3 class="mt-4 text-lg font-semibold">Send your customer one link</h3>
         <p class="mt-2 leading-normal text-muted-foreground">They connect their AWS account. No Deployz account.</p>
       </li>
-      <li class="border-t pt-5">
-        <span class="font-mono text-sm text-muted-foreground">04</span>
-        <h3 class="mt-3 text-lg font-semibold">Deploy, then ship updates</h3>
+      <li class="reveal border-t pt-5" style="--reveal-delay:180ms">
+        <span class="grid size-9 place-items-center rounded-md border bg-muted/50 font-mono text-sm font-medium text-muted-foreground">04</span>
+        <h3 class="mt-4 text-lg font-semibold">Deploy, then ship updates</h3>
         <p class="mt-2 leading-normal text-muted-foreground">First deployment: typically 20 to 45 minutes.</p>
       </li>
     </ol>
@@ -244,11 +246,14 @@ const questions = [
   </section>
 
   <section class="py-6 md:py-8 lg:py-12">
-    <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">The questions you and your customer will ask</h2>
+    <div class="max-w-2xl">
+      <p class="font-mono text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">FAQ</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">The questions you and your customer will ask</h2>
+    </div>
     <div class="mt-6 max-w-3xl border-b md:mt-8">
       {questions.map((item) => (
         <details class="border-t">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-semibold [&::-webkit-details-marker]:hidden after:shrink-0 after:text-lg after:leading-none after:text-muted-foreground after:transition-transform after:duration-150 after:content-['+'] open:after:rotate-45 focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">{item.question}</summary>
+          <summary class="-mx-3 flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg px-3 py-3.5 font-semibold transition-colors hover:bg-muted/60 [&::-webkit-details-marker]:hidden after:shrink-0 after:text-lg after:leading-none after:text-muted-foreground after:transition-transform after:duration-150 after:content-['+'] open:after:rotate-45 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">{item.question}</summary>
           <p class="pb-4 leading-normal text-muted-foreground">{item.answer}</p>
         </details>
       ))}
@@ -257,25 +262,25 @@ const questions = [
   </section>
 
   <section class="py-6 md:py-8 lg:py-12">
-    <div class="rounded-xl bg-muted p-6 md:p-10">
+    <div class="reveal rounded-2xl border bg-muted/50 p-6 md:p-10">
       <h2 class="max-w-3xl text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Built for one type of application, deliberately</h2>
       <div class="mt-6 grid gap-8 md:mt-8 md:grid-cols-2">
         <div>
           <h3 class="text-lg font-semibold">Good fit</h3>
-          <ul class="mt-4 grid list-disc gap-2 pl-5">
-            <li>B2B SaaS with a customer that requires AWS</li>
-            <li>One web or API container</li>
-            <li>PostgreSQL, a Redis-compatible cache, object storage</li>
-            <li>No Kubernetes</li>
+          <ul class="mt-4 grid gap-2.5">
+            <li class="flex items-start gap-2.5"><Check className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>B2B SaaS with a customer that requires AWS</span></li>
+            <li class="flex items-start gap-2.5"><Check className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>One web or API container</span></li>
+            <li class="flex items-start gap-2.5"><Check className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>PostgreSQL, a Redis-compatible cache, object storage</span></li>
+            <li class="flex items-start gap-2.5"><Check className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>No Kubernetes</span></li>
           </ul>
         </div>
         <div>
           <h3 class="text-lg font-semibold">Not a fit today</h3>
-          <ul class="mt-4 grid list-disc gap-2 pl-5">
-            <li>Azure, Google Cloud, or on-premises</li>
-            <li>More than one service, workers, or scheduled jobs</li>
-            <li>MySQL, MongoDB, Kafka, or GPU workloads</li>
-            <li>An existing customer VPC</li>
+          <ul class="mt-4 grid gap-2.5">
+            <li class="flex items-start gap-2.5"><Minus className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>Azure, Google Cloud, or on-premises</span></li>
+            <li class="flex items-start gap-2.5"><Minus className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>More than one service, workers, or scheduled jobs</span></li>
+            <li class="flex items-start gap-2.5"><Minus className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>MySQL, MongoDB, Kafka, or GPU workloads</span></li>
+            <li class="flex items-start gap-2.5"><Minus className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>An existing customer VPC</span></li>
           </ul>
         </div>
       </div>
@@ -285,7 +290,8 @@ const questions = [
 
   <section class="py-6 md:py-8 lg:py-12">
     <div class="max-w-2xl">
-      <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Built by a team that operates SaaS products</h2>
+      <p class="font-mono text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">The team</p>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Built by a team that operates SaaS products</h2>
       <p class="mt-3 leading-relaxed">
         Tejas Sangoi and the bootstrapped team at Thalia Technologies build Deployz. The same team
         has operated CSVBox, Spreadr, and other SaaS products in production for years.
@@ -294,12 +300,15 @@ const questions = [
   </section>
 
   <section class="py-6 md:py-8 lg:py-12">
-    <div class="flex flex-col items-start justify-between gap-6 border-y py-10 md:flex-row md:items-center">
-      <div class="max-w-2xl">
-        <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Don't let a deployment requirement block the deal</h2>
-        <p class="mt-3 leading-relaxed">Find out in a few minutes if your application is ready. The analysis is free, and no card is necessary.</p>
+    <div class="reveal relative overflow-hidden rounded-2xl bg-surface-inverse p-8 text-surface-inverse-foreground shadow-e3 md:p-14">
+      <div class="pointer-events-none absolute inset-0 bg-grid-dots-inverse opacity-40 [mask-image:radial-gradient(70%_70%_at_50%_0%,black,transparent)]" aria-hidden="true"></div>
+      <div class="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+        <div class="max-w-2xl">
+          <h2 class="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">Don't let a deployment requirement block the deal</h2>
+          <p class="mt-3 leading-relaxed text-surface-inverse-foreground/70">Find out in a few minutes if your application is ready. The analysis is free, and no card is necessary.</p>
+        </div>
+        <a class="inline-flex h-auto min-h-11 shrink-0 items-center justify-center rounded-lg bg-surface-inverse-foreground px-5 text-center text-sm font-medium whitespace-normal text-surface-inverse shadow-sm transition-all outline-none select-none hover:-translate-y-px hover:shadow-md focus-visible:ring-3 focus-visible:ring-surface-inverse-foreground/40 active:translate-y-0" href="/get-started">Check my application</a>
       </div>
-      <a class={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-11 shrink-0 text-center whitespace-normal')} href="/get-started">Check my application</a>
     </div>
   </section>
 </Base>

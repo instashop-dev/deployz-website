@@ -1,6 +1,5 @@
 ---
 import { buttonVariants } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import '@/styles/globals.css';
 
@@ -77,7 +76,7 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
     >
       Skip to content
     </a>
-    <header>
+    <header class="sticky top-0 z-40 border-b border-border/80 bg-background/85 backdrop-blur-md">
       <nav
         aria-label="Primary navigation"
         class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-3 px-4 py-3 min-[300px]:grid-cols-[1fr_auto] md:flex md:min-h-16 md:px-6 xl:px-8"
@@ -100,17 +99,15 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
         </div>
       </nav>
     </header>
-    <Separator />
     <main id="main-content" class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 md:px-6 md:py-12 xl:px-8">
       <slot />
     </main>
-    <Separator />
-    <footer class="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-muted-foreground md:px-6 xl:px-8">
-      <nav aria-label="Footer navigation" class="grid gap-8 sm:grid-cols-2">
+    <footer class="mx-auto w-full max-w-6xl border-t px-4 py-10 text-sm text-muted-foreground md:px-6 xl:px-8">
+      <nav aria-label="Footer navigation" class="grid gap-10 sm:grid-cols-2">
         {footerGroups.map((group) => (
           <div>
-            <p class="font-medium text-foreground">{group.title}</p>
-            <ul class="mt-2">
+            <p class="font-mono text-xs font-medium tracking-[0.14em] text-foreground uppercase">{group.title}</p>
+            <ul class="mt-1">
               {group.links.map((link) => (
                 <li>
                   <a
@@ -125,7 +122,30 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
           </div>
         ))}
       </nav>
-      <p class="mt-8">&copy; {new Date().getFullYear()} Deployz</p>
+      <p class="mt-10">&copy; {new Date().getFullYear()} Deployz</p>
     </footer>
+    <script is:inline>
+      (function () {
+        if (!('IntersectionObserver' in window)) {
+          return;
+        }
+        document.documentElement.classList.add('js');
+        var items = document.querySelectorAll('.reveal');
+        var observer = new IntersectionObserver(
+          function (entries) {
+            for (var index = 0; index < entries.length; index += 1) {
+              if (entries[index].isIntersecting) {
+                entries[index].target.classList.add('revealed');
+                observer.unobserve(entries[index].target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+        );
+        for (var index = 0; index < items.length; index += 1) {
+          observer.observe(items[index]);
+        }
+      })();
+    </script>
   </body>
 </html>
