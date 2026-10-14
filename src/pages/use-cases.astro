@@ -1,5 +1,6 @@
 ---
 import { ArrowRight } from 'lucide-react';
+import FleetDiagram from '@/components/site/diagram/FleetDiagram.astro';
 import CtaSection from '@/components/site/CtaSection.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
@@ -35,6 +36,7 @@ const cases = [
   <PageHeader eyebrow="Use cases" title="Different customer requirements. One way to deploy.">
     When customers need your SaaS in their own AWS account, Deployz helps you offer that option without
     creating a custom deployment process for each deal.
+    <FleetDiagram slot="aside" />
   </PageHeader>
 
   <!-- U2–U4. Customer requests -->

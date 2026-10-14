@@ -1,0 +1,115 @@
+---
+/*
+ * Security architecture: the customer-side relay (the Deployz connector) inside the
+ * customer's AWS account starts every request to the Deployz management service over
+ * outbound HTTPS. Deployz makes no inbound connection. Shared diagram system.
+ */
+import { Cloud } from 'lucide-react';
+import Connector from '@/components/site/diagram/Connector.astro';
+
+const resources = [
+  { label: 'Application', strong: true },
+  { label: 'Database' },
+  { label: 'Cache' },
+  { label: 'S3 storage' },
+];
+
+const deployzRows = ['Returns deployment instructions', 'Receives status and errors', 'Never asks for AWS access keys'];
+---
+
+<figure class="dg relay-dg" aria-labelledby="relay-dg-caption">
+  <div role="list" class="dg-flow">
+    <div role="listitem" class="dg-boundary relay-account">
+      <div class="relay-account-head">
+        <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> Customer's AWS account</p>
+        <p class="dg-text">Database, cache, file data, and application logs stay here.</p>
+      </div>
+      <ul class="relay-resources" aria-label="Application resources">
+        {resources.map((item) => (
+          <li class:list={['dg-chip', item.strong && 'dg-chip-strong']}>{item.label}</li>
+        ))}
+      </ul>
+      <div class="dg-node relay-node">
+        <p class="dg-role">
+          <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
+          Deployz connector
+        </p>
+        <p class="dg-title">Relay</p>
+        <p class="dg-text">Launched by the customer as a CloudFormation stack.</p>
+      </div>
+    </div>
+
+    <div class="dg-lanes" aria-hidden="true">
+      <Connector variant="brand" label="Relay starts every request" sub="Outbound HTTPS" />
+      <Connector variant="blocked" label="No inbound connections" />
+    </div>
+
+    <div role="listitem" class="dg-node dg-node-brand">
+      <p class="dg-role">
+        <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
+        Deployz
+      </p>
+      <p class="dg-title">Management service</p>
+      <ul class="dg-rows">
+        {deployzRows.map((row) => <li>{row}</li>)}
+      </ul>
+    </div>
+  </div>
+  <figcaption id="relay-dg-caption" class="dg-caption">
+    The relay checks in over outbound HTTPS about every minute. This describes the deployment-control
+    connection, not every network interaction of the running app or AWS services. Deployz has no inbound
+    path into the account.
+  </figcaption>
+</figure>
+
+<style>
+  .relay-dg .dg-flow {
+    max-width: 560px;
+    --dg-cols: minmax(0, 1fr) 176px minmax(0, 260px);
+  }
+
+  .relay-account {
+    display: grid;
+    gap: 16px;
+  }
+
+  .relay-resources {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .relay-node {
+    --dg-pad: 16px;
+    border-color: var(--border-strong);
+  }
+
+  @container dg (min-width: 760px) {
+    .relay-dg .dg-flow {
+      max-width: none;
+    }
+
+    .relay-account {
+      grid-template-columns: minmax(0, 1fr) 200px;
+      grid-template-areas:
+        'head node'
+        'res node';
+      grid-template-rows: auto 1fr;
+      column-gap: 24px;
+    }
+
+    .relay-account-head {
+      grid-area: head;
+    }
+
+    .relay-resources {
+      grid-area: res;
+      align-content: start;
+    }
+
+    .relay-node {
+      grid-area: node;
+      align-self: center;
+    }
+  }
+</style>

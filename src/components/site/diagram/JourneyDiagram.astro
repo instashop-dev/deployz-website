@@ -1,0 +1,69 @@
+---
+/*
+ * "Process at a glance" journey: vendor prepares the app, the customer connects AWS,
+ * Deployz deploys and manages the release. Built from the shared diagram system
+ * (src/styles/diagrams.css). Connectors are decorative; the visible caption states the flow.
+ */
+import { Cloud, GitBranch, UserRound } from 'lucide-react';
+import Connector from '@/components/site/diagram/Connector.astro';
+
+const vendorSteps = ['Connect your GitHub repository', 'Review the readiness report', 'Build a release'];
+const customerSteps = [
+  'Open the installation link',
+  'Review the access and cost estimate',
+  'Launch the connector in their AWS console',
+];
+const runSteps = ['You start each update', 'Roll back to an earlier release'];
+---
+
+<figure class="dg journey-dg mx-auto w-full max-w-[1080px]" aria-labelledby="journey-dg-caption">
+  <div role="list" class="dg-flow">
+    <div role="listitem" class="dg-node">
+      <p class="dg-role"><GitBranch aria-hidden="true" strokeWidth={1.75} /> You · Steps 1–2</p>
+      <p class="dg-title">Prepare your app</p>
+      <ul class="dg-stack">
+        {vendorSteps.map((step) => <li class="dg-chip">{step}</li>)}
+      </ul>
+    </div>
+
+    <Connector label="Installation link" sub="You send it to your customer" />
+
+    <div role="listitem" class="dg-node">
+      <p class="dg-role"><UserRound aria-hidden="true" strokeWidth={1.75} /> Your customer · Step 3</p>
+      <p class="dg-title">Connect their AWS account</p>
+      <ul class="dg-stack">
+        {customerSteps.map((step) => <li class="dg-chip">{step}</li>)}
+      </ul>
+    </div>
+
+    <Connector label="Deployz deploys the release" variant="brand" />
+
+    <div role="listitem" class="dg-boundary">
+      <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> Customer AWS · Step 4</p>
+      <p class="dg-title">Deploy and manage</p>
+      <ul class="dg-stack">
+        <li class="dg-chip dg-chip-strong">Your app runs in their account</li>
+        {runSteps.map((step) => <li class="dg-chip">{step}</li>)}
+      </ul>
+    </div>
+  </div>
+
+  <figcaption id="journey-dg-caption" class="dg-caption">
+    You prepare the app and send an installation link. Your customer approves AWS access in their own
+    console. Deployz deploys the release in their account, and you start each update.
+  </figcaption>
+</figure>
+
+<style>
+  .journey-dg .dg-flow {
+    --dg-cols: minmax(0, 1fr) 104px minmax(0, 1fr) 120px minmax(0, 1fr);
+  }
+
+  /* All three nodes share one height, so the flow reads as one line. */
+  @container dg (min-width: 760px) {
+    .journey-dg .dg-node,
+    .journey-dg .dg-boundary {
+      align-self: stretch;
+    }
+  }
+</style>

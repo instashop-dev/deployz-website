@@ -1,0 +1,88 @@
+---
+/*
+ * "Who bills whom" diagram for the pricing page: two parallel billing rows.
+ * Built from the shared diagram system (src/styles/diagrams.css). Connectors are
+ * decorative; the visible caption states the relationships.
+ */
+import { Building2, Cloud, UserRound } from 'lucide-react';
+import Connector from '@/components/site/diagram/Connector.astro';
+---
+
+<figure class="dg billing-dg" aria-labelledby="billing-dg-caption">
+  <div class="billing-rows">
+    <div role="list" class="dg-flow">
+      <div role="listitem" class="dg-node dg-node-brand">
+        <p class="dg-role">
+          <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
+          Deployz
+        </p>
+        <p class="dg-title">Deployz fees</p>
+        <p class="dg-text">Your subscription and billable managed deployments.</p>
+      </div>
+
+      <Connector variant="brand" label="Bills you monthly" sub="$49 base + $19 per active customer environment" />
+
+      <div role="listitem" class="dg-node">
+        <p class="dg-role"><UserRound aria-hidden="true" strokeWidth={1.75} /> You</p>
+        <p class="dg-title">The SaaS vendor</p>
+        <p class="dg-text">Invoices, payment details, and cancellation are in the Paddle billing portal.</p>
+      </div>
+    </div>
+
+    <div role="list" class="dg-flow billing-row-aws">
+      <div role="listitem" class="dg-node">
+        <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> AWS</p>
+        <p class="dg-title">AWS costs</p>
+        <p class="dg-text">
+          Computing, databases, networking, storage, and other resources used by your SaaS in the
+          customer's account.
+        </p>
+      </div>
+
+      <Connector label="Bills the account owner" sub="Under their AWS arrangement" />
+
+      <div role="listitem" class="dg-boundary">
+        <p class="dg-role"><Building2 aria-hidden="true" strokeWidth={1.75} /> Your customer</p>
+        <p class="dg-title">The AWS account owner</p>
+        <p class="dg-text">Before they connect, they see an AWS cost estimate for their Region.</p>
+      </div>
+    </div>
+  </div>
+
+  <figcaption id="billing-dg-caption" class="dg-caption">
+    AWS resource costs depend on region, configuration, and usage. They may continue while resources
+    remain provisioned, even if an app deployment is stopped or some resources are retained.
+  </figcaption>
+</figure>
+
+<style>
+  .billing-rows {
+    display: grid;
+    gap: 32px;
+  }
+
+  .billing-dg .dg-flow {
+    --dg-cols: minmax(0, 1fr) 200px minmax(0, 1.2fr);
+  }
+
+  /* Narrow: a hairline and extra space keep the two rows from reading as one chain. */
+  .billing-row-aws {
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+  }
+
+  @container dg (min-width: 760px) {
+    .billing-rows {
+      gap: 16px;
+    }
+
+    .billing-row-aws {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .billing-dg .dg-flow {
+      align-items: stretch;
+    }
+  }
+</style>
