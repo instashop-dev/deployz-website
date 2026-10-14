@@ -1,27 +1,27 @@
 ---
 /*
- * Signature hero diagram: vendor -> Deployz -> customer-owned AWS account.
+ * Signature hero diagram: GitHub -> Deployz -> customer-owned AWS account.
  * One HTML composition with two layouts: vertical below 900px, horizontal above.
  * Every label comes from existing site copy. Connectors are decorative (aria-hidden).
  */
-const resources = ['PostgreSQL database', 'Redis-compatible cache', 'S3 file storage'];
+const resources = ['Database (optional)', 'Redis-compatible cache (optional)', 'S3 file storage'];
 ---
 
 <figure class="diagram mx-auto w-full max-w-[1080px]">
-  <div role="list" aria-label="How control is divided between you, Deployz, and your customer" class="diagram-grid">
+  <div role="list" aria-label="GitHub to Deployz to your customer's AWS account" class="diagram-grid">
     <!-- 1. Vendor -->
     <div role="listitem" class="node node-vendor">
-      <p class="node-role">You</p>
-      <p class="node-title">Your application</p>
-      <p class="node-text">You select each release.</p>
+      <p class="node-role">GitHub</p>
+      <p class="node-title">Connect your code</p>
+      <p class="node-text">Your repository stays where it is.</p>
       <ul class="node-rows" aria-label="Your side">
-        <li><span>GitHub repository</span><span class="node-tag">Read-only</span></li>
-        <li><span>Versioned releases</span></li>
+        <li><span>Repository access</span><span class="node-tag">Read-only</span></li>
+        <li><span>You select each release</span></li>
       </ul>
     </div>
 
     <div class="connector" aria-hidden="true">
-      <span class="connector-label">Releases</span>
+      <span class="connector-label">Reads your repository</span>
       <svg class="connector-h" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M0 6H99" /></svg>
       <svg class="connector-head-h" viewBox="0 0 8 12"><path d="M1 1.5L6.5 6 1 10.5" /></svg>
       <svg class="connector-v" viewBox="0 0 12 100" preserveAspectRatio="none"><path d="M6 0V99" /></svg>
@@ -34,16 +34,16 @@ const resources = ['PostgreSQL database', 'Redis-compatible cache', 'S3 file sto
         <img src="/deployz-icon-master.svg" alt="" width="18" height="18" class="size-[18px]" />
         Deployz
       </p>
-      <p class="node-title">Installation and updates</p>
-      <p class="node-text">Deployz deploys it and reports the status.</p>
+      <p class="node-title">Configure &amp; deploy</p>
+      <p class="node-text">Checks what your app needs, then deploys it.</p>
       <ul class="node-rows node-rows-brand" aria-label="Deployz side">
-        <li><span>Builds and stores the images</span></li>
-        <li><span>Coordinates and reports</span></li>
+        <li><span>Readiness report</span></li>
+        <li><span>Releases, updates, and status</span></li>
       </ul>
     </div>
 
     <div class="connector connector-brand" aria-hidden="true">
-      <span class="connector-label">Installs and updates</span>
+      <span class="connector-label">Deploys and updates</span>
       <svg class="connector-h" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M0 6H99" /></svg>
       <svg class="connector-head-h" viewBox="0 0 8 12"><path d="M1 1.5L6.5 6 1 10.5" /></svg>
       <svg class="connector-v" viewBox="0 0 12 100" preserveAspectRatio="none"><path d="M6 0V99" /></svg>
@@ -52,8 +52,8 @@ const resources = ['PostgreSQL database', 'Redis-compatible cache', 'S3 file sto
 
     <!-- 3. Customer-owned AWS account boundary -->
     <div role="listitem" class="boundary">
-      <p class="node-role">Your customer</p>
-      <p class="node-title">Their AWS account</p>
+      <p class="node-role">Customer AWS</p>
+      <p class="node-title">Run in their cloud</p>
       <p class="node-text">They own the infrastructure and the data.</p>
       <div class="boundary-inner">
         <p class="app-node">Application container</p>

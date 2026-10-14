@@ -1,112 +1,148 @@
 ---
 import { ArrowRight } from 'lucide-react';
+import CtaSection from '@/components/site/CtaSection.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
+import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
 import Base from '../layouts/Base.astro';
 
-const supported = [
-  'One web or API container',
-  'PostgreSQL 16',
-  'Redis-compatible cache',
-  'S3 file storage',
-  'HTTPS and custom domains',
-  'A dedicated network for each customer',
-  'No Kubernetes',
-];
-
-const steps = [
-  { actor: 'You', deployz: false, timing: '', title: 'Connect your repository', text: 'Connect GitHub and select the repository. The access is read-only.' },
-  { actor: 'Deployz', deployz: true, timing: 'usually a few minutes', title: 'Get the readiness report', text: 'You see what passed, what needs attention, and what blocks deployment.' },
-  { actor: 'You', deployz: false, timing: '', title: 'Build a versioned release', text: 'Select a version number and a commit. Deployz builds the application image.' },
-  { actor: 'You and your customer', deployz: false, timing: '', title: 'Send your customer one link', text: 'The customer reviews the access and connects their AWS account. They do not need a Deployz account.' },
-  { actor: 'Deployz', deployz: true, timing: 'typically 20 to 45 minutes', title: 'Deploy the application', text: 'Deployz creates the AWS infrastructure and deploys the release. Both sides follow the progress in plain language.' },
-  { actor: 'You', deployz: false, timing: '', title: 'Ship updates and stay in control', text: 'You start each update. If a new version fails its health checks, the previous version continues to run.' },
-];
-
 const checks = [
-  'Container build configuration',
-  'Application port',
-  'Health-check endpoint',
-  'Runtime environment variables',
-  'PostgreSQL requirement',
-  'Redis requirement',
-  'File-storage use',
+  'Dockerfile and container build',
+  'Application port and health check',
   'Build, start, and migration commands',
-  'Components outside the supported architecture',
+  'Environment variables your app needs',
+  'Database, cache, and file-storage requirements',
+  'Background workers',
+  'Parts outside the supported architecture',
 ];
 
-const youDo = [
-  'Connect the repository',
-  'Create releases and select the version for each customer',
-  'Send the installation link',
-  'Start each installation, update, rollback, and removal',
+const reportGroups = [
+  { title: 'Passed', text: 'Checks your app already meets.' },
+  { title: 'Needs input', text: 'Settings or values you must provide, such as environment variables.' },
+  { title: 'Blockers', text: 'Changes your app needs before it can deploy.' },
 ];
 
-const customerDoes = [
-  'Owns the AWS account and controls the data',
-  'Reviews the access, then launches the connector',
-  'Pays AWS directly for the infrastructure',
-  'Can remove the connector from their AWS account',
+const connection = [
+  { title: 'Your customer approves the AWS connection', text: 'They review the plan and the access, then launch the Deployz connector in their AWS console.' },
+  { title: 'Deployz coordinates the deployment', text: 'The connector asks Deployz for instructions over outbound HTTPS and reports status back.' },
+  { title: "Resources run in your customer's AWS account", text: 'Your application, its database, cache, and storage are created in their account.' },
+];
+
+const lifecycle = [
+  { title: 'Versioned releases', text: 'Build a release from a commit. Each customer runs the release you select.' },
+  { title: 'Deployment status', text: 'See progress during installation and the health of each customer deployment.' },
+  { title: 'Updates and rollbacks', text: 'You start each update. If a new version fails its health check, the previous version keeps running.' },
+];
+
+const goodFit = [
+  'One Linux web or API container, built from your Dockerfile',
+  'Optional background workers from the same image',
+  'Optional PostgreSQL 16 or MySQL 8.0',
+  'Optional Redis-compatible cache',
+  'S3 file storage',
+  'HTTPS, with optional custom domains',
+  'A dedicated network in the customer AWS account',
+  'No Kubernetes required',
+];
+
+const notPromised = [
+  'Multiple services that need separate images',
+  'Databases other than PostgreSQL and MySQL',
+  'Message brokers such as Kafka or RabbitMQ',
+  'Existing customer VPCs',
+  'Other clouds or on-premises',
+  'Kubernetes or serverless apps',
+  'GPU workloads or ARM64 images',
+  'Attachable disk volumes',
 ];
 ---
 
 <Base
-  title="How Deployz Works — Private SaaS Deployment on AWS"
-  description="Connect your repository, prepare a version, invite your customer, and deploy your SaaS into a customer-owned AWS account."
+  title="How Deployz Works — From GitHub to Customer AWS"
+  description="See how Deployz analyzes your app, guides configuration, connects customer AWS, and helps manage deployments and updates."
 >
-  <PageHeader title="One workflow for every customer deployment">
-    You connect your repository one time. Then each new customer is one installation link, not a
-    new infrastructure project.
-    <a slot="actions" class="btn btn-primary btn-lg" href="/get-started">Check my application</a>
-    <!-- Actor matrix: who acts at each step. Deployz steps are the only blue. -->
-    <div slot="aside" aria-hidden="true" class="hidden lg:block">
-      <div class="matrix">
-        <span class="matrix-head"></span>
-        <span class="matrix-head">You</span>
-        <span class="matrix-head matrix-customer matrix-customer-top">Your customer</span>
-        <span class="matrix-head">Deployz</span>
-        {steps.map((step, index) => (
-          <>
-            <span class="matrix-step"><span class="matrix-num">{index + 1}</span>{step.title}</span>
-            <span class="matrix-cell">{step.actor.startsWith('You') && <i class="matrix-dot" />}</span>
-            <span class:list={['matrix-cell matrix-customer', index === steps.length - 1 && 'matrix-customer-bottom']}>{step.actor.includes('customer') && <i class="matrix-dot" />}</span>
-            <span class="matrix-cell">{step.deployz && <i class="matrix-dot matrix-dot-brand" />}</span>
-          </>
-        ))}
-      </div>
-    </div>
+  <!-- W1. Hero -->
+  <PageHeader eyebrow="How it works" title="From your GitHub repo to your customer's AWS.">
+    Prepare your SaaS, connect a customer's AWS account, and manage deployments from one place. Deployz
+    guides the infrastructure setup along the way.
+    <a slot="actions" class="btn btn-primary btn-lg" href={SIGNUP_URL} data-cta="hiw-hero">{CTA_LABEL}</a>
   </PageHeader>
 
-  <!-- Steps: editorial split with a vertical rail -->
-  <Section labelledby="steps-title">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-      <h2 id="steps-title" class="text-h2 max-w-[420px]">Six steps. Your customer takes part in one.</h2>
-      <ol class="max-w-[720px]">
-        {steps.map((step, index) => (
-          <li class="step grid grid-cols-[32px_minmax(0,1fr)] gap-x-5 pb-10 last:pb-0 sm:gap-x-6">
-            <span class:list={['step-node', step.deployz && 'step-node-brand']}>{index + 1}</span>
+  <!-- W2. Connect and analyze -->
+  <Section labelledby="connect-title">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div>
+        <p class="text-eyebrow mb-3 text-muted-foreground">Step 1</p>
+        <h2 id="connect-title" class="text-h2">Start with your existing SaaS.</h2>
+        <p class="mt-5 max-w-[520px] text-muted-foreground">
+          Connect your GitHub repository using read-only access. Deployz checks your application and
+          suggests the supported AWS setup it needs, including relevant application, database, cache, and
+          storage requirements. It also identifies possible blockers.
+        </p>
+        <p class="mt-4 max-w-[520px] text-muted-foreground">
+          Start with your code, not an infrastructure template. The readiness report separates checks that
+          passed, configuration still needed, and potential blockers.
+        </p>
+      </div>
+      <div class="min-w-0">
+        <h3 class="text-[16px] font-semibold">What the analysis checks</h3>
+        <ul class="mt-4 border-b border-border">
+          {checks.map((item) => <li class="border-t border-border py-3 text-muted-foreground">{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </Section>
+
+  <!-- W3. Review and configure -->
+  <Section divider labelledby="review-title">
+    <div class="max-w-[780px]">
+      <p class="text-eyebrow mb-3 text-muted-foreground">Step 2</p>
+      <h2 id="review-title" class="text-h2">Know what your app needs before you deploy.</h2>
+      <p class="text-lead mt-5 text-muted-foreground">
+        Review the suggested setup, enter required settings, and resolve any issues Deployz identifies.
+        Some applications need code or configuration changes before they can run successfully. Findings may
+        require validation against your source code.
+      </p>
+    </div>
+    <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
+      {reportGroups.map((group) => (
+        <li class="border-t border-foreground pt-5">
+          <h3 class="text-[18px] font-semibold tracking-[-0.01em]">{group.title}</h3>
+          <p class="mt-2 text-muted-foreground">{group.text}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-10 max-w-[720px] text-[15px] text-muted-foreground">
+      Deployz helps you find deployment blockers; it doesn't promise to fix every application
+      automatically. For a blocker, it can write fix instructions that you give to your own coding tool.
+      It never changes your repository.
+    </p>
+  </Section>
+
+  <!-- W4. Customer connects AWS -->
+  <Section divider labelledby="install-title">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div>
+        <p class="text-eyebrow mb-3 text-muted-foreground">Step 3</p>
+        <h2 id="install-title" class="text-h2">One installation link for each customer.</h2>
+        <p class="mt-5 max-w-[520px] text-muted-foreground">
+          After preparing a release, send your customer an installation link. They review the AWS access
+          and launch the connection from their own AWS account. They do not need a Deployz account. Deployz
+          then deploys the selected release in their AWS environment.
+        </p>
+        <p class="mt-4 max-w-[520px] text-muted-foreground">
+          Build and select a versioned release before distributing the installation link. Subsequent
+          customers follow the same onboarding pattern without recreating your deployment process.
+        </p>
+        <a class="link-arrow mt-6" href="/security/">How AWS access works <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
+      <ol class="min-w-0 max-w-[640px]" aria-label="How the customer AWS connection works">
+        {connection.map((item, index) => (
+          <li class="flow-step grid grid-cols-[32px_minmax(0,1fr)] gap-x-5 pb-8 last:pb-0">
+            <span class:list={['flow-node', index === 1 && 'flow-node-brand']}>{index + 1}</span>
             <div class="min-w-0">
-              <p class="text-[14px] leading-8 text-muted-foreground">
-                <span class:list={['font-medium', step.deployz ? 'text-brand-hover' : 'text-foreground']}>{step.actor}</span>{step.timing && ` · ${step.timing}`}
-              </p>
-              <h3 class="text-h3 mt-1">{step.title}</h3>
-              <p class="mt-2 text-muted-foreground">{step.text}</p>
-              {index === 1 && (
-                <details class="group mt-4 max-w-[720px] border-y border-border">
-                  <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-6 py-3 text-[15px] font-medium text-foreground transition-[color] duration-150 hover:text-brand [&::-webkit-details-marker]:hidden">
-                    <span>What the analysis checks</span>
-                    <svg aria-hidden="true" viewBox="0 0 16 16" class="size-4 shrink-0 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                      <path d="M3 8h10" />
-                      <path d="M8 3v10" class="group-open:hidden" />
-                    </svg>
-                  </summary>
-                  <ul class="pb-3">
-                    {checks.map((item) => (
-                      <li class="border-t border-border py-2.5 text-[15px] text-muted-foreground first:border-t-0">{item}</li>
-                    ))}
-                  </ul>
-                </details>
-              )}
+              <h3 class="text-[17px] leading-8 font-semibold">{item.title}</h3>
+              <p class="mt-1 text-muted-foreground">{item.text}</p>
             </div>
           </li>
         ))}
@@ -114,69 +150,88 @@ const customerDoes = [
     </div>
   </Section>
 
-  <!-- Who does what: quiet two-column split -->
-  <Section divider labelledby="roles-title">
-    <h2 id="roles-title" class="text-h2">Who does what</h2>
-    <div class="mt-10 grid gap-10 md:grid-cols-2 md:gap-0 lg:mt-12">
-      <div class="md:pr-12 lg:pr-16">
-        <h3 class="text-h3 border-t border-foreground pt-5">You</h3>
-        <ul class="mt-4 border-b border-border">
-          {youDo.map((item) => <li class="border-t border-border py-3 text-muted-foreground">{item}</li>)}
-        </ul>
-      </div>
-      <div class="md:border-l md:border-border md:pl-12 lg:pl-16">
-        <h3 class="text-h3 border-t border-foreground pt-5">Your customer</h3>
-        <ul class="mt-4 border-b border-border">
-          {customerDoes.map((item) => <li class="border-t border-border py-3 text-muted-foreground">{item}</li>)}
-        </ul>
-      </div>
+  <!-- W5. Deploy, update, manage -->
+  <Section divider labelledby="manage-title">
+    <div class="max-w-[780px]">
+      <p class="text-eyebrow mb-3 text-muted-foreground">Step 4</p>
+      <h2 id="manage-title" class="text-h2">Deploy today. Manage what comes next.</h2>
+      <p class="text-lead mt-5 text-muted-foreground">
+        Deployz provisions supported resources, deploys your application, and shows deployment progress.
+        When your app changes, use Deployz to release updates, check status, and manage rollbacks.
+      </p>
     </div>
+    <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
+      {lifecycle.map((item) => (
+        <li class="border-t border-foreground pt-5">
+          <h3 class="text-[18px] font-semibold tracking-[-0.01em]">{item.title}</h3>
+          <p class="mt-2 text-muted-foreground">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-10 max-w-[720px] text-[15px] text-muted-foreground">
+      A rollback redeploys an earlier release. It does not reverse database migrations or change customer
+      data.
+    </p>
   </Section>
 
-  <!-- Currently supported: spec list -->
-  <Section id="currently-supported" tone="subtle" labelledby="supported-title" class="scroll-mt-8">
+  <!-- W6. Compatibility -->
+  <Section divider id="compatibility" labelledby="fit-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <div>
-        <h2 id="supported-title" class="text-h2">Currently supported</h2>
-        <p class="mt-4 max-w-[420px] text-muted-foreground">Deployz supports one application architecture on AWS.</p>
-        <a class="link-arrow mt-6" href="/docs#supported-architecture">Read the full specification <ArrowRight className="size-4" aria-hidden="true" /></a>
-      </div>
-      <div class="max-w-[720px]">
-        <ul class="border-b border-border-strong">
-          {supported.map((item) => (
-            <li class="flex items-start gap-3 border-t border-border-strong py-3.5">
-              <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0 text-foreground" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7" /></svg>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <p class="mt-8 text-muted-foreground">
-          Not supported today: other cloud providers, Kubernetes, serverless, more than one
-          service, background workers, other databases, message brokers, disk volumes, existing
-          customer VPCs, and GPU workloads.
+        <h2 id="fit-title" class="text-h2">Will Deployz work with my SaaS?</h2>
+        <p class="mt-5 max-w-[440px] text-muted-foreground">
+          Deployz is built for supported SaaS workloads running in AWS. Start by connecting your GitHub
+          repository to see what the analysis detects, what infrastructure is suggested, and what needs
+          attention before deployment.
         </p>
+        <p class="mt-4 max-w-[440px] text-muted-foreground">
+          Works best for SaaS vendors with an existing application, a GitHub repository, and customers who
+          can authorize deployment into their own AWS accounts.
+        </p>
+        <a class="link-arrow mt-6" href="/docs/#supported-architecture">Technical requirements &amp; supported services <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
+      <div class="grid gap-10 sm:grid-cols-2 sm:gap-8">
+        <div>
+          <h3 class="text-[16px] font-semibold">Current good fit</h3>
+          <ul class="mt-4 border-b border-border">
+            {goodFit.map((item) => (
+              <li class="flex items-start gap-3 border-t border-border py-3">
+                <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0 text-foreground" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7" /></svg>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-[16px] font-semibold">Not currently supported</h3>
+          <ul class="mt-4 border-b border-border">
+            {notPromised.map((item) => (
+              <li class="flex items-start gap-3 border-t border-border py-3 text-muted-foreground">
+                <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3.5 8h9" /></svg>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
+    <p class="mt-12 max-w-[780px] border-t border-border pt-8 text-muted-foreground">
+      Some apps need code changes, and not every repository can deploy unchanged. A readiness report is
+      advisory and may miss existing application behavior. Customer AWS authorization is required.
+    </p>
   </Section>
 
-  <!-- Closing CTA: open, left-aligned -->
-  <section aria-labelledby="cta-title">
-    <div class="container-site flex flex-col items-start justify-between gap-8 py-16 sm:py-20 lg:flex-row lg:items-center lg:gap-16 lg:py-28">
-      <div class="max-w-[640px]">
-        <h2 id="cta-title" class="text-h2">Is your application ready? Find out in a few minutes.</h2>
-        <p class="text-lead mt-4 text-muted-foreground">The analysis is free, and no card is necessary.</p>
-      </div>
-      <a class="btn btn-primary btn-lg shrink-0" href="/get-started">Check my application</a>
-    </div>
-  </section>
+  <CtaSection title="See what Deployz finds in your app." cta="hiw-closing">
+    Connect your repository and review the recommended deployment setup.
+  </CtaSection>
 </Base>
 
 <style>
-  /* Step list: numbered nodes joined by a hairline. */
-  .step {
+  .flow-step {
     position: relative;
   }
-  .step:not(:last-child)::before {
+
+  .flow-step:not(:last-child)::before {
     content: '';
     position: absolute;
     left: 15.5px;
@@ -185,7 +240,8 @@ const customerDoes = [
     width: 1px;
     background: var(--border-strong);
   }
-  .step-node {
+
+  .flow-node {
     position: relative;
     z-index: 1;
     display: flex;
@@ -200,70 +256,8 @@ const customerDoes = [
     font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
-  /* Header actor matrix. */
-  .matrix {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 56px 104px 64px;
-    font-size: 14px;
-    line-height: 1.35;
-  }
-  .matrix-head {
-    padding: 14px 0 10px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted-foreground);
-    text-align: center;
-  }
-  .matrix-step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 48px;
-    padding-right: 12px;
-    border-top: 1px solid var(--border);
-    font-weight: 500;
-    color: var(--foreground);
-  }
-  .matrix-num {
-    flex-shrink: 0;
-    width: 18px;
-    font-size: 13px;
-    color: var(--text-subtle);
-    font-variant-numeric: tabular-nums;
-  }
-  .matrix-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top: 1px solid var(--border);
-  }
-  .matrix-customer {
-    background: var(--surface-subtle);
-    border-left: 1px solid var(--border-strong);
-    border-right: 1px solid var(--border-strong);
-  }
-  .matrix-customer-top {
-    border-top: 1px solid var(--border-strong);
-    border-radius: 12px 12px 0 0;
-  }
-  .matrix-customer-bottom {
-    border-bottom: 1px solid var(--border-strong);
-    border-radius: 0 0 12px 12px;
-  }
-  .matrix-dot {
-    display: block;
-    width: 10px;
-    height: 10px;
-    border-radius: 9999px;
-    background: var(--foreground);
-  }
-  .matrix-dot-brand {
-    width: 12px;
-    height: 12px;
-    background: var(--brand-subtle);
-    border: 1.5px solid var(--brand);
-  }
-  .step-node-brand {
+
+  .flow-node-brand {
     border-color: var(--brand);
     background: var(--brand-subtle);
     color: var(--brand-hover);

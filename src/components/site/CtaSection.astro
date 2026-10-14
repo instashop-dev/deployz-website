@@ -1,0 +1,19 @@
+---
+import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
+
+interface Props {
+  title: string;
+  id?: string;
+  cta?: string;
+}
+
+const { title, id = 'cta-title', cta = 'closing' } = Astro.props;
+---
+
+<section aria-labelledby={id} class="border-t border-border bg-surface-subtle">
+  <div class="container-site py-20 text-center sm:py-24 lg:py-28">
+    <h2 id={id} class="text-h2 mx-auto max-w-[760px]">{title}</h2>
+    <p class="text-lead mx-auto mt-5 max-w-[580px] text-muted-foreground"><slot /></p>
+    <a class="btn btn-primary btn-lg mt-8" href={SIGNUP_URL} data-cta={cta}>{CTA_LABEL}</a>
+  </div>
+</section>

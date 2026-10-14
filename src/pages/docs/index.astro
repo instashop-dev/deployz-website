@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from 'lucide-react';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/site/PageHeader.astro';
 
@@ -6,49 +7,78 @@ const toc = [
   { href: '#getting-started', label: 'Getting started' },
   { href: '#requirements', label: 'Requirements' },
   { href: '#supported-architecture', label: 'Supported architecture' },
+  { href: '#aws-access', label: 'AWS access and the connector' },
+  { href: '#data', label: 'Data and secrets' },
+  { href: '#lifecycle', label: 'Updates and removal' },
+  { href: '#billing', label: 'Billing summary' },
 ];
 
 const steps = [
-  { title: 'Connect your application.', body: 'Connect GitHub and select the repository. Deployz analyzes it and shows what is ready and what you must change.' },
-  { title: 'Send an installation link.', body: 'Build a release, then send the link. The customer uses it to install your product in their AWS account.' },
-  { title: 'Operate.', body: 'Release updates, view status, and diagnose failures from Deployz.' },
+  { title: 'Sign up and connect GitHub.', body: 'Deployz uses a GitHub App with read-only access to repository contents and metadata. It analyzes the repository and gives a readiness report: what passed, what needs input, and what blocks deployment.' },
+  { title: 'Review the setup and build a release.', body: 'Enter the required settings and fix issues in your code. Deployz can generate fix instructions that you give to your own coding agent. It does not change your repository. Build a versioned release from a commit. You can also run one free test deployment in your own AWS account.' },
+  { title: 'Send your customer an installation link.', body: 'Your customer reviews the plan, the resources, and an AWS cost estimate. They launch the connector as a CloudFormation stack from their own AWS console. They do not need a Deployz account. Deployz then deploys the release.' },
+];
+
+const requirements = [
+  'Your repository is on GitHub.',
+  'The repository has a Dockerfile that builds a production image. This is required. There is no buildpack.',
+  'The application exposes an HTTP health-check endpoint. A deployment becomes ready only after the health check passes.',
+  'Each customer has an AWS account. The person who launches the connector can create a CloudFormation stack that includes IAM roles.',
+  'Container images are Linux x86-64. ARM64 is not supported.',
 ];
 
 const architecture = [
-  { term: 'Application', desc: 'One Linux web or API container, built from the Dockerfile in your repository. CPU workloads only.' },
-  { term: 'AWS regions', desc: 'Each customer environment runs in one AWS region from the Deployz region list.' },
-  { term: 'PostgreSQL', desc: 'Optional. One encrypted Amazon RDS for PostgreSQL 16 instance in private subnets, with automated backups kept for 7 days.' },
-  { term: 'Redis', desc: 'Optional. One Redis-compatible cache node (Amazon ElastiCache for Valkey). TLS connections, cluster mode, and Redis Stack modules are not currently supported.' },
-  { term: 'File storage', desc: 'One encrypted, versioned Amazon S3 bucket. Deployz provides object storage, not attachable disk volumes.' },
-  { term: 'HTTPS and custom domains', desc: 'Each deployment gets an HTTPS URL on a deployz.dev subdomain with no DNS work. A custom domain is optional. You or your customer add the DNS records, and the default URL stays available.' },
-  { term: 'Networking', desc: 'Deployz creates a new, dedicated network for each customer environment. The database and cache run in private subnets.' },
-  { term: 'Health checks', desc: 'Your application must expose an HTTP health-check endpoint. A deployment becomes ready only after its health check passes.' },
-  { term: 'Updates and rollback', desc: 'You start each update. If a new version fails its health checks, the previous version continues to run. You can also redeploy an earlier successful release. Database migrations are not reversed.' },
-  { term: 'Removal', desc: 'Disconnect removes the application resources and keeps the database, its credentials, and the stored files. Purge is a separate, confirmed step that permanently deletes the retained data. The customer removes the connector in its own AWS console.' },
+  { term: 'Application', desc: 'One container image built from your Dockerfile. It runs as a web service on Amazon ECS (Fargate) behind an Application Load Balancer. Optional background workers run from the same image with a different command. Workers have no public URL. An optional one-time migration command runs before each release starts.' },
+  { term: 'AWS Regions', desc: 'Each customer environment runs in one AWS Region. You choose the Region when you create the deployment. The product shows the Regions that are available for installation.' },
+  { term: 'Database', desc: 'Optional. Amazon RDS for PostgreSQL 16 or RDS for MySQL 8.0, encrypted, in private subnets. Automated backups are kept for 7 days and deletion protection is on. Deployz creates a database only when the analysis finds that the application needs one.' },
+  { term: 'Cache', desc: 'Optional. One Redis-compatible node (Amazon ElastiCache for Valkey). TLS connections, AUTH, cluster mode, and Redis Stack modules are not supported.' },
+  { term: 'File storage', desc: 'One Amazon S3 bucket for each environment. Object storage only. Attachable disk volumes are not available.' },
+  { term: 'HTTPS and custom domains', desc: 'Each deployment gets an HTTPS URL on a deployz.dev subdomain. Traffic to this default URL passes through the Deployz Cloudflare proxy before it reaches the load balancer in the customer account. A custom domain is optional. The customer adds two DNS records. Traffic to the custom domain goes directly to the load balancer of the customer. The default URL stays available.' },
+  { term: 'Networking', desc: 'A new, dedicated VPC for each customer environment, with public and private subnets and a NAT gateway. The database and cache run in private subnets.' },
+  { term: 'Scheduled jobs and queues', desc: 'In preview. Deployz provisions an SQS queue or a scheduled job only when the analysis finds strong evidence in your code or configuration. You cannot declare them by hand.' },
 ];
 
 const unsupported = [
   'Cloud providers other than AWS',
   'Kubernetes and serverless applications',
   'Deployment into an existing customer VPC',
-  'Background workers and scheduled jobs',
-  'Applications with more than one service',
-  'Databases other than PostgreSQL, such as MySQL, MongoDB, and SQLite',
-  'Message brokers, such as Kafka and RabbitMQ',
+  'More than one container image, or separate services that need their own Dockerfile',
+  'Databases other than PostgreSQL and MySQL, such as MongoDB and SQLite',
+  'Message brokers such as Kafka and RabbitMQ, and FIFO queues',
   'Attachable persistent disk volumes',
-  'GPU workloads',
+  'GPU workloads and ARM64 images',
 ];
+
+const received = [
+  'Installation ID, AWS account ID, and AWS Region',
+  'Connector version, and the release and image version that runs',
+  'Deployment state, infrastructure status, health state, and timestamps',
+  'Resource identifiers',
+  'AWS error messages, such as stack events, stopped-task reasons, and exit codes',
+  'Health-check status code and response time (not the response body)',
+];
+
+const notReceived = [
+  'Your application runtime and its in-memory data',
+  'Database data',
+  'Cache contents',
+  'S3 data',
+  'Application CloudWatch logs',
+];
+
+const h2 = 'text-[26px] leading-tight font-semibold tracking-[-0.025em] sm:text-[28px]';
+const sec = 'mt-16 scroll-mt-24 sm:mt-20';
 ---
 
-<Base title="Documentation — Deployz" description="Get started with Deployz and review the requirements for customer-owned AWS deployments.">
-  <PageHeader title="Documentation">
-    Deployz deploys your application inside each customer's AWS account.
+<Base title="Documentation — Deployz" description="Technical requirements, supported AWS services, access, data handling and billing rules for Deployz.">
+  <PageHeader eyebrow="Documentation" title="Technical requirements and how Deployz works">
+    Technical requirements, supported AWS services, access, data handling and billing rules for Deployz.
   </PageHeader>
 
   <div class="container-site pt-8 pb-20 sm:pb-24 lg:grid lg:grid-cols-[200px_minmax(0,720px)] lg:justify-between lg:gap-16 lg:pt-14 lg:pb-32">
     <nav aria-label="On this page" class="mb-10 border-b border-border pb-3 lg:sticky lg:top-24 lg:mb-0 lg:self-start lg:border-b-0 lg:pb-0">
       <p class="text-eyebrow mb-2 text-subtle">On this page</p>
-      <ul class="flex flex-wrap gap-x-6 lg:flex-col lg:gap-x-0">
+      <ul class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-1">
         {toc.map((item) => (
           <li>
             <a href={item.href} class="flex min-h-11 items-center text-[15px] text-muted-foreground transition-[color] duration-150 hover:text-brand">{item.label}</a>
@@ -59,7 +89,7 @@ const unsupported = [
 
     <div class="min-w-0 text-[16px] leading-[1.65]">
       <section id="getting-started" class="scroll-mt-24">
-        <h2 class="text-[26px] leading-tight font-semibold tracking-[-0.025em] sm:text-[28px]">Getting started</h2>
+        <h2 class={h2}>Getting started</h2>
         <ol class="mt-6 border-b border-border">
           {steps.map((s, i) => (
             <li class="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-2 border-t border-border py-5">
@@ -70,16 +100,15 @@ const unsupported = [
         </ol>
       </section>
 
-      <section id="requirements" class="mt-16 scroll-mt-24 sm:mt-20">
-        <h2 class="text-[26px] leading-tight font-semibold tracking-[-0.025em] sm:text-[28px]">Requirements</h2>
+      <section id="requirements" class={sec}>
+        <h2 class={h2}>Requirements</h2>
         <ul class="mt-6 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-subtle">
-          <li>Each customer needs an AWS account.</li>
-          <li>The application must use the supported deployment architecture.</li>
+          {requirements.map((item) => <li>{item}</li>)}
         </ul>
       </section>
 
-      <section id="supported-architecture" class="mt-16 scroll-mt-24 sm:mt-20">
-        <h2 class="text-[26px] leading-tight font-semibold tracking-[-0.025em] sm:text-[28px]">Supported architecture</h2>
+      <section id="supported-architecture" class={sec}>
+        <h2 class={h2}>Supported architecture</h2>
         <p class="mt-4 text-muted-foreground">
           Deployz supports one application architecture on AWS. An application that fits this
           architecture can use the full workflow.
@@ -99,6 +128,78 @@ const unsupported = [
             <li class="border-t border-border py-3 text-[15px] text-muted-foreground">{item}</li>
           ))}
         </ul>
+      </section>
+
+      <section id="aws-access" class={sec}>
+        <h2 class={h2}>AWS access and the connector</h2>
+        <div class="mt-4 grid gap-4 text-muted-foreground">
+          <p>The customer launches the Deployz connector as a CloudFormation stack in their own AWS account. Deployz never asks for AWS access keys.</p>
+          <p>The connector is an AWS Lambda function. About every minute, it checks in with Deployz over outbound HTTPS to get instructions and report status. Deployz has no inbound path into the account.</p>
+          <p>The permissions of the connector are substantial. It creates network, compute, database, cache, storage, and IAM resources for the application. Most write actions are limited to resources tagged for the installation, and the connector role has a permissions boundary. The CloudFormation execution role that it uses can create IAM roles for the application and has no permissions boundary.</p>
+          <p>The connector cannot read application logs.</p>
+          <p>Before connecting, the customer can review every IAM action that the connector requests on the installation page.</p>
+          <p>To revoke access, the customer deletes the connector stack. Remove the deployment and its retained data first. After the connector is deleted, Deployz cannot change or remove the application.</p>
+        </div>
+      </section>
+
+      <section id="data" class={sec}>
+        <h2 class={h2}>Data and secrets</h2>
+        <h3 class="mt-6 text-[18px] font-semibold tracking-[-0.01em]">What Deployz receives</h3>
+        <ul class="mt-4 border-b border-border">
+          {received.map((item) => (
+            <li class="border-t border-border py-3 text-[15px] text-muted-foreground">{item}</li>
+          ))}
+        </ul>
+
+        <h3 class="mt-10 text-[18px] font-semibold tracking-[-0.01em]">What Deployz does not receive</h3>
+        <ul class="mt-4 border-b border-border">
+          {notReceived.map((item) => (
+            <li class="border-t border-border py-3 text-[15px] text-muted-foreground">{item}</li>
+          ))}
+        </ul>
+        <p class="mt-4 text-muted-foreground">Deployz does not automatically copy your raw application logs outside your AWS account.</p>
+
+        <h3 class="mt-10 text-[18px] font-semibold tracking-[-0.01em]">Secrets</h3>
+        <div class="mt-4 grid gap-4 text-muted-foreground">
+          <p>Secrets you enter are sent to Deployz over HTTPS and stored encrypted until your AWS account connects. Deployz then delivers them to AWS Secrets Manager in your account and deletes the active copy. If your account does not connect within 24 hours, the secret is deleted and must be entered again. Encrypted backup copies may remain for up to 7 days. Deployz does not display secret values or write them to application logs.</p>
+          <p>Values that you, the software provider, set for every customer are stored encrypted in Deployz.</p>
+        </div>
+
+        <h3 class="mt-10 text-[18px] font-semibold tracking-[-0.01em]">Code and builds</h3>
+        <div class="mt-4 grid gap-4 text-muted-foreground">
+          <p>Deployz builds release images in its own AWS account from your repository. It stores them in a Deployz container registry. The customer account pulls the image.</p>
+          <p>To answer open questions during analysis, Deployz can send limited repository excerpts to an AI service after it redacts values that look like secrets. The AI does not change deployments.</p>
+        </div>
+      </section>
+
+      <section id="lifecycle" class={sec}>
+        <h2 class={h2}>Updates and removal</h2>
+        <div class="mt-4 grid gap-4 text-muted-foreground">
+          <p>You start each update. Customer environments do not update automatically.</p>
+          <p>The migration command runs first. If it fails, no service is updated and the previous release continues to run. If a new version fails its health check, the previous version continues to run.</p>
+          <p>Rollback redeploys an earlier release. It does not reverse database migrations or change customer data.</p>
+        </div>
+
+        <h3 class="mt-10 text-[18px] font-semibold tracking-[-0.01em]">Removal</h3>
+        <div class="mt-4 grid gap-4 text-muted-foreground">
+          <p>Remove deployment deletes the application, cache, load balancer, and most networking. It keeps the database (with deletion protection and automated backups), its credentials, the S3 bucket, and the network parts that the database uses.</p>
+          <p>Retained resources continue to cause AWS charges.</p>
+          <p>Delete retained data is a separate, confirmed step. It permanently deletes the retained resources, with no final snapshot.</p>
+          <p>The customer deletes the connector stack in their AWS console.</p>
+        </div>
+      </section>
+
+      <section id="billing" class={sec}>
+        <h2 class={h2}>Billing summary</h2>
+        <div class="mt-4 grid gap-4 text-muted-foreground">
+          <p>The price is $49 a month base plus $19 a month for each ready customer environment, in US dollars.</p>
+          <p>These are free: sign-up, analysis, configuration, release builds, and one test deployment for each application in your own AWS account. Your AWS account pays its AWS costs. No card is needed.</p>
+          <p>The base subscription starts when you start your first customer deployment. The $19 for an environment starts when it first becomes ready and stops when its removal starts. A first installation that never becomes ready has no $19 charge. Updates, retries, and rollbacks have no extra charge.</p>
+          <p>If a payment fails or the subscription is canceled, existing environments continue to run, but you cannot start new customer deployments.</p>
+          <p>You manage invoices, payment details, and cancellation in the portal of our billing partner, Paddle. The $49 base continues until you cancel, even if you remove all environments.</p>
+          <p>AWS bills the AWS account owner for infrastructure.</p>
+        </div>
+        <a class="link-arrow mt-4" href="/pricing/">See pricing <ArrowRight className="size-4" aria-hidden="true" /></a>
       </section>
     </div>
   </div>

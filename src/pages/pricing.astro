@@ -1,90 +1,111 @@
 ---
+import CtaSection from '@/components/site/CtaSection.astro';
 import FaqList from '@/components/site/FaqList.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
+import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
 import Base from '../layouts/Base.astro';
 
-const examples = [
-  { environments: '1', price: '$68' },
-  { environments: '5', price: '$144' },
-  { environments: '10', price: '$239' },
-  { environments: '25', price: '$524' },
+const BASE_PRICE = 49;
+const ENVIRONMENT_PRICE = 19;
+const DEFAULT_ENVIRONMENTS = 3;
+const estimate = (count: number) => (count > 0 ? BASE_PRICE + ENVIRONMENT_PRICE * count : 0);
+
+const free = [
+  'Sign-up and readiness analysis',
+  'Configuration and release builds',
+  'One test deployment of your own app per application (AWS costs apply in your own account)',
+  'No card required',
+];
+
+const included = [
+  'Readiness analysis',
+  'Release builds',
+  'Guided customer installation links',
+  'Supported infrastructure: PostgreSQL or MySQL, cache, S3 storage, HTTPS, custom domains',
+  'Updates, retries, and rollbacks',
+  'Deployment status, failure diagnosis, and removal controls',
 ];
 
 const questions = [
   {
-    question: 'What is an active customer environment?',
-    answer: "One Deployz-managed installation of your application in a customer's AWS account that is ready and that you have not removed. Each environment counts separately.",
+    question: 'Can I try Deployz for free?',
+    answer:
+      'Yes. Sign-up, readiness analysis, configuration, release builds, and one test deployment of your own app per application are free, with no card. The test deployment runs in your own AWS account, and AWS bills that account for its resources. Your subscription starts when you start your first customer deployment.',
   },
   {
-    question: 'What is free?',
-    answer: 'Sign-up, analysis, release builds, and one test deployment of your own application for each application. No card is necessary.',
+    question: 'What counts as a billable environment?',
+    answer:
+      'One Deployz-managed deployment in a customer AWS account that has become ready and has not been removed. Each environment counts separately. A first installation that never becomes ready has no environment charge.',
   },
   {
-    question: 'When does the $49 charge start?',
-    answer: 'The monthly base charge starts with your first customer environment.',
+    question: 'Are AWS costs included?',
+    answer:
+      "No. AWS costs are separate and billed by AWS to the AWS account owner. For a customer environment, that is your customer. Before they connect, your customer sees an AWS cost estimate for their Region.",
   },
   {
-    question: 'When does the $19 charge start and stop?',
-    answer: 'It starts when the environment first becomes ready. It stops when you start its removal or when the customer removes the connection.',
+    question: 'What happens if an installation fails or a payment fails?',
+    answer:
+      'A first installation that never becomes ready has no $19 environment charge. The $49 base subscription starts when you start your first customer deployment, so it can already be active. Updates, retries, and rollbacks have no additional charge. If a payment fails, existing customer environments keep running, but you cannot start new customer deployments until the payment is resolved.',
   },
   {
-    question: 'Who pays for AWS?',
-    answer: "Your customer. Infrastructure is created in the customer's AWS account, and AWS charges the customer directly. Deployz pricing does not include AWS infrastructure costs.",
+    question: 'When do charges stop, and what happens if I cancel?',
+    answer:
+      "An environment's $19 charge stops when its removal starts. You manage invoices, payment details, and cancellation in the portal of our billing partner, Paddle. If you cancel, existing customer environments keep running, but you cannot start new customer deployments. Resources that stay in an AWS account after removal, such as a retained database, continue to cause AWS charges until they are deleted.",
   },
-];
-
-const included = [
-  'Readiness analysis and release builds',
-  'One free test deployment of your own application',
-  'A guided installation link for each customer',
-  'PostgreSQL, cache, file storage, HTTPS, custom domains',
-  'Updates, retries, and rollbacks',
-  'Status, failure diagnosis, and removal controls',
 ];
 ---
 
 <Base
-  title="Deployz Pricing — Simple Private Deployment Pricing"
-  description="Deployz costs $49 a month plus $19 for each active customer environment. The evaluation is free, and the charges start with your first customer environment."
+  title="Deployz Pricing — Simple Customer Deployment Pricing"
+  description="Understand Deployz subscription and deployment charges, estimate fees, and see how AWS infrastructure costs are billed separately."
 >
-  <PageHeader title="$49 a month. $19 for each customer environment. Free until your first one.">
-    One plan. No card for the evaluation. Your customer pays AWS directly.
-    <Fragment slot="actions">
-      <a class="btn btn-primary btn-lg" href="/get-started">Check my application</a>
-      <span class="text-[14px] text-muted-foreground">Free analysis. No card.</span>
-    </Fragment>
+  <!-- P1. Hero -->
+  <PageHeader eyebrow="Pricing" title="Simple pricing. No surprises.">
+    Start with free application analysis. Your subscription starts with your first customer deployment.
+    Your customer pays AWS separately.
   </PageHeader>
 
+  <!-- P2. One plan -->
   <Section labelledby="plan-title">
     <div class="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
       <div class="min-w-0 overflow-hidden rounded-xl border border-border-strong bg-background">
-        <div class="px-6 pt-8 sm:px-8 sm:pt-8">
-          <h2 id="plan-title" class="text-[18px] font-semibold tracking-[-0.01em]">One plan</h2>
-          <p class="mt-1 text-muted-foreground">All features are included. There are no tiers.</p>
+        <div class="px-6 pt-8 sm:px-8">
+          <p class="text-[15px] font-semibold">Deployz</p>
+          <h2 id="plan-title" class="text-h3 mt-1">One plan. Pay as you grow.</h2>
           <p class="mt-8 flex flex-wrap items-baseline gap-x-2">
             <span class="text-[64px] leading-none font-semibold tracking-[-0.04em] tabular-nums sm:text-[80px]">$49</span>
-            <span class="text-[18px] text-muted-foreground">/month</span>
+            <span class="text-[18px] text-muted-foreground">/ month</span>
           </p>
           <p class="mt-4 text-[18px]">
-            plus <span class="font-semibold tabular-nums">$19</span> per active customer environment/month
+            + <span class="font-semibold tabular-nums">$19</span> / active customer environment / month
           </p>
         </div>
-        <dl class="mt-8 grid grid-cols-2 border-t border-border sm:grid-cols-4">
-          {examples.map((example) => (
-            <div class="flex flex-col-reverse justify-end gap-1 border-b border-border px-6 py-5 sm:border-b-0 sm:border-l sm:first:border-l-0 sm:first:pl-8 sm:px-5 odd:max-sm:border-r">
-              <dt class="text-[14px] whitespace-nowrap text-muted-foreground">{example.environments} {example.environments === '1' ? 'customer' : 'customers'}</dt>
-              <dd class="text-[24px] leading-tight font-semibold tracking-[-0.02em] tabular-nums">{example.price}</dd>
-            </div>
-          ))}
-        </dl>
+        <div class="mt-8 border-t border-border px-6 py-6 sm:px-8">
+          <h3 class="text-[16px] font-semibold">Free evaluation</h3>
+          <ul class="mt-3 grid gap-x-6 gap-y-1 sm:grid-cols-2">
+            {free.map((item) => (
+              <li class="flex items-start gap-2.5 py-1 text-[15px] text-muted-foreground">
+                <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0 text-foreground" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7" /></svg>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
         <div class="border-t border-border px-6 py-6 sm:px-8">
-          <a class="btn btn-primary btn-lg w-full sm:w-auto" href="/get-started">Check my application</a>
-          <p class="mt-4 text-[14px] text-muted-foreground">The evaluation is free. The charges start with your first customer environment.</p>
+          <h3 class="text-[16px] font-semibold">When billing starts</h3>
+          <p class="mt-2 text-[15px] text-muted-foreground">
+            The $49 base subscription starts when you start your first customer deployment. The $19 for an
+            environment starts when it first becomes ready and stops when its removal starts.
+          </p>
+        </div>
+        <div class="border-t border-border px-6 py-6 sm:px-8">
+          <a class="btn btn-primary btn-lg w-full sm:w-auto" href={SIGNUP_URL} data-cta="pricing-plan">{CTA_LABEL}</a>
+          <p class="mt-4 text-[14px] text-muted-foreground">AWS charges are separate and are billed by AWS to the AWS account owner.</p>
         </div>
       </div>
       <div class="min-w-0 lg:pt-2">
-        <h2 class="text-[18px] font-semibold tracking-[-0.01em]">Included</h2>
+        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">Included</h3>
         <ul class="mt-5 border-b border-border">
           {included.map((item) => (
             <li class="flex items-start gap-3 border-t border-border py-4">
@@ -93,43 +114,119 @@ const included = [
             </li>
           ))}
         </ul>
+        <p class="mt-5 text-[14px] text-muted-foreground">Prices are in US dollars and are billed monthly. Applicable taxes may be added.</p>
       </div>
     </div>
   </Section>
 
-  <Section tone="subtle" labelledby="works-title">
-    <h2 id="works-title" class="text-h2 max-w-[780px]">You pay only for customer environments that work</h2>
-    <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
-      <li class="border-t border-foreground pt-6">
-        <h3 class="text-[18px] leading-snug font-semibold tracking-[-0.01em]">No charge for a failed installation</h3>
-        <p class="mt-3 text-muted-foreground">An installation that does not become ready costs nothing.</p>
-      </li>
-      <li class="border-t border-foreground pt-6">
-        <h3 class="text-[18px] leading-snug font-semibold tracking-[-0.01em]">No charge for each deployment</h3>
-        <p class="mt-3 text-muted-foreground">Updates, retries, and rollbacks have no additional charge.</p>
-      </li>
-      <li class="border-t border-foreground pt-6">
-        <h3 class="text-[18px] leading-snug font-semibold tracking-[-0.01em]">A failed payment never stops a customer</h3>
-        <p class="mt-3 text-muted-foreground">Existing environments continue to run. Only new environments are blocked.</p>
-      </li>
-    </ul>
+  <!-- P3. Cost estimator -->
+  <Section divider labelledby="estimate-title">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div>
+        <h2 id="estimate-title" class="text-h2">Estimate your Deployz cost.</h2>
+        <p class="mt-5 max-w-[440px] text-muted-foreground">
+          Choose the number of active billable customer environments to estimate your monthly Deployz
+          subscription.
+        </p>
+      </div>
+      <div data-estimator class="min-w-0 rounded-xl border border-border-strong p-6 sm:p-8">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+          <label for="environments" class="text-[16px] font-semibold">Billable customer environments</label>
+          <span data-estimator-count class="text-[22px] font-semibold tabular-nums">{DEFAULT_ENVIRONMENTS}</span>
+        </div>
+        <input
+          id="environments"
+          type="range"
+          min="0"
+          max="30"
+          step="1"
+          value={DEFAULT_ENVIRONMENTS}
+          aria-describedby="estimate-formula"
+          class="estimator-range mt-4 w-full"
+        />
+        <div class="mt-1 flex justify-between text-[13px] text-subtle" aria-hidden="true"><span>0</span><span>30</span></div>
+        <div class="mt-8 border-t border-border pt-6">
+          <p class="text-[14px] text-muted-foreground">Estimated Deployz charges / month</p>
+          <output for="environments" data-estimator-total aria-live="polite" aria-atomic="true" class="mt-1 block text-[48px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
+            ${estimate(DEFAULT_ENVIRONMENTS)}
+          </output>
+          <p id="estimate-formula" class="mt-4 text-[15px] text-muted-foreground">
+            Before your first customer deployment: $0 / month. After that: $49 + $19 × active billable
+            environments.
+          </p>
+          <p class="mt-3 text-[14px] text-muted-foreground">
+            Excludes AWS charges, applicable taxes, and any charges not covered by the published plan. The $49
+            base starts with your first customer deployment, before it is ready. If you remove all
+            environments, the $49 base continues until you cancel. At 0 environments, the estimate assumes you have not started a customer deployment.
+          </p>
+        </div>
+      </div>
+    </div>
   </Section>
 
-  <Section labelledby="billing-title">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-      <div>
-        <h2 id="billing-title" class="text-h2 max-w-[440px]">Billing questions</h2>
-        <p class="mt-4 text-[14px] text-muted-foreground">Prices are in US dollars and are billed monthly.</p>
+  <!-- P4. Deployz vs AWS -->
+  <Section divider labelledby="costs-title">
+    <h2 id="costs-title" class="text-h2 max-w-[780px]">Deployz fees and AWS costs are different.</h2>
+    <div class="mt-10 grid gap-10 md:grid-cols-2 md:gap-12">
+      <div class="border-t border-foreground pt-5">
+        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">Deployz</h3>
+        <p class="mt-2 text-muted-foreground">Your subscription and billable managed deployments.</p>
       </div>
+      <div class="border-t border-foreground pt-5">
+        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">AWS</h3>
+        <p class="mt-2 text-muted-foreground">
+          Computing, databases, networking, storage, and other resources used by your SaaS in the
+          customer's account. AWS bills the account owner under their AWS arrangement.
+        </p>
+      </div>
+    </div>
+    <p class="mt-10 max-w-[780px] text-muted-foreground">
+      AWS resource costs depend on region, configuration, and usage. They may continue while resources
+      remain provisioned, even if an app deployment is stopped or some resources are retained.
+    </p>
+  </Section>
+
+  <!-- P5. Billing questions -->
+  <Section divider labelledby="billing-title">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <h2 id="billing-title" class="text-h2 max-w-[440px]">Billing questions</h2>
       <FaqList items={questions} class="max-w-[760px]" />
     </div>
   </Section>
 
-  <section aria-labelledby="cta-title" class="border-t border-border">
-    <div class="container-site py-20 text-center sm:py-24 lg:py-28">
-      <h2 id="cta-title" class="text-h2 mx-auto max-w-[680px]">Start free. Pay when your first customer environment starts.</h2>
-      <p class="text-lead mx-auto mt-5 max-w-[560px] text-muted-foreground">Get the readiness report in a few minutes. No card is necessary.</p>
-      <a class="btn btn-primary btn-lg mt-8" href="/get-started">Check my application</a>
-    </div>
-  </section>
+  <!-- P6. Final CTA -->
+  <CtaSection title="Start with your SaaS. Grow from there." cta="pricing-closing">
+    Connect your application and explore how Deployz prepares customer AWS deployments.
+  </CtaSection>
 </Base>
+
+<style>
+  :global(html:not(.js)) .estimator-range {
+    display: none;
+  }
+
+  .estimator-range {
+    height: 44px;
+    accent-color: var(--foreground);
+    cursor: pointer;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var root = document.querySelector('[data-estimator]');
+    if (!root) return;
+    var input = root.querySelector('input');
+    var count = root.querySelector('[data-estimator-count]');
+    var total = root.querySelector('[data-estimator-total]');
+
+    function update() {
+      var environments = Number(input.value);
+      count.textContent = String(environments);
+      total.textContent = '$' + (environments > 0 ? 49 + 19 * environments : 0);
+    }
+
+    input.addEventListener('input', update);
+    update();
+  })();
+</script>
