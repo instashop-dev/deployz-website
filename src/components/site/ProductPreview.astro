@@ -52,7 +52,7 @@ const tabs = [
   </div>
 
   {tabs.map((tab, index) => (
-    <figure
+    <div
       role="tabpanel"
       id={`panel-${tab.id}`}
       aria-labelledby={`tab-${tab.id}`}
@@ -123,11 +123,9 @@ const tabs = [
           </div>
         )}
       </div>
-      <figcaption class="mt-4">
-        <span class="block text-[16px] text-foreground">{tab.caption}</span>
-        <span class="mt-1 block text-[14px] text-muted-foreground">Simplified illustration of the Deployz interface, not a screenshot.</span>
-      </figcaption>
-    </figure>
+      <p class="mt-4 text-[16px] text-foreground">{tab.caption}</p>
+      <p class="mt-1 text-[14px] text-muted-foreground">Simplified illustration of the Deployz interface, not a screenshot.</p>
+    </div>
   ))}
 </div>
 
@@ -243,7 +241,7 @@ const tabs = [
     padding-inline: 10px;
     border: 1px solid var(--border-strong);
     border-radius: 9999px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--muted-foreground);
   }
@@ -299,7 +297,7 @@ const tabs = [
     grid-row: 1 / span 2;
     grid-column: 2;
     align-self: center;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--muted-foreground);
   }

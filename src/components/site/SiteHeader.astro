@@ -3,14 +3,14 @@ import { LOGIN_URL, SIGNUP_URL } from '@/lib/site';
 import Logo from './Logo.astro';
 
 const navLinks = [
-  { href: '/how-it-works', label: 'How It Works' },
-  { href: '/use-cases', label: 'Use Cases' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/security', label: 'Security' },
+  { href: '/how-it-works/', label: 'How It Works' },
+  { href: '/use-cases/', label: 'Use Cases' },
+  { href: '/pricing/', label: 'Pricing' },
+  { href: '/security/', label: 'Security' },
 ];
 
 const pathname = Astro.url.pathname;
-const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+const isCurrent = (href: string) => pathname === href || pathname === href.replace(/\/$/, '');
 ---
 
 <header data-site-header class="sticky top-0 z-40 border-b border-border bg-background">
@@ -141,6 +141,10 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
       border-radius: 0;
       font-size: 16px;
       color: var(--foreground);
+    }
+
+    .nav-panel .nav-link:focus-visible {
+      outline-offset: -2px;
     }
 
     .nav-panel .nav-link[aria-current='page'] {

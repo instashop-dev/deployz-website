@@ -71,14 +71,14 @@ const sec = 'mt-16 scroll-mt-24 sm:mt-20';
 ---
 
 <Base title="Documentation — Deployz" description="Technical requirements, supported AWS services, access, data handling and billing rules for Deployz.">
-  <PageHeader eyebrow="Documentation" title="Documentation">
+  <PageHeader eyebrow="Documentation" title="Technical requirements and how Deployz works">
     Technical requirements, supported AWS services, access, data handling and billing rules for Deployz.
   </PageHeader>
 
   <div class="container-site pt-8 pb-20 sm:pb-24 lg:grid lg:grid-cols-[200px_minmax(0,720px)] lg:justify-between lg:gap-16 lg:pt-14 lg:pb-32">
     <nav aria-label="On this page" class="mb-10 border-b border-border pb-3 lg:sticky lg:top-24 lg:mb-0 lg:self-start lg:border-b-0 lg:pb-0">
       <p class="text-eyebrow mb-2 text-subtle">On this page</p>
-      <ul class="flex flex-wrap gap-x-6 lg:flex-col lg:gap-x-0">
+      <ul class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-1">
         {toc.map((item) => (
           <li>
             <a href={item.href} class="flex min-h-11 items-center text-[15px] text-muted-foreground transition-[color] duration-150 hover:text-brand">{item.label}</a>
@@ -196,9 +196,10 @@ const sec = 'mt-16 scroll-mt-24 sm:mt-20';
           <p>These are free: sign-up, analysis, configuration, release builds, and one test deployment for each application in your own AWS account. Your AWS account pays its AWS costs. No card is needed.</p>
           <p>The base subscription starts when you start your first customer deployment. The $19 for an environment starts when it first becomes ready and stops when its removal starts. A first installation that never becomes ready has no $19 charge. Updates, retries, and rollbacks have no extra charge.</p>
           <p>If a payment fails or the subscription is canceled, existing environments continue to run, but you cannot start new customer deployments.</p>
+          <p>You manage invoices, payment details, and cancellation in the portal of our billing partner, Paddle. The $49 base continues until you cancel, even if you remove all environments.</p>
           <p>AWS bills the AWS account owner for infrastructure.</p>
         </div>
-        <a class="link-arrow mt-4" href="/pricing">See pricing <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <a class="link-arrow mt-4" href="/pricing/">See pricing <ArrowRight className="size-4" aria-hidden="true" /></a>
       </section>
     </div>
   </div>

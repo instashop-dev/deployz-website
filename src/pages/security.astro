@@ -23,13 +23,13 @@ const permissions = [
   'Create and manage a dedicated network (VPC), load balancer, and security groups',
   'Run the application on Amazon ECS',
   'Create the database, cache, and S3 bucket that your app needs',
-  'Create IAM roles that the application and AWS services use',
+  'Create IAM roles (AWS permission settings) that the application and AWS services use',
   'Write and read secrets tagged for the installation in AWS Secrets Manager',
 ];
 
 const accessFacts = [
   { title: 'Customer owns the AWS account', text: 'The customer launches the connector as a CloudFormation stack from their own AWS console. Deployz never asks for AWS access keys.' },
-  { title: 'AWS policies define integration permissions', text: 'Most write actions are limited to resources tagged for the installation, and the connector role has a permissions boundary. The CloudFormation role that creates application resources can create IAM roles and has no permissions boundary.' },
+  { title: 'AWS policies define integration permissions', text: 'Most write actions are limited to resources tagged for the installation, and the connector role has a permissions boundary (a limit on what the role can ever do). The CloudFormation role that creates application resources can create IAM roles and has no permissions boundary.' },
   { title: 'Authorization is required before deployment', text: 'Before connecting, the customer can review every IAM action that the connector requests. The connector has no permission to read application logs.' },
 ];
 
@@ -132,7 +132,7 @@ const lifecycle = [
           govern deployment operations. The management service coordinates with the connector instead of
           using the customer's personal AWS login.
         </p>
-        <a class="link-arrow mt-6" href="/docs#aws-access">View AWS permissions and setup <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <a class="link-arrow mt-6" href="/docs/#aws-access">View AWS permissions and setup <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <div class="min-w-0">
         <h3 class="text-[16px] font-semibold">The connector can create significant resources. In plain language, it can:</h3>
@@ -276,7 +276,7 @@ const lifecycle = [
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <div>
         <h2 id="lifecycle-title" class="text-h2 max-w-[440px]">Know what happens after deployment.</h2>
-        <a class="link-arrow mt-6" href="/docs#lifecycle">Technical documentation <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <a class="link-arrow mt-6" href="/docs/#lifecycle">Technical documentation <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <FaqList items={lifecycle} class="max-w-[760px]" />
     </div>

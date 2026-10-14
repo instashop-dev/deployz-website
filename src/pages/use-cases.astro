@@ -15,7 +15,7 @@ const cases = [
   {
     id: 'customer-hosted-data',
     quote: 'Our application data needs to stay in our environment.',
-    text: "Deploy supported application and data resources inside the customer's AWS account, so they control the cloud environment hosting them. Application integrations and external data flows still depend on your SaaS design.",
+    text: "Deploy supported application and data resources inside the customer's AWS account, so they control the cloud environment hosting them. Application integrations and external data flows still depend on your SaaS design. Traffic to the default deployz.dev URL passes through the Deployz proxy; a custom domain sends traffic directly to the customer's load balancer.",
     outcome: 'Give customers an infrastructure option that aligns with their hosting requirements.',
   },
   {
@@ -40,8 +40,8 @@ const cases = [
   <!-- U2–U4. Customer requests -->
   {cases.map((item, index) => (
     <Section divider={index > 0} id={item.id} labelledby={`${item.id}-title`}>
-      <div class="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <h2 id={`${item.id}-title`} class="text-h2 max-w-[520px]">“{item.quote}”</h2>
+      <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+        <h2 id={`${item.id}-title`} class="text-h2 max-w-[520px] wrap-break-word">“{item.quote}”</h2>
         <div class="max-w-[640px] lg:pt-2">
           <p class="text-lead text-muted-foreground">{item.text}</p>
           <p class="mt-6 border-t border-border pt-5 font-medium">{item.outcome}</p>
@@ -63,7 +63,7 @@ const cases = [
         Your app must fit Deployz's supported deployment capabilities. Check compatibility before promising
         a private installation to a customer.
       </p>
-      <a class="link-arrow mt-6" href="/how-it-works">Check how it works <ArrowRight className="size-4" aria-hidden="true" /></a>
+      <a class="link-arrow mt-6" href="/how-it-works/">Check how it works <ArrowRight className="size-4" aria-hidden="true" /></a>
     </div>
   </Section>
 

@@ -106,7 +106,7 @@ test.describe('public design-system contract', () => {
   });
 
   test('marks the current primary navigation link', async ({ page }) => {
-    for (const route of ['/how-it-works', '/use-cases', '/pricing', '/security'] as const) {
+    for (const route of ['/how-it-works/', '/use-cases/', '/pricing/', '/security/'] as const) {
       await page.goto(route);
       const navigation = page.getByRole('navigation', { name: /primary/i });
       await expect(navigation.locator(`a[href="${route}"]`)).toHaveAttribute('aria-current', 'page');

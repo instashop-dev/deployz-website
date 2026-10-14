@@ -14,7 +14,7 @@ const estimate = (count: number) => (count > 0 ? BASE_PRICE + ENVIRONMENT_PRICE 
 const free = [
   'Sign-up and readiness analysis',
   'Configuration and release builds',
-  'One test deployment of your own app per application',
+  'One test deployment of your own app per application (AWS costs apply in your own account)',
   'No card required',
 ];
 
@@ -147,15 +147,17 @@ const questions = [
         <div class="mt-1 flex justify-between text-[13px] text-subtle" aria-hidden="true"><span>0</span><span>30</span></div>
         <div class="mt-8 border-t border-border pt-6">
           <p class="text-[14px] text-muted-foreground">Estimated Deployz charges / month</p>
-          <output for="environments" data-estimator-total aria-live="polite" class="mt-1 block text-[48px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
+          <output for="environments" data-estimator-total aria-live="polite" aria-atomic="true" class="mt-1 block text-[48px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
             ${estimate(DEFAULT_ENVIRONMENTS)}
           </output>
           <p id="estimate-formula" class="mt-4 text-[15px] text-muted-foreground">
-            0 environments = $0 / month. 1 or more environments = $49 + $19 × active billable environments.
+            Before your first customer deployment: $0 / month. After that: $49 + $19 × active billable
+            environments.
           </p>
           <p class="mt-3 text-[14px] text-muted-foreground">
-            Excludes AWS charges, applicable taxes, and any charges not covered by the published plan. After
-            your subscription starts, the $49 base continues each month until you cancel.
+            Excludes AWS charges, applicable taxes, and any charges not covered by the published plan. The $49
+            base starts with your first customer deployment, before it is ready. If you remove all
+            environments, the $49 base continues until you cancel.
           </p>
         </div>
       </div>

@@ -65,7 +65,7 @@ const questions = [
   {
     question: 'Can I try Deployz before paying?',
     answer:
-      'Yes. Application analysis, release builds, and one test deployment of your own app per application are free, with no card required. The test deployment runs in your own AWS account, which pays its AWS costs. Your subscription starts when you start your first customer deployment. See Pricing for details.',
+      'Yes. Application analysis, release builds, and one test deployment of your own app per application are free, with no card required. The test deployment runs in your own AWS account, which pays its AWS costs. Your $49 base subscription starts when you start your first customer deployment, and each ready customer environment adds $19 a month. See Pricing for details.',
   },
 ];
 ---
@@ -137,7 +137,7 @@ const questions = [
     <p class="mt-4 text-muted-foreground lg:mt-10">Need to make changes later? Manage updates and rollbacks from Deployz.</p>
     <div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2">
       <a class="btn btn-primary" href={SIGNUP_URL} data-cta="home-steps">{CTA_LABEL}</a>
-      <a class="link-arrow text-[15px]" href="/how-it-works">See how it works <ArrowRight className="size-4" aria-hidden="true" /></a>
+      <a class="link-arrow text-[15px]" href="/how-it-works/">See how it works <ArrowRight className="size-4" aria-hidden="true" /></a>
     </div>
   </Section>
 
@@ -159,7 +159,8 @@ const questions = [
         <h2 id="security-title" class="text-h2 max-w-[520px]">Your customer's cloud. Their data. Their control.</h2>
         <p class="mt-5 max-w-[520px] text-muted-foreground">
           Your SaaS runs in your customer's own AWS account, with their application infrastructure and
-          data under their control. Deployz manages deployments without hosting the application itself.
+          data under their control. Deployz manages deployments without hosting the application itself, and
+          it does not receive your database, cache, or file data.
         </p>
         <ul class="mt-6 border-b border-border">
           {trustPoints.map((item) => (
@@ -169,7 +170,7 @@ const questions = [
             </li>
           ))}
         </ul>
-        <a class="link-arrow mt-6" href="/security">Security &amp; Architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <a class="link-arrow mt-6" href="/security/">Security &amp; Architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <div>
         <h3 id="faq-title" class="text-h3">Frequently asked questions</h3>
