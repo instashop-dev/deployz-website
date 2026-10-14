@@ -1,61 +1,106 @@
 ---
 /*
- * Security architecture: the customer-side relay (the Deployz connector) inside the
- * customer's AWS account starts every request to the Deployz management service over
- * outbound HTTPS. Deployz makes no inbound connection. Shared diagram system.
+ * Security architecture scene: the Deployz connector (relay) runs in the customer's AWS
+ * account and starts every request to the Deployz management service over outbound
+ * HTTPS. Deployz has no inbound path. Scene system: src/styles/scene.css.
  */
-import { Cloud } from 'lucide-react';
-import Connector from '@/components/site/diagram/Connector.astro';
+import { Box, Cloud, Database, HardDrive, KeyRound, Layers, Network, ShieldCheck } from 'lucide-react';
+import Beam from '@/components/site/scene/Beam.astro';
 
-const resources = [
-  { label: 'Application', strong: true },
-  { label: 'Database' },
-  { label: 'Cache' },
-  { label: 'S3 storage' },
+const vpc = [
+  { icon: Box, title: 'Container', meta: 'ECS Fargate' },
+  { icon: Database, title: 'Database', meta: 'RDS' },
+  { icon: Layers, title: 'Cache', meta: 'Valkey' },
 ];
 
-const deployzRows = ['Returns deployment instructions', 'Receives status and errors', 'Never asks for AWS access keys'];
+const account = [
+  { icon: HardDrive, title: 'Storage', meta: 'S3' },
+  { icon: KeyRound, title: 'Secrets', meta: 'Secrets Manager' },
+];
 ---
 
-<figure class="dg relay-dg" aria-labelledby="relay-dg-caption">
-  <div role="list" class="dg-flow">
-    <div role="listitem" class="dg-boundary relay-account">
-      <div class="relay-account-head">
-        <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> Customer's AWS account</p>
-        <p class="dg-text">Database, cache, file data, and application logs stay here.</p>
-      </div>
-      <ul class="relay-resources" aria-label="Application resources">
-        {resources.map((item) => (
-          <li class:list={['dg-chip', item.strong && 'dg-chip-strong']}>{item.label}</li>
-        ))}
-      </ul>
-      <div class="dg-node relay-node">
-        <p class="dg-role">
-          <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
-          Deployz connector
-        </p>
-        <p class="dg-title">Relay</p>
-        <p class="dg-text">Launched by the customer as a CloudFormation stack.</p>
-      </div>
-    </div>
+<figure class="sc relay-sc">
+  <p class="sr-only">
+    Architecture: the application, its database, cache, file storage, and secrets run in the customer's
+    AWS account. The Deployz connector, a relay that the customer launches as a CloudFormation stack,
+    also runs there. The relay starts every request to the Deployz management service over outbound
+    HTTPS, receives deployment instructions, and reports status. Deployz makes no inbound connections
+    and never asks for AWS access keys.
+  </p>
 
-    <div class="dg-lanes" aria-hidden="true">
-      <Connector variant="brand" label="Relay starts every request" sub="Outbound HTTPS" />
-      <Connector variant="blocked" label="No inbound connections" />
-    </div>
+  <div class="sc-stage" aria-hidden="true">
+    <div class="sc-flow relay-flow">
+      <!-- Customer AWS account -->
+      <div class="sc-boundary relay-account">
+        <span class="sc-boundary-tag"><Cloud strokeWidth={1.75} /> Customer AWS account <span class="sc-mono">us-east-1</span></span>
 
-    <div role="listitem" class="dg-node dg-node-brand">
-      <p class="dg-role">
-        <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
-        Deployz
-      </p>
-      <p class="dg-title">Management service</p>
-      <ul class="dg-rows">
-        {deployzRows.map((row) => <li>{row}</li>)}
-      </ul>
+        <div class="relay-resources">
+          <div class="sc-boundary relay-vpc">
+            <span class="sc-boundary-tag"><Network strokeWidth={1.75} /> VPC</span>
+            <ul class="sc-tiles relay-tiles">
+              {vpc.map((tile) => (
+                <li class="sc-tile">
+                  <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
+                  <span class="sc-tile-text">{tile.title}<span class="sc-mono">{tile.meta}</span></span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <ul class="sc-tiles mt-3">
+            {account.map((tile) => (
+              <li class="sc-tile">
+                <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
+                <span class="sc-tile-text">{tile.title}<span class="sc-mono">{tile.meta}</span></span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-3 text-[12px] leading-snug text-muted-foreground">
+            Database, cache, file data, and application logs stay here.
+          </p>
+        </div>
+
+        <div class="sc-card relay-node">
+          <div class="sc-head">
+            <span class="sc-icon"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+            <p class="sc-head-title">Deployz connector<small class="sc-mono">relay · Lambda</small></p>
+          </div>
+          <div class="sc-body">
+            <ul class="sc-kv">
+              <li><span>Launched by</span><span>customer</span></li>
+              <li><span>Stack</span><span>CloudFormation</span></li>
+              <li><span>Check-in</span><span>about 1 min</span></li>
+              <li><span>Role</span><span>permissions boundary</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Out and (no) back -->
+      <div class="sc-lanes">
+        <Beam label="HTTPS · outbound" variant="brand" />
+        <Beam label="no inbound" variant="blocked" />
+      </div>
+
+      <!-- Deployz -->
+      <div class="sc-card sc-card-brand">
+        <div class="sc-head">
+          <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+          <p class="sc-head-title">Deployz<small>Management service</small></p>
+        </div>
+        <div class="sc-body">
+          <p class="sc-label">Relay exchange</p>
+          <ul class="relay-log mt-2">
+            <li><span class="relay-dir">←</span><span>status</span><span class="text-foreground">HEALTHY</span></li>
+            <li><span class="relay-dir relay-dir-brand">→</span><span>DEPLOY_RELEASE</span><span class="text-foreground">v1.4.0</span></li>
+          </ul>
+          <ul class="sc-checks mt-3.5">
+            <li><span class="sc-icon sc-icon-sm"><ShieldCheck strokeWidth={1.75} /></span><span>Never asks for AWS access keys</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
-  <figcaption id="relay-dg-caption" class="dg-caption">
+  <figcaption class="mt-6 max-w-[780px] text-[15px] leading-[1.6] text-muted-foreground">
     The relay checks in over outbound HTTPS about every minute. This describes the deployment-control
     connection, not every network interaction of the running app or AWS services. Deployz has no inbound
     path into the account.
@@ -63,9 +108,9 @@ const deployzRows = ['Returns deployment instructions', 'Receives status and err
 </figure>
 
 <style>
-  .relay-dg .dg-flow {
-    max-width: 560px;
-    --dg-cols: minmax(0, 1fr) 176px minmax(0, 260px);
+  .relay-flow {
+    --sc-cols: minmax(0, 1fr) 176px minmax(0, 270px);
+    max-width: 480px;
   }
 
   .relay-account {
@@ -73,43 +118,76 @@ const deployzRows = ['Returns deployment instructions', 'Receives status and err
     gap: 16px;
   }
 
-  .relay-resources {
+  .relay-vpc {
+    background: var(--background);
+    padding-top: 26px;
+  }
+
+  .relay-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .relay-log {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    gap: 4px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-subtle);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+    font-variant-ligatures: none;
   }
 
-  .relay-node {
-    --dg-pad: 16px;
-    border-color: var(--border-strong);
+  .relay-log li {
+    display: grid;
+    grid-template-columns: 14px minmax(0, 1fr) auto;
+    gap: 6px;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
-  @container dg (min-width: 760px) {
-    .relay-dg .dg-flow {
+  .relay-dir-brand {
+    color: var(--brand);
+  }
+
+  @container sc (min-width: 520px) {
+    .relay-tiles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @container sc (min-width: 960px) {
+    .relay-flow {
       max-width: none;
     }
 
     .relay-account {
-      grid-template-columns: minmax(0, 1fr) 200px;
-      grid-template-areas:
-        'head node'
-        'res node';
-      grid-template-rows: auto 1fr;
-      column-gap: 24px;
+      grid-template-columns: minmax(0, 1fr) 210px;
+      align-items: center;
+      gap: 20px;
     }
 
-    .relay-account-head {
-      grid-area: head;
+    .relay-tiles,
+    .relay-resources > .sc-tiles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @container sc (min-width: 1040px) {
+    .relay-resources > .sc-tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .relay-resources {
-      grid-area: res;
-      align-content: start;
+    .relay-tiles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .relay-node {
-      grid-area: node;
-      align-self: center;
+    .relay-tiles .sc-tile {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

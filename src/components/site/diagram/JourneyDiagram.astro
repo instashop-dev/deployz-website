@@ -1,69 +1,201 @@
 ---
 /*
- * "Process at a glance" journey: vendor prepares the app, the customer connects AWS,
- * Deployz deploys and manages the release. Built from the shared diagram system
- * (src/styles/diagrams.css). Connectors are decorative; the visible caption states the flow.
+ * "Process at a glance" journey: readiness report, install page, live deployment.
+ * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only caption describes it.
  */
-import { Cloud, GitBranch, UserRound } from 'lucide-react';
-import Connector from '@/components/site/diagram/Connector.astro';
+import { Link as LinkIcon } from 'lucide-react';
+import Beam from '@/components/site/scene/Beam.astro';
+import GithubMark from '@/components/site/scene/GithubMark.astro';
+import Mark from '@/components/site/scene/Mark.astro';
 
-const vendorSteps = ['Connect your GitHub repository', 'Review the readiness report', 'Build a release'];
-const customerSteps = [
-  'Open the installation link',
-  'Review the access and cost estimate',
-  'Launch the connector in their AWS console',
+const installSteps = [
+  'AWS account connected',
+  'Create infrastructure',
+  'Start application',
+  'Check application',
+  'Set up HTTPS',
 ];
-const runSteps = ['You start each update', 'Roll back to an earlier release'];
 ---
 
-<figure class="dg journey-dg mx-auto w-full max-w-[1080px]" aria-labelledby="journey-dg-caption">
-  <div role="list" class="dg-flow">
-    <div role="listitem" class="dg-node">
-      <p class="dg-role"><GitBranch aria-hidden="true" strokeWidth={1.75} /> You · Steps 1–2</p>
-      <p class="dg-title">Prepare your app</p>
-      <ul class="dg-stack">
-        {vendorSteps.map((step) => <li class="dg-chip">{step}</li>)}
-      </ul>
-    </div>
+<figure class="sc journey-sc mx-auto w-full max-w-[1120px]">
+  <figcaption class="sr-only">
+    You prepare your app in Deployz and fix anything the readiness report flags. You send your customer an
+    installation link. They review the Region, resources, and cost, then connect their AWS account. Deployz
+    deploys the release in their account and shows each step until it is live.
+  </figcaption>
 
-    <Connector label="Installation link" sub="You send it to your customer" />
+  <div class="sc-stage" aria-hidden="true">
+    <div class="sc-flow">
+      <!-- 1. Readiness report -->
+      <div class="journey-step">
+        <p class="journey-tag"><span class="journey-num">01</span>You prepare</p>
+        <div class="sc-card">
+          <div class="sc-head">
+            <span class="sc-icon sc-icon-dark"><GithubMark /></span>
+            <p class="sc-head-title">your-org/your-app<small class="sc-mono">main</small></p>
+            <span class="sc-badge sc-badge-warn">Needs input</span>
+          </div>
+          <div class="sc-body">
+            <span class="text-[13px] font-medium">11 of 12 checks passed</span>
+            <div class="sc-progress mt-2"><span style="width: 92%"></span></div>
+            <ul class="sc-checks mt-3">
+              <li><Mark /><span>Dockerfile</span><span class="sc-mono">found</span></li>
+              <li><Mark /><span>Port</span><span class="sc-mono">3000</span></li>
+              <li><Mark /><span>Health check</span><span class="sc-mono">/health</span></li>
+              <li><Mark state="warn" /><span>Environment variables</span><span class="sc-mono">1 value to set</span></li>
+            </ul>
+          </div>
+          <div class="sc-foot">
+            <span class="sc-label">Release</span>
+            <span class="sc-btn sc-btn-dark">Build release</span>
+          </div>
+        </div>
+      </div>
 
-    <div role="listitem" class="dg-node">
-      <p class="dg-role"><UserRound aria-hidden="true" strokeWidth={1.75} /> Your customer · Step 3</p>
-      <p class="dg-title">Connect their AWS account</p>
-      <ul class="dg-stack">
-        {customerSteps.map((step) => <li class="dg-chip">{step}</li>)}
-      </ul>
-    </div>
+      <Beam label="install link" variant="neutral" />
 
-    <Connector label="Deployz deploys the release" variant="brand" />
+      <!-- 2. Install page -->
+      <div class="journey-step">
+        <p class="journey-tag"><span class="journey-num">02</span>Your customer connects AWS</p>
+        <div class="sc-card">
+          <div class="sc-head">
+            <span class="sc-icon"><LinkIcon strokeWidth={1.75} /></span>
+            <p class="sc-head-title">Install your app<small>Installation link</small></p>
+          </div>
+          <div class="sc-body">
+            <ul class="sc-kv">
+              <li><span>Region</span><span>eu-west-1</span></li>
+              <li><span>Resources</span><span>app, database, storage</span></li>
+              <li><span>Estimated cost</span><span>shown before connecting</span></li>
+            </ul>
+            <p class="mt-3 text-[12px] leading-snug text-muted-foreground">PostgreSQL and stored files are retained</p>
+          </div>
+          <div class="sc-foot">
+            <span class="sc-btn sc-btn-dark journey-full">Connect AWS account</span>
+          </div>
+        </div>
+      </div>
 
-    <div role="listitem" class="dg-boundary">
-      <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> Customer AWS · Step 4</p>
-      <p class="dg-title">Deploy and manage</p>
-      <ul class="dg-stack">
-        <li class="dg-chip dg-chip-strong">Your app runs in their account</li>
-        {runSteps.map((step) => <li class="dg-chip">{step}</li>)}
-      </ul>
+      <Beam label="deploy v1.4.0" variant="brand" delay={1.3} />
+
+      <!-- 3. Deployment -->
+      <div class="journey-step">
+        <p class="journey-tag"><span class="journey-num">03</span>Deployz deploys</p>
+        <div class="sc-card sc-card-brand">
+          <div class="sc-head">
+            <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+            <p class="sc-head-title">Customer A<small class="sc-mono">eu-west-1</small></p>
+            <span class="sc-badge sc-badge-live"><span class="sc-dot sc-dot-pulse"></span>Live</span>
+          </div>
+          <div class="sc-body">
+            <ul class="sc-checks">
+              {installSteps.map((step) => <li><Mark /><span>{step}</span></li>)}
+            </ul>
+          </div>
+          <div class="sc-foot">
+            <span class="sc-label">Release</span>
+            <span class="sc-mono text-foreground">v1.4.0</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <figcaption id="journey-dg-caption" class="dg-caption">
-    You prepare the app and send an installation link. Your customer approves AWS access in their own
-    console. Deployz deploys the release in their account, and you start each update.
-  </figcaption>
 </figure>
 
 <style>
-  .journey-dg .dg-flow {
-    --dg-cols: minmax(0, 1fr) 104px minmax(0, 1fr) 120px minmax(0, 1fr);
+  .journey-sc .sc-flow {
+    --sc-cols: minmax(0, 1.2fr) 148px minmax(0, 1fr) 136px minmax(0, 0.95fr);
+    --journey-tag: 32px; /* 22px tag + 10px gap */
   }
 
-  /* All three nodes share one height, so the flow reads as one line. */
-  @container dg (min-width: 760px) {
-    .journey-dg .dg-node,
-    .journey-dg .dg-boundary {
-      align-self: stretch;
+  .journey-step {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .journey-step > .sc-card {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .journey-step .sc-body {
+    flex: 1;
+  }
+
+  .journey-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 22px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .journey-num {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--background);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .journey-full {
+    width: 100%;
+  }
+
+  /* Vertical flow: keep the step cells apart from the beams. */
+  .journey-sc .sc-flow > .journey-step {
+    width: 100%;
+  }
+
+  @container sc (min-width: 960px) {
+    .journey-sc .sc-flow {
+      align-items: stretch;
+    }
+
+    .journey-tag {
+      white-space: nowrap;
+    }
+
+    .journey-sc .sc-flow > :global(.sc-beam) {
+      margin-top: var(--journey-tag);
+    }
+
+    .journey-sc :global(.sc-stage) {
+      padding-inline: 28px;
+    }
+
+    .journey-sc :global(.sc-beam-chip) {
+      max-width: none;
+    }
+  }
+
+  /* Just above the horizontal breakpoint: slimmer beams, chips may wrap to two lines. */
+  @container sc (min-width: 960px) and (max-width: 1119px) {
+    .journey-sc .sc-flow {
+      --sc-cols: minmax(0, 1.55fr) 104px minmax(0, 1fr) 104px minmax(0, 1.1fr);
+    }
+
+    .journey-sc :global(.sc-stage) {
+      padding-inline: 20px;
+    }
+
+    .journey-sc :global(.sc-beam-chip) {
+      max-width: 100%;
+      white-space: normal;
     }
   }
 </style>
