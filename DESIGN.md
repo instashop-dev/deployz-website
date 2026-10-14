@@ -10,7 +10,8 @@ This file records the implemented marketing design system. The canonical specifi
 - Light theme only. There is no theme toggle and no `.dark` token set on the marketing site.
 - Signature: the solid, bold Deployz mark against thin, ordered, architectural connectors.
 - Attention budget (heuristic): about 80% calm neutral surfaces and text, 15% structure (diagrams, hairlines, frames), 5% blue.
-- Do not build: hero gradients, glows, dot or grid backgrounds, parallax, glass panes, fake terminals or logs, stock 3D clouds, dashboard collages, boxes around every sentence, invented logos or statistics, continuous motion.
+- Do not build on page surfaces: hero gradients, glows, dot or grid backgrounds, parallax, glass panes, fake terminals, stock 3D clouds, dashboard collages, boxes around every sentence, invented logos or statistics.
+- Exception, illustrations only (since v3.1, 15 October 2026): inside a scene stage (section 7) a fading dot grid, one faint cobalt light, layered card depth, and two kinds of quiet motion (the beam light and the live pulse) are allowed. They never leave the stage.
 
 ## 2. Logo
 
@@ -51,7 +52,7 @@ Usage contract: charcoal buttons; blue for links, focus, active states, and the 
 
 ## 4. Typography
 
-One family: Inter Variable from `@fontsource-variable/inter` (local). System monospace only for real technical tokens (file paths, variable names).
+One family: Inter Variable from `@fontsource-variable/inter` (local). System monospace only for real technical tokens (file paths, variable names, and in illustrations: repo, branch, commit, region, version).
 
 | Utility | Mobile | ≥640px | ≥1024px | Weight | Tracking |
 | --- | --- | --- | --- | --- | --- |
@@ -75,7 +76,7 @@ One family: Inter Variable from `@fontsource-variable/inter` (local). System mon
 | Section rhythm | `section-y`: 64px, 80px (≥640), 104px (≥1024) |
 | Header height | 60px mobile, 64px desktop (`--header-height`) |
 | Radius | 8px controls, 12px genuine frames (`rounded-xl`), nothing larger |
-| Shadow | Only floating menus: `shadow-menu` (`0 10px 30px rgb(17 17 17 / .08)`) |
+| Shadow | Floating menus: `shadow-menu` (`0 10px 30px rgb(17 17 17 / .08)`). Illustration cards: `--sc-shadow` and `--sc-shadow-brand` in `scene.css` only. |
 
 Four composition families, varied across a page (no more than two adjacent sections in one family):
 
@@ -100,7 +101,7 @@ All marketing components are static Astro in `src/components/site/`.
 | Page header | `PageHeader.astro` | Inner-page h1, lead, actions slot, optional `aside` visual slot. |
 | FAQ list | `FaqList.astro` | Native `<details>`, 56px rows, plus/minus icon, hairlines. |
 | Deployment diagram | `DeploymentDiagram.astro` | Signature hero diagram (see section 7). |
-| Diagram system | `diagram/*.astro` | `Connector.astro` and the page diagrams (see section 7). |
+| Scene system | `scene/*.astro`, `diagram/*.astro` | Illustration parts and the page scenes (see section 7). |
 | Product preview | `ProductPreview.astro` | Home Configure / Deploy / Manage tabs (ARIA tabs, Arrow/Home/End keys). Each panel is a labelled, simplified illustration built from real product labels, not a screenshot. Without JavaScript all panels show. Replace with real anonymized screenshots when they exist. |
 | Closing CTA | `CtaSection.astro` | Centered closing section with one **Get Started Free** button. It is the one `bg-surface-subtle` section on each page that uses it. |
 
@@ -113,26 +114,29 @@ Control utilities (in `globals.css`):
 
 `src/components/ui/button.tsx` (shadcn) uses the same tokens for any future React island. Interactive marketing UI uses native HTML first.
 
-## 7. Diagrams
+## 7. Illustrations (scene system, v3.1)
 
-- One diagram system for the whole site: `src/styles/diagrams.css` plus `src/components/site/diagram/` (see its `README.md`). Original HTML/CSS. No graphing or animation libraries.
-- Layout follows the figure width (CSS container queries on `.dg`), not the viewport: vertical below 760px container width, horizontal above. Mobile is the vertical composition, never a scaled drawing, never hidden.
-- Stroke 1.5px; neutral `#D4D4D8`; the single Deployz-controlled connector in blue `#2563EB`. A dashed connector with a crossed marker shows a connection that does not exist.
-- Nodes: 12px radius, 20px padding (24px when horizontal), role label 12px with a 16px Lucide icon, title 16px, text 14px. Items inside a node are 8px-radius chips.
-- The Deployz node may use `bg-brand-subtle` + `border-brand-border`. Never a solid blue card. At most one blue node and one blue connector per diagram.
-- Account boundary: `bg-surface-subtle`, `border-border-strong`, role label top-left.
-- Connectors are `aria-hidden`; every figure has a caption (visible or `sr-only`) that states the relationships, and node text is real text.
-- Text in diagrams comes from verified product behavior and existing site copy only.
+Direction: **blueprint precision**. Every illustration is a small, believable product scene, in the style of strong developer-tool sites: real interface labels, real AWS services, monospace technical tokens, soft card depth, and cobalt deploy beams. It explains the product. It is never decoration.
 
-| Diagram | Component | Page | Explains |
+- One system: `src/styles/scene.css` plus `src/components/site/scene/` (`Beam.astro`, `Mark.astro`, `GithubMark.astro`, `README.md`). Original HTML/CSS. No graphing, animation, or icon libraries beyond Lucide.
+- **Stage** (`.sc-stage`): 16px frame, dot grid that fades to the edges, one faint cobalt light behind the focal point.
+- **Cards** (`.sc-card`): header row with a 28px icon tile, body, optional footer, layered soft shadow. One `.sc-card-brand` (cobalt ring and glow) per scene marks the Deployz focal point. Never a solid blue card.
+- **Boundaries** (`.sc-boundary`): dashed AWS account or VPC frames with the label tag on the top border.
+- **Beams** (`Beam.astro`): 1.5px track, a port at each end, a mono label chip on the line, and a travelling light. One brand beam per scene; `blocked` (dashed, crossed chip) for a connection that does not exist.
+- **Status**: green only for live or passed states, amber for needs input or changes needed, cobalt for in progress.
+- **Layout** follows the figure width (container queries): vertical below 960px, horizontal above. Mobile is a real vertical composition, never a scaled drawing.
+- **Accessibility**: the stage is `aria-hidden`; each figure has an `sr-only` or visible caption that states what the scene shows. Text is at least 12px.
+- **Motion**: only the beam light and the live pulse. Both stop under `prefers-reduced-motion`.
+- **Truth**: labels follow the product (for example readiness "X of Y checks passed", install steps "Create infrastructure", "Start application", "Check application", "Set up HTTPS", fleet statuses "Live", "Updating", "Waiting for customer"). Example values (repo, commit, version, region, the $106 invoice for three environments) are illustrative.
+
+| Scene | Component | Page | Shows |
 | --- | --- | --- | --- |
-| Hero flow | `DeploymentDiagram.astro` | `/` | GitHub → Deployz (blue) → customer AWS with the application container and its resources. |
-| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | You prepare → installation link → your customer connects AWS → Deployz deploys and you manage. Maps to steps 1–4 on the page. |
-| Fleet | `diagram/FleetDiagram.astro` | `/use-cases` header | One release process installed into each customer's own AWS account, each with its own status. |
-| Billing | `diagram/BillingDiagram.astro` | `/pricing` | Deployz bills the vendor; AWS bills the AWS account owner. |
-| Relay | `diagram/RelayDiagram.astro` | `/security` | The relay in the customer account starts every request over outbound HTTPS; no inbound connections. |
-
-The product preview (`ProductPreview.astro`) is a simplified interface illustration, not a diagram. Its labels follow the product (for example the install steps "Create infrastructure", "Start application", "Check application", "Set up HTTPS").
+| Deploy flow | `DeploymentDiagram.astro` | `/` hero | GitHub repo → Deployz readiness report and release → the app live in customer AWS with its resources. |
+| Product preview | `ProductPreview.astro` | `/` | Configure / Deploy / Manage tabs on a stage. Simplified interface, not a screenshot. |
+| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | Readiness report → installation link page → live deployment with the install steps. |
+| Fleet | `diagram/FleetDiagram.astro` | `/use-cases` header | One release branching into three customer AWS accounts, each with its own status. |
+| Invoices | `diagram/BillingDiagram.astro` | `/pricing` | The Deployz invoice to you next to the AWS bill to your customer. |
+| Architecture | `diagram/RelayDiagram.astro` | `/security` | Customer account with VPC resources and the relay; outbound HTTPS to Deployz; no inbound path. |
 
 ## 8. Page compositions
 
@@ -149,7 +153,7 @@ The product preview (`ProductPreview.astro`) is a simplified interface illustrat
 
 ## 9. Motion and accessibility
 
-- Motion: color transitions only (150ms), using `transition-[color]` so that the focus outline never animates. No entrance animations, no transforms, no `transition-all`. `prefers-reduced-motion` disables all transitions.
+- Motion: color transitions only (150ms), using `transition-[color]` so that the focus outline never animates. No entrance animations, no `transition-all`. Illustrations may run the beam light and the live pulse (section 7). `prefers-reduced-motion` disables all transitions and hides both animations.
 - WCAG 2.2 AA: secondary text `#52525B` for paragraphs; tertiary `#71717A` only for short labels.
 - Every link and button has a target of at least 44px.
 - One h1 per page; headings in order; named landmarks; skip link to `#main-content`.
