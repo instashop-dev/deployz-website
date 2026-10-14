@@ -157,7 +157,7 @@ const questions = [
           <p class="mt-3 text-[14px] text-muted-foreground">
             Excludes AWS charges, applicable taxes, and any charges not covered by the published plan. The $49
             base starts with your first customer deployment, before it is ready. If you remove all
-            environments, the $49 base continues until you cancel.
+            environments, the $49 base continues until you cancel. At 0 environments, the estimate assumes you have not started a customer deployment.
           </p>
         </div>
       </div>
@@ -201,6 +201,10 @@ const questions = [
 </Base>
 
 <style>
+  :global(html:not(.js)) .estimator-range {
+    display: none;
+  }
+
   .estimator-range {
     height: 44px;
     accent-color: var(--foreground);
