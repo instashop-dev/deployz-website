@@ -231,6 +231,9 @@ test.describe('public design-system contract', () => {
     expect(redirects).toContain(`/get-started ${SIGNUP_URL} 301`);
     expect(headers).toMatch(/Content-Security-Policy:.*frame-ancestors 'none'/);
     expect(headers).toContain('X-Content-Type-Options: nosniff');
+    // Cloudflare Web Analytics injects its beacon at the edge; the CSP must allow it.
+    expect(headers).toMatch(/script-src[^;]*https:\/\/static\.cloudflareinsights\.com/);
+    expect(headers).toMatch(/connect-src[^;]*https:\/\/cloudflareinsights\.com/);
     expect(robots).toContain('Sitemap: https://deployz.dev/sitemap-index.xml');
   });
 
