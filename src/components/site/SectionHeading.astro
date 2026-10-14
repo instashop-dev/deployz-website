@@ -1,0 +1,22 @@
+---
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { id, eyebrow, title, align = 'left', class: className } = Astro.props;
+const centered = align === 'center';
+---
+
+<div class:list={['max-w-[780px]', centered && 'mx-auto text-center', className]}>
+  {eyebrow && <p class="text-eyebrow mb-3 text-muted-foreground">{eyebrow}</p>}
+  <h2 id={id} class="text-h2">{title}</h2>
+  {Astro.slots.has('default') && (
+    <div class:list={['text-lead mt-4 text-muted-foreground', centered ? 'mx-auto max-w-[650px]' : 'max-w-[650px]']}>
+      <slot />
+    </div>
+  )}
+</div>

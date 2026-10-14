@@ -1,0 +1,39 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  class?: string;
+}
+
+const { eyebrow, title, class: className } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+---
+
+<header class:list={['border-b border-border', className]}>
+  <div
+    class:list={[
+      'container-site pt-14 pb-14 sm:pt-20 sm:pb-16 lg:pt-24 lg:pb-20',
+      hasAside && 'grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-center lg:gap-16',
+    ]}
+  >
+    <div class="min-w-0 max-w-[720px]">
+      {eyebrow && <p class="text-eyebrow mb-4 text-muted-foreground">{eyebrow}</p>}
+      <h1 class="text-h1">{title}</h1>
+      {Astro.slots.has('default') && (
+        <div class="text-lead mt-5 max-w-[650px] text-muted-foreground">
+          <slot />
+        </div>
+      )}
+      {Astro.slots.has('actions') && (
+        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <slot name="actions" />
+        </div>
+      )}
+    </div>
+    {hasAside && (
+      <div class="min-w-0">
+        <slot name="aside" />
+      </div>
+    )}
+  </div>
+</header>

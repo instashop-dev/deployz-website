@@ -1,6 +1,6 @@
 ---
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import SiteFooter from '@/components/site/SiteFooter.astro';
+import SiteHeader from '@/components/site/SiteHeader.astro';
 import '@/styles/globals.css';
 
 interface Props {
@@ -13,34 +13,8 @@ const {
   description = 'Customers ask for your SaaS in their AWS account. Deployz installs and updates your application there (BYOC), and you do not build a deployment platform.',
 } = Astro.props;
 
-const navLinks = [
-  { href: '/how-it-works', label: 'How It Works' },
-  { href: '/security', label: 'Security' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/docs', label: 'Docs' },
-];
-const footerGroups = [
-  {
-    title: 'Product',
-    links: [
-      { href: '/how-it-works', label: 'How It Works' },
-      { href: '/pricing', label: 'Pricing' },
-      { href: '/get-started', label: 'Get Started' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { href: '/docs', label: 'Documentation' },
-      { href: '/security', label: 'Security' },
-      { href: '/blog', label: 'Blog' },
-    ],
-  },
-];
-
 const pathname = Astro.url.pathname;
 const canonicalURL = new URL(pathname, Astro.site);
-const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 ---
 
 <!doctype html>
@@ -67,85 +41,20 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#ffffff" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body class="flex min-h-screen flex-col">
     <a
-      class="fixed top-3 left-3 z-50 -translate-y-20 rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0 focus:outline-none focus:ring-3 focus:ring-ring/50"
+      class="btn btn-primary fixed top-3 left-3 z-50 -translate-y-24 focus:translate-y-0"
       href="#main-content"
     >
       Skip to content
     </a>
-    <header class="sticky top-0 z-40 border-b border-border/80 bg-background/85 backdrop-blur-md">
-      <nav
-        aria-label="Primary navigation"
-        class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-3 px-4 py-3 min-[300px]:grid-cols-[1fr_auto] md:flex md:min-h-16 md:px-6 xl:px-8"
-      >
-        <a
-          class="flex min-h-11 items-center gap-2 text-base font-semibold tracking-tight text-foreground focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-          href="/"
-        >
-          <img src="/deployz-icon-master.svg" alt="" width="24" height="24" />
-          deployz
-        </a>
-        <div class="flex flex-wrap items-center justify-start gap-1 min-[300px]:justify-end md:order-3 md:ml-auto">
-          <a class={cn(buttonVariants({ variant: 'ghost' }), 'min-h-11')} href="https://app.deployz.dev/sign-in">Sign in</a>
-          <a class={cn(buttonVariants(), 'h-auto min-h-11 shrink text-center whitespace-normal')} href="/get-started">Check my application</a>
-        </div>
-        <div class="col-span-1 flex flex-wrap items-center gap-1 min-[300px]:col-span-2 md:order-2 md:col-auto md:ml-5">
-          {navLinks.map((link) => (
-            <a class={cn(buttonVariants({ variant: isCurrent(link.href) ? 'secondary' : 'ghost' }), 'min-h-11')} href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</a>
-          ))}
-        </div>
-      </nav>
-    </header>
-    <main id="main-content" class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 md:px-6 md:py-12 xl:px-8">
+    <SiteHeader />
+    <main id="main-content" class="flex-1">
       <slot />
     </main>
-    <footer class="mx-auto w-full max-w-6xl border-t px-4 py-10 text-sm text-muted-foreground md:px-6 xl:px-8">
-      <nav aria-label="Footer navigation" class="grid gap-10 sm:grid-cols-2">
-        {footerGroups.map((group) => (
-          <div>
-            <p class="font-mono text-xs font-medium tracking-[0.14em] text-foreground uppercase">{group.title}</p>
-            <ul class="mt-1">
-              {group.links.map((link) => (
-                <li>
-                  <a
-                    class="flex min-h-11 items-center hover:text-foreground hover:underline focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                    href={link.href}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </nav>
-      <p class="mt-10">&copy; {new Date().getFullYear()} Deployz</p>
-    </footer>
-    <script is:inline>
-      (function () {
-        if (!('IntersectionObserver' in window)) {
-          return;
-        }
-        document.documentElement.classList.add('js');
-        var items = document.querySelectorAll('.reveal');
-        var observer = new IntersectionObserver(
-          function (entries) {
-            for (var index = 0; index < entries.length; index += 1) {
-              if (entries[index].isIntersecting) {
-                entries[index].target.classList.add('revealed');
-                observer.unobserve(entries[index].target);
-              }
-            }
-          },
-          { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
-        );
-        for (var index = 0; index < items.length; index += 1) {
-          observer.observe(items[index]);
-        }
-      })();
-    </script>
+    <SiteFooter />
   </body>
 </html>

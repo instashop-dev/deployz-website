@@ -1,0 +1,52 @@
+---
+import Logo from './Logo.astro';
+
+const footerGroups = [
+  {
+    title: 'Product',
+    links: [
+      { href: '/how-it-works', label: 'How It Works' },
+      { href: '/pricing', label: 'Pricing' },
+      { href: '/get-started', label: 'Get Started' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { href: '/docs', label: 'Documentation' },
+      { href: '/security', label: 'Security' },
+      { href: '/blog', label: 'Blog' },
+    ],
+  },
+];
+---
+
+<footer class="border-t border-border">
+  <div class="container-site pt-16 pb-10 lg:pt-20 lg:pb-12">
+    <div class="grid gap-12 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
+      <a href="/" class="-ml-1 flex min-h-11 items-center self-start rounded-md px-1" aria-label="Deployz home">
+        <Logo size={26} />
+      </a>
+      <nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-16 gap-y-10">
+        {footerGroups.map((group) => (
+          <div>
+            <p class="text-[14px] font-semibold text-foreground">{group.title}</p>
+            <ul class="mt-2">
+              {group.links.map((link) => (
+                <li>
+                  <a
+                    class="flex min-h-11 items-center text-[14px] text-muted-foreground transition-[color] duration-150 hover:text-foreground"
+                    href={link.href}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
+    <p class="mt-16 border-t border-border pt-8 text-[14px] text-muted-foreground">&copy; {new Date().getFullYear()} Deployz</p>
+  </div>
+</footer>
