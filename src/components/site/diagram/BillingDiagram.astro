@@ -18,7 +18,7 @@ const awsLines = [
 
 <figure class="sc billing-sc">
   <p class="sr-only">
-    Deployz bills you, the SaaS vendor, monthly: a $49 base subscription plus $19 for each active
+    Deployz bills you, the SaaS vendor, monthly: a $49 base subscription plus $19 for each billable
     customer environment, for example $106 with three environments. AWS bills the AWS account owner,
     your customer, for compute, database, cache, networking, and storage usage.
   </p>
@@ -48,7 +48,7 @@ const awsLines = [
               {['Customer A', 'Customer B', 'Customer C'].map((customer) => (
                 <li>
                   <span class="billing-label">
-                    Active customer environment
+                    Billable customer environment
                     <span class="sc-mono">{customer}</span>
                   </span>
                   <span class="billing-value">$19</span>
@@ -61,7 +61,7 @@ const awsLines = [
             </div>
           </div>
           <div class="sc-foot">
-            <span class="billing-foot">Starts with your first customer deployment</span>
+            <span class="billing-foot">Base starts when you subscribe</span>
           </div>
         </div>
       </div>
@@ -106,8 +106,8 @@ const awsLines = [
   </div>
 
   <figcaption class="mt-6 max-w-[780px] text-[15px] text-muted-foreground">
-    AWS resource costs depend on region, configuration, and usage. They may continue while resources
-    remain provisioned, even if an app deployment is stopped or some resources are retained.
+    AWS costs depend on Region, configuration, and usage. They continue while resources exist, including
+    resources retained after removal.
   </figcaption>
 </figure>
 

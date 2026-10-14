@@ -19,16 +19,17 @@ const installSteps = [
 
 <figure class="sc journey-sc mx-auto w-full max-w-[1120px]">
   <figcaption class="sr-only">
-    You prepare your app in Deployz and fix anything the readiness report flags. You send your customer an
-    installation link. They review the Region, resources, and cost, then connect their AWS account. Deployz
-    deploys the release in their account and shows each step until it is live.
+    Steps 1 and 2: you connect GitHub, fix anything the readiness report flags, and build a release. Step 3:
+    you send your customer an installation link; they review the Region, resources, and cost, then connect
+    their AWS account. Step 4: Deployz deploys the release in their account and shows each step until it is
+    live.
   </figcaption>
 
   <div class="sc-stage" aria-hidden="true">
     <div class="sc-flow">
       <!-- 1. Readiness report -->
       <div class="journey-step">
-        <p class="journey-tag"><span class="journey-num">01</span>You prepare</p>
+        <p class="journey-tag"><span class="journey-num">1–2</span>You prepare a release</p>
         <div class="sc-card">
           <div class="sc-head">
             <span class="sc-icon sc-icon-dark"><GithubMark /></span>
@@ -56,7 +57,7 @@ const installSteps = [
 
       <!-- 2. Install page -->
       <div class="journey-step">
-        <p class="journey-tag"><span class="journey-num">02</span>Your customer connects AWS</p>
+        <p class="journey-tag"><span class="journey-num">3</span>Your customer connects AWS</p>
         <div class="sc-card">
           <div class="sc-head">
             <span class="sc-icon"><LinkIcon strokeWidth={1.75} /></span>
@@ -80,7 +81,7 @@ const installSteps = [
 
       <!-- 3. Deployment -->
       <div class="journey-step">
-        <p class="journey-tag"><span class="journey-num">03</span>Deployz deploys</p>
+        <p class="journey-tag"><span class="journey-num">4</span>Deployz deploys</p>
         <div class="sc-card sc-card-brand">
           <div class="sc-head">
             <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
@@ -139,7 +140,8 @@ const installSteps = [
   .journey-num {
     display: inline-flex;
     flex-shrink: 0;
-    width: 22px;
+    min-width: 22px;
+    padding: 0 5px;
     height: 22px;
     align-items: center;
     justify-content: center;

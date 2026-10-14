@@ -22,8 +22,8 @@ const account = [
 <figure class="sc relay-sc">
   <p class="sr-only">
     Architecture: the application, its database, cache, file storage, and secrets run in the customer's
-    AWS account. The Deployz connector, a relay that the customer launches as a CloudFormation stack,
-    also runs there. The relay starts every request to the Deployz management service over outbound
+    AWS account. The Deployz connector, which the customer launches as a CloudFormation stack, also runs
+    there. The connector starts every request to the Deployz management service over outbound
     HTTPS, receives deployment instructions, and reports status. Deployz makes no inbound connections
     and never asks for AWS access keys.
   </p>
@@ -62,7 +62,7 @@ const account = [
         <div class="sc-card relay-node">
           <div class="sc-head">
             <span class="sc-icon"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
-            <p class="sc-head-title">Deployz connector<small class="sc-mono">relay · Lambda</small></p>
+            <p class="sc-head-title">Deployz connector<small class="sc-mono">Lambda</small></p>
           </div>
           <div class="sc-body">
             <ul class="sc-kv">
@@ -88,7 +88,7 @@ const account = [
           <p class="sc-head-title">Deployz<small>Management service</small></p>
         </div>
         <div class="sc-body">
-          <p class="sc-label">Relay exchange</p>
+          <p class="sc-label">Connector exchange</p>
           <ul class="relay-log mt-2">
             <li><span class="relay-dir">←</span><span>status</span><span class="text-foreground">HEALTHY</span></li>
             <li><span class="relay-dir relay-dir-brand">→</span><span>DEPLOY_RELEASE</span><span class="text-foreground">v1.4.0</span></li>
@@ -101,9 +101,8 @@ const account = [
     </div>
   </div>
   <figcaption class="mt-6 max-w-[780px] text-[15px] leading-[1.6] text-muted-foreground">
-    The relay checks in over outbound HTTPS about every minute. This describes the deployment-control
-    connection, not every network interaction of the running app or AWS services. Deployz has no inbound
-    path into the account.
+    The connector checks in over outbound HTTPS about every minute. This covers deployment control only,
+    not the network traffic of the running app. Deployz has no inbound path into the account.
   </figcaption>
 </figure>
 

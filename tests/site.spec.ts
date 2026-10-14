@@ -24,10 +24,10 @@ const LOGIN_URL = 'https://app.deployz.dev/sign-in';
 const CTA_LABEL = 'Get Started Free';
 
 const pageTitles = [
-  { path: '/', title: 'Deployz — Deploy Your SaaS Into Customer AWS' },
+  { path: '/', title: 'Deployz — Deploy Your SaaS in Customer AWS Accounts' },
   { path: '/how-it-works', title: 'How Deployz Works — From GitHub to Customer AWS' },
   { path: '/use-cases', title: 'Deployz Use Cases — Customer-Hosted SaaS' },
-  { path: '/pricing', title: 'Deployz Pricing — Simple Customer Deployment Pricing' },
+  { path: '/pricing', title: 'Deployz Pricing — $49/month + $19 per Customer Environment' },
   { path: '/security', title: 'Deployz Security & Architecture — Customer AWS' },
 ] as const;
 
@@ -143,11 +143,10 @@ test.describe('public design-system contract', () => {
     }
   });
 
-  test('keeps the approved homepage heading and signature phrase', async ({ page }) => {
+  test('keeps the approved homepage heading and section count', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.locator('h1')).toHaveText("The easiest way to deploy your SaaS in your customers' AWS accounts.");
-    await expect(page.getByRole('main').getByText('The deploy button for your SaaS.')).toBeVisible();
+    await expect(page.locator('h1')).toHaveText("Deploy your SaaS in your customers' AWS accounts.");
     await expect(page.locator('main > section')).toHaveCount(7);
   });
 
@@ -198,7 +197,8 @@ test.describe('public design-system contract', () => {
 
     await expect(slider).toHaveValue('3');
     await expect(total).toHaveText('$106');
-    for (const [value, expected] of [['0', '$0'], ['1', '$68'], ['10', '$239'], ['30', '$619']] as const) {
+    // The estimate assumes an active subscription: the $49 base stays at zero environments.
+    for (const [value, expected] of [['0', '$49'], ['1', '$68'], ['10', '$239'], ['30', '$619']] as const) {
       await slider.fill(value);
       await expect(total).toHaveText(expected);
     }

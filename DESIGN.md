@@ -133,20 +133,20 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | --- | --- | --- | --- |
 | Deploy flow | `DeploymentDiagram.astro` | `/` hero | GitHub repo → Deployz readiness report and release → the app live in customer AWS with its resources. |
 | Product preview | `ProductPreview.astro` | `/` | Configure / Deploy / Manage tabs on a stage. Simplified interface, not a screenshot. |
-| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | Readiness report → installation link page → live deployment with the install steps. |
+| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | Readiness report and release (steps 1–2) → installation link page (step 3) → live deployment with the install steps (step 4). |
 | Fleet | `diagram/FleetDiagram.astro` | `/use-cases` header | One release branching into three customer AWS accounts, each with its own status. |
 | Invoices | `diagram/BillingDiagram.astro` | `/pricing` | The Deployz invoice to you next to the AWS bill to your customer. |
-| Architecture | `diagram/RelayDiagram.astro` | `/security` | Customer account with VPC resources and the relay; outbound HTTPS to Deployz; no inbound path. |
+| Architecture | `diagram/RelayDiagram.astro` | `/security` | Customer account with VPC resources and the connector; outbound HTTPS to Deployz; no inbound path. |
 
 ## 8. Page compositions
 
 | Page | Composition |
 | --- | --- |
-| `/` | Seven sections: centered hero + diagram; problem (split, text only); solution + three benefits (quiet grid); 3-step process rail; product preview tabs; security summary + FAQ (split); closing CTA. |
-| `/how-it-works` | Left-aligned header; journey diagram (process at a glance); connect and analyze (split); review and configure (quiet grid); customer AWS connection (split + step rail); deploy and manage (quiet grid); compatibility (split, good fit / not supported); closing CTA. |
-| `/use-cases` | Left-aligned header with the fleet diagram aside; three customer-request sections (split, quote heading); who Deployz is for; closing CTA. |
-| `/pricing` | Left-aligned header; one bounded plan frame + included list; cost estimator (range input, inline script); Deployz vs AWS billing diagram; billing FAQ; closing CTA. |
-| `/security` | Left-aligned header; what runs where; AWS access; outbound-only relay diagram; responsibilities, data, secrets, routing; lifecycle disclosures + team; closing CTA. |
+| `/` | Seven sections: centered hero + diagram; three benefits with Lucide icons (quiet grid); 4-step process rail; product preview tabs; ownership summary + supported list (split); FAQ (split); closing CTA. |
+| `/how-it-works` | Left-aligned header; journey diagram (steps 1–4 at a glance); 1 connect GitHub (split); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid); compatibility (split, supported / not supported); closing CTA. |
+| `/use-cases` | Left-aligned header with the fleet diagram aside; one section with three customer-request rows (split, quote heading, hairline between rows); who Deployz is for; closing CTA. |
+| `/pricing` | Left-aligned header; one bounded plan frame (price, free evaluation, "When you pay" definition list) + included list; cost estimator for an active subscription (range input, inline script); who-bills-whom diagram; billing FAQ; closing CTA. |
+| `/security` | Left-aligned header; what runs where (connector diagram); AWS access + connector permissions + responsibilities (split, then definition list); what Deployz receives, secrets, code and AI, routing; lifecycle disclosures + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
 | `/blog` | Editorial list with dates and hairlines. |
 | `/404` | Short centered message. |

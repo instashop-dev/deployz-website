@@ -30,9 +30,9 @@ const deployments = [
 ];
 
 const tabs = [
-  { id: 'configure', label: 'Configure', caption: 'See what passed, what needs attention, and any blockers before deployment.' },
+  { id: 'configure', label: 'Configure', caption: 'See what passed, what needs input, and what blocks deployment.' },
   { id: 'deploy', label: 'Deploy', caption: "Follow deployment progress in your customer's AWS account." },
-  { id: 'manage', label: 'Manage', caption: 'Check status, release updates, and manage rollbacks.' },
+  { id: 'manage', label: 'Manage', caption: 'Check status, release updates, and roll back.' },
 ];
 ---
 
@@ -135,7 +135,7 @@ const tabs = [
       </div>
       </div>
       <p class="mt-4 text-[16px] text-foreground">{tab.caption}</p>
-      <p class="mt-1 text-[14px] text-muted-foreground">Simplified illustration of the Deployz interface, not a screenshot.</p>
+      <p class="mt-1 text-[14px] text-muted-foreground">Simplified illustration, not a screenshot.</p>
     </div>
   ))}
 </div>
