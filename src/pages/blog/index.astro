@@ -1,24 +1,19 @@
 ---
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/site/PageHeader.astro';
 ---
 
 <Base title="Blog — Deployz" description="Updates about Deployz and customer-owned AWS deployments.">
-  <div class="mx-auto max-w-3xl">
-    <header class="max-w-2xl">
-      <Badge variant="outline">Updates</Badge>
-      <h1 class="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">Blog</h1>
-      <p class="mt-4 text-lg">Notes on building Deployz and making customer-owned deployments easier to operate.</p>
-    </header>
+  <PageHeader eyebrow="Updates" title="Blog">
+    Notes on building Deployz and making customer-owned deployments easier to operate.
+  </PageHeader>
 
-    <article class="mt-12">
-      <Card>
-        <CardHeader className="border-b">
-          <p class="text-sm text-muted-foreground"><time datetime="2026-08-25">August 25, 2026</time></p>
-          <CardTitle><h2 class="text-xl">Introducing Deployz</h2></CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-5 text-base leading-relaxed">
+  <div class="container-site pb-20 sm:pb-28 lg:pb-32">
+    <article class="border-b border-border py-10 sm:py-14 lg:grid lg:grid-cols-[200px_minmax(0,720px)] lg:justify-between lg:gap-16">
+      <p class="mb-3 text-[14px] text-subtle lg:mb-0 lg:pt-2"><time datetime="2026-08-25">August 25, 2026</time></p>
+      <div class="min-w-0">
+        <h2 class="text-h3 sm:text-[26px] sm:leading-tight sm:tracking-[-0.025em]">Introducing Deployz</h2>
+        <div class="mt-6 grid gap-5 text-[17px] leading-[1.7] text-muted-foreground">
           <p>
             Small B2B software companies hear this question more and more: "Can your software run inside
             our AWS account?" Until now, the answer was a custom engineering project — infrastructure
@@ -31,8 +26,8 @@ import Base from '../../layouts/Base.astro';
             and diagnostics for every deployment.
           </p>
           <p>Follow this blog for product notes.</p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </article>
   </div>
 </Base>

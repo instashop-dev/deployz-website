@@ -1,14 +1,12 @@
 ---
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import Base from '../layouts/Base.astro';
 ---
 
 <Base title="Page not found — Deployz" description="The requested Deployz page does not exist.">
-  <section class="mx-auto max-w-2xl py-12 text-center md:py-24">
-    <p class="font-mono text-sm text-muted-foreground">404</p>
-    <h1 class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Page not found</h1>
-    <p class="mx-auto mt-4 max-w-md text-lg">This page does not exist.</p>
-    <a class={cn(buttonVariants({ size: 'lg' }), 'mt-8 min-h-11')} href="/">Go to the home page</a>
+  <section class="container-site flex flex-col items-center py-20 text-center sm:py-28 lg:py-32">
+    <p class="text-[14px] font-medium text-subtle tabular-nums">404</p>
+    <h1 class="text-h1 mt-3">Page not found</h1>
+    <p class="text-lead mt-4 max-w-md text-muted-foreground">This page does not exist.</p>
+    <a class="btn btn-primary mt-8" href="/">Go to the home page</a>
   </section>
 </Base>

@@ -1,0 +1,246 @@
+---
+import Logo from './Logo.astro';
+
+const navLinks = [
+  { href: '/how-it-works', label: 'How It Works' },
+  { href: '/security', label: 'Security' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/docs', label: 'Docs' },
+];
+
+const pathname = Astro.url.pathname;
+const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+---
+
+<header data-site-header class="sticky top-0 z-40 border-b border-border bg-background">
+  <nav aria-label="Primary navigation" class="container-site relative flex h-(--header-height) items-center gap-2">
+    <a href="/" class="-ml-1 mr-auto flex min-h-11 items-center rounded-md px-1 lg:mr-10" aria-label="Deployz home">
+      <Logo size={28} />
+    </a>
+
+    <div
+      id="site-menu"
+      data-site-menu
+      class="nav-panel"
+    >
+      <ul class="nav-links">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              class="nav-link"
+              href={link.href}
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="nav-link nav-signin" href="https://app.deployz.dev/sign-in">Sign in</a>
+      <a class="btn btn-primary nav-menu-cta min-[370px]:hidden" href="/get-started">Check my application</a>
+    </div>
+
+    <a class="btn btn-primary hidden min-h-11 px-3.5 text-[14px] whitespace-nowrap min-[370px]:inline-flex sm:px-4" href="/get-started">Check my application</a>
+
+    <button
+      type="button"
+      data-site-menu-button
+      class="nav-toggle"
+      aria-controls="site-menu"
+      aria-expanded="false"
+    >
+      <span class="sr-only">Menu</span>
+      <svg aria-hidden="true" viewBox="0 0 20 20" class="size-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <path class="nav-toggle-open" d="M3 6h14M3 14h14" />
+        <path class="nav-toggle-close" d="M5 5l10 10M15 5L5 15" />
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<style>
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    transition-property: color, background-color;
+    transition-duration: 150ms;
+  }
+
+  .nav-link:hover {
+    color: var(--foreground);
+  }
+
+  .nav-link[aria-current='page'] {
+    color: var(--foreground);
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border-radius: 8px;
+    color: var(--foreground);
+    cursor: pointer;
+  }
+
+  .nav-toggle:hover {
+    background: var(--muted);
+  }
+
+  .nav-toggle-close {
+    display: none;
+  }
+
+  [data-open] .nav-toggle-open {
+    display: none;
+  }
+
+  [data-open] .nav-toggle-close {
+    display: inline;
+  }
+
+  /* Mobile and tablet: links live in a disclosure panel below the bar. */
+  @media (max-width: 1023.98px) {
+    .nav-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 1px);
+      left: 0;
+      right: 0;
+      padding: 8px 20px 20px;
+      background: var(--background);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-menu);
+    }
+
+    [data-open] .nav-panel {
+      display: block;
+    }
+
+    .nav-links {
+      display: grid;
+    }
+
+    .nav-panel .nav-link {
+      display: flex;
+      width: 100%;
+      min-height: 48px;
+      padding-inline: 0;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      font-size: 16px;
+      color: var(--foreground);
+    }
+
+    .nav-panel .nav-link[aria-current='page'] {
+      color: var(--brand);
+    }
+
+    .nav-menu-cta {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    /* Without JavaScript, the links stay reachable as a static row. */
+    :global(html:not(.js)) .nav-panel {
+      display: block;
+      position: static;
+      padding: 0;
+      border: 0;
+      box-shadow: none;
+    }
+
+    :global(html:not(.js)) .nav-toggle {
+      display: none;
+    }
+
+    :global(html:not(.js)) nav {
+      flex-wrap: wrap;
+      height: auto;
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 1023.98px) {
+    .nav-panel {
+      padding-inline: 24px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .nav-panel {
+      display: flex;
+      flex: 1;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-signin {
+      margin-left: auto;
+      margin-right: 4px;
+    }
+
+    .nav-toggle,
+    .nav-menu-cta {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var header = document.querySelector('[data-site-header]');
+    if (!header) return;
+    var button = header.querySelector('[data-site-menu-button]');
+    var panel = header.querySelector('[data-site-menu]');
+
+    function setOpen(open, returnFocus) {
+      if (open) {
+        header.setAttribute('data-open', '');
+      } else {
+        header.removeAttribute('data-open');
+      }
+      button.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        var first = panel.querySelector('a');
+        if (first) first.focus();
+      } else if (returnFocus) {
+        button.focus();
+      }
+    }
+
+    button.addEventListener('click', function () {
+      setOpen(!header.hasAttribute('data-open'), false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && header.hasAttribute('data-open')) {
+        setOpen(false, true);
+      }
+    });
+
+    document.addEventListener('click', function (event) {
+      if (header.hasAttribute('data-open') && !header.contains(event.target)) {
+        setOpen(false, false);
+      }
+    });
+
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', function (query) {
+      if (query.matches) setOpen(false, false);
+    });
+  })();
+</script>

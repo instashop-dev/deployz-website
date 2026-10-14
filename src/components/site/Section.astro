@@ -1,0 +1,29 @@
+---
+interface Props {
+  id?: string;
+  tone?: 'default' | 'subtle';
+  divider?: boolean;
+  labelledby?: string;
+  label?: string;
+  class?: string;
+  innerClass?: string;
+}
+
+const { id, tone = 'default', divider = false, labelledby, label, class: className, innerClass } = Astro.props;
+---
+
+<section
+  id={id}
+  aria-labelledby={labelledby}
+  aria-label={label}
+  class:list={[
+    'section-y',
+    tone === 'subtle' && 'bg-surface-subtle',
+    divider && 'border-t border-border',
+    className,
+  ]}
+>
+  <div class:list={['container-site', innerClass]}>
+    <slot />
+  </div>
+</section>

@@ -259,7 +259,8 @@ test.describe('public design-system contract', () => {
       const undersized = await page.locator('body a, body button').evaluateAll((elements) =>
         elements.flatMap((element) => {
           const bounds = element.getBoundingClientRect();
-          if (bounds.height >= 44) {
+          const rendered = bounds.width > 0 || bounds.height > 0;
+          if (!rendered || bounds.height >= 44) {
             return [];
           }
 
