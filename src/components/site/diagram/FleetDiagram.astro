@@ -1,0 +1,58 @@
+---
+/*
+ * One release process, many customer AWS accounts. Built from the shared diagram system
+ * (src/styles/diagrams.css). Connectors are decorative; the sr-only caption states the relationships.
+ */
+import { Cloud } from 'lucide-react';
+import Connector from '@/components/site/diagram/Connector.astro';
+
+const accounts = [
+  { name: "Customer A's AWS account", status: 'Live' },
+  { name: "Customer B's AWS account", status: 'Updating' },
+  { name: "Customer C's AWS account", status: 'Waiting for customer' },
+];
+---
+
+<figure class="dg fleet-dg" aria-labelledby="fleet-dg-caption">
+  <figcaption id="fleet-dg-caption" class="sr-only">
+    Deployz installs the same release process into each customer's own AWS account. Each account shows its
+    own deployment status.
+  </figcaption>
+  <div role="list" class="dg-flow">
+    <div role="listitem" class="dg-node dg-node-brand">
+      <p class="dg-role">
+        <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
+        Deployz
+      </p>
+      <p class="dg-title">Your app, one release process</p>
+      <p class="dg-text">Prepare once. Install it for each customer that asks.</p>
+    </div>
+
+    <Connector label="Same installation flow" variant="brand" />
+
+    <div role="listitem">
+      <ul class="fleet-stack">
+        {accounts.map((account) => (
+          <li class="dg-boundary">
+            <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> {account.name}</p>
+            <p class="dg-chip dg-chip-strong mt-2.5">
+              <span>Your app</span>
+              <span class="dg-chip-meta">{account.status}</span>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .fleet-stack {
+    display: grid;
+    gap: 8px;
+  }
+
+  .fleet-dg .dg-boundary {
+    padding: 14px 16px;
+  }
+</style>

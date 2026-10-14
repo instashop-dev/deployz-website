@@ -1,5 +1,6 @@
 ---
 import { ArrowRight } from 'lucide-react';
+import JourneyDiagram from '@/components/site/diagram/JourneyDiagram.astro';
 import CtaSection from '@/components/site/CtaSection.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
@@ -68,8 +69,16 @@ const notPromised = [
     <a slot="actions" class="btn btn-primary btn-lg" href={SIGNUP_URL} data-cta="hiw-hero">{CTA_LABEL}</a>
   </PageHeader>
 
+  <!-- W1b. Process at a glance -->
+  <Section labelledby="overview-title">
+    <h2 id="overview-title" class="text-h2 max-w-[780px]">The whole process at a glance.</h2>
+    <div class="mt-10 lg:mt-12">
+      <JourneyDiagram />
+    </div>
+  </Section>
+
   <!-- W2. Connect and analyze -->
-  <Section labelledby="connect-title">
+  <Section divider labelledby="connect-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
         <p class="text-eyebrow mb-3 text-muted-foreground">Step 1</p>
