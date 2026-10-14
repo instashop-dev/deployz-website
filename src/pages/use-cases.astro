@@ -10,66 +10,62 @@ const cases = [
   {
     id: 'customer-owned-infrastructure',
     quote: 'We need your software in our AWS account.',
-    text: 'Some customers want applications running on infrastructure they own and administer. Deployz helps you prepare and manage a deployment in their AWS account.',
-    outcome: 'Offer a customer-hosted deployment alongside your existing SaaS delivery model.',
+    text: 'The customer owns and administers the AWS account. Deployz deploys and manages your app there, and you keep your hosted SaaS for everyone else.',
   },
   {
     id: 'customer-hosted-data',
     quote: 'Our application data needs to stay in our environment.',
-    text: "Deploy supported application and data resources inside the customer's AWS account, so they control the cloud environment hosting them. Application integrations and external data flows still depend on your SaaS design. Traffic to the default deployz.dev URL passes through the Deployz proxy; a custom domain sends traffic directly to the customer's load balancer.",
-    outcome: 'Give customers an infrastructure option that aligns with their hosting requirements.',
+    text: "The database, cache, and S3 storage run in the customer's account. Your app's integrations and external data flows still depend on your design. Traffic to the default deployz.dev URL passes through the Deployz proxy; with a custom domain, it goes directly to the customer's load balancer.",
   },
   {
     id: 'updates-after-installation',
     quote: 'How will you keep our installation up to date?',
-    text: 'Customer-hosted deployments continue to need new versions, fixes, and visibility. Deployz lets your team manage supported releases and rollbacks from one place.',
-    outcome: 'Deliver updates without rebuilding deployment tooling for every customer.',
+    text: 'You choose when each customer gets a new release, see the status of every installation, and can roll back. Installations do not update automatically.',
   },
 ];
 ---
 
 <Base
   title="Deployz Use Cases — Customer-Hosted SaaS"
-  description="Offer your SaaS in customer-owned AWS accounts for teams needing infrastructure control, customer-hosted data, and ongoing updates."
+  description="Answer customers who need your SaaS in their own AWS account: customer-owned infrastructure, customer-hosted data, and managed updates."
 >
   <!-- U1. Hero -->
-  <PageHeader eyebrow="Use cases" title="Different customer requirements. One way to deploy.">
-    When customers need your SaaS in their own AWS account, Deployz helps you offer that option without
-    creating a custom deployment process for each deal.
+  <PageHeader eyebrow="Use cases" title="When a customer needs your SaaS in their own AWS.">
+    Deploy to every customer's account with the same process, instead of a custom project for each deal.
     <FleetDiagram slot="aside" />
   </PageHeader>
 
-  <!-- U2–U4. Customer requests -->
-  {cases.map((item, index) => (
-    <Section divider={index > 0} id={item.id} labelledby={`${item.id}-title`}>
-      <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <h2 id={`${item.id}-title`} class="text-h2 max-w-[520px] wrap-break-word">“{item.quote}”</h2>
-        <div class="max-w-[640px] lg:pt-2">
-          <p class="text-lead text-muted-foreground">{item.text}</p>
-          <p class="mt-6 border-t border-border pt-5 font-medium">{item.outcome}</p>
-        </div>
-      </div>
-    </Section>
-  ))}
+  <!-- U2. Customer requests -->
+  <Section label="Customer requests">
+    <ul>
+      {cases.map((item, index) => (
+        <li
+          id={item.id}
+          class:list={[
+            'grid scroll-mt-24 grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16',
+            index > 0 && 'mt-12 border-t border-border pt-12 lg:mt-16 lg:pt-16',
+          ]}
+        >
+          <h2 class="text-h2 max-w-[520px] wrap-break-word">“{item.quote}”</h2>
+          <p class="text-lead max-w-[640px] text-muted-foreground lg:pt-2">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+  </Section>
 
-  <!-- U5. Who Deployz is for -->
+  <!-- U3. Who Deployz is for -->
   <Section divider labelledby="fit-title">
     <div class="max-w-[780px]">
-      <h2 id="fit-title" class="text-h2">Built for SaaS vendors. Not general-purpose AWS hosting.</h2>
+      <h2 id="fit-title" class="text-h2">Built for SaaS vendors, not general AWS hosting.</h2>
       <p class="text-lead mt-5 text-muted-foreground">
-        Deployz is for teams shipping their own software to customers who require deployments in
-        customer-owned AWS accounts. It is not currently an on-premises, multi-cloud, or any-repository
-        hosting solution.
+        Deployz does not support on-premises, other clouds, or every app. Check compatibility before you
+        promise a customer a private installation.
       </p>
-      <p class="mt-5 text-muted-foreground">
-        Your app must fit Deployz's supported deployment capabilities. Check compatibility before promising
-        a private installation to a customer.
-      </p>
-      <a class="link-arrow mt-6" href="/how-it-works/">Check how it works <ArrowRight className="size-4" aria-hidden="true" /></a>
+      <a class="link-arrow mt-6" href="/how-it-works/#compatibility">Check compatibility <ArrowRight className="size-4" aria-hidden="true" /></a>
     </div>
   </Section>
 
-  <CtaSection title="Have a customer asking for private deployment?" cta="use-cases-closing">
-    See how Deployz can help you deliver your SaaS into their AWS account.
+  <CtaSection title="Have a customer asking for their own AWS?" cta="use-cases-closing">
+    Connect GitHub and see what your app needs.
   </CtaSection>
 </Base>

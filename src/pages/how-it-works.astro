@@ -11,43 +11,43 @@ const checks = [
   'Dockerfile and container build',
   'Application port and health check',
   'Build, start, and migration commands',
-  'Environment variables your app needs',
-  'Database, cache, and file-storage requirements',
+  'Environment variables',
+  'Database, cache, and file-storage needs',
   'Background workers',
   'Parts outside the supported architecture',
 ];
 
 const reportGroups = [
   { title: 'Passed', text: 'Checks your app already meets.' },
-  { title: 'Needs input', text: 'Settings or values you must provide, such as environment variables.' },
+  { title: 'Needs input', text: 'Values you must provide, such as environment variables.' },
   { title: 'Blockers', text: 'Changes your app needs before it can deploy.' },
 ];
 
 const connection = [
-  { title: 'Your customer approves the AWS connection', text: 'They review the plan and the access, then launch the Deployz connector in their AWS console.' },
-  { title: 'Deployz coordinates the deployment', text: 'The connector asks Deployz for instructions over outbound HTTPS and reports status back.' },
-  { title: "Resources run in your customer's AWS account", text: 'Your application, its database, cache, and storage are created in their account.' },
+  { title: 'Open the installation link', text: 'They see the resources, an AWS cost estimate, and every IAM action requested.' },
+  { title: 'Launch the connector', text: 'They create it as a CloudFormation stack in their own AWS console.' },
+  { title: 'Deployz deploys the release', text: "The app and its resources are created in the customer's account." },
 ];
 
 const lifecycle = [
-  { title: 'Versioned releases', text: 'Build a release from a commit. Each customer runs the release you select.' },
-  { title: 'Deployment status', text: 'See progress during installation and the health of each customer deployment.' },
-  { title: 'Updates and rollbacks', text: 'You start each update. If a new version fails its health check, the previous version keeps running.' },
+  { title: 'Releases', text: 'Each customer runs the release you select.' },
+  { title: 'Status', text: 'See the progress and health of every customer environment.' },
+  { title: 'Updates and rollbacks', text: 'You start each update. If the new version fails its health check, the previous one keeps running. A rollback does not reverse database migrations.' },
 ];
 
 const goodFit = [
-  'One Linux web or API container, built from your Dockerfile',
+  'One Linux x86-64 container image, built from your Dockerfile',
+  'A web or API service with an HTTP health check',
   'Optional background workers from the same image',
   'Optional PostgreSQL 16 or MySQL 8.0',
   'Optional Redis-compatible cache',
   'S3 file storage',
-  'HTTPS, with optional custom domains',
-  'A dedicated network in the customer AWS account',
-  'No Kubernetes required',
+  'HTTPS, with an optional custom domain',
+  'A new, dedicated network in the customer AWS account',
 ];
 
-const notPromised = [
-  'Multiple services that need separate images',
+const notSupported = [
+  'Services that need separate images',
   'Databases other than PostgreSQL and MySQL',
   'Message brokers such as Kafka or RabbitMQ',
   'Existing customer VPCs',
@@ -60,37 +60,26 @@ const notPromised = [
 
 <Base
   title="How Deployz Works — From GitHub to Customer AWS"
-  description="See how Deployz analyzes your app, guides configuration, connects customer AWS, and helps manage deployments and updates."
+  description="Connect GitHub, build a release, have your customer connect AWS, then deploy and manage updates. See each step and what Deployz supports."
 >
   <!-- W1. Hero -->
-  <PageHeader eyebrow="How it works" title="From your GitHub repo to your customer's AWS.">
-    Prepare your SaaS, connect a customer's AWS account, and manage deployments from one place. Deployz
-    guides the infrastructure setup along the way.
+  <PageHeader eyebrow="How it works" title="From GitHub to your customer's AWS in four steps.">
     <a slot="actions" class="btn btn-primary btn-lg" href={SIGNUP_URL} data-cta="hiw-hero">{CTA_LABEL}</a>
   </PageHeader>
 
-  <!-- W1b. Process at a glance -->
-  <Section labelledby="overview-title">
-    <h2 id="overview-title" class="text-h2 max-w-[780px]">The whole process at a glance.</h2>
-    <div class="mt-10 lg:mt-12">
-      <JourneyDiagram />
-    </div>
+  <!-- W2. Overview -->
+  <Section label="The four steps at a glance">
+    <JourneyDiagram />
   </Section>
 
-  <!-- W2. Connect and analyze -->
+  <!-- W3. Step 1 -->
   <Section divider labelledby="connect-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
         <p class="text-eyebrow mb-3 text-muted-foreground">Step 1</p>
-        <h2 id="connect-title" class="text-h2">Start with your existing SaaS.</h2>
+        <h2 id="connect-title" class="text-h2">Connect GitHub</h2>
         <p class="mt-5 max-w-[520px] text-muted-foreground">
-          Connect your GitHub repository using read-only access. Deployz checks your application and
-          suggests the supported AWS setup it needs, including relevant application, database, cache, and
-          storage requirements. It also identifies possible blockers.
-        </p>
-        <p class="mt-4 max-w-[520px] text-muted-foreground">
-          Start with your code, not an infrastructure template. The readiness report separates checks that
-          passed, configuration still needed, and potential blockers.
+          Deployz reads your repository with read-only access and reports what your app needs.
         </p>
       </div>
       <div class="min-w-0">
@@ -102,15 +91,14 @@ const notPromised = [
     </div>
   </Section>
 
-  <!-- W3. Review and configure -->
+  <!-- W4. Step 2 -->
   <Section divider labelledby="review-title">
     <div class="max-w-[780px]">
       <p class="text-eyebrow mb-3 text-muted-foreground">Step 2</p>
-      <h2 id="review-title" class="text-h2">Know what your app needs before you deploy.</h2>
+      <h2 id="review-title" class="text-h2">Configure and build a release</h2>
       <p class="text-lead mt-5 text-muted-foreground">
-        Review the suggested setup, enter required settings, and resolve any issues Deployz identifies.
-        Some applications need code or configuration changes before they can run successfully. Findings may
-        require validation against your source code.
+        Fill in what the readiness report asks for, fix any blockers, then build a versioned release from a
+        commit.
       </p>
     </div>
     <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
@@ -122,33 +110,28 @@ const notPromised = [
       ))}
     </ul>
     <p class="mt-10 max-w-[720px] text-[15px] text-muted-foreground">
-      Deployz helps you find deployment blockers; it doesn't promise to fix every application
-      automatically. For a blocker, it can write fix instructions that you give to your own coding tool.
-      It never changes your repository.
+      The report is advisory and can miss behavior in your code. For a blocker, Deployz can write fix
+      instructions for your own coding tool; it never changes your repository. You can also run one free test
+      deployment in your own AWS account.
     </p>
   </Section>
 
-  <!-- W4. Customer connects AWS -->
+  <!-- W5. Step 3 -->
   <Section divider labelledby="install-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
         <p class="text-eyebrow mb-3 text-muted-foreground">Step 3</p>
-        <h2 id="install-title" class="text-h2">One installation link for each customer.</h2>
+        <h2 id="install-title" class="text-h2">Your customer connects AWS</h2>
         <p class="mt-5 max-w-[520px] text-muted-foreground">
-          After preparing a release, send your customer an installation link. They review the AWS access
-          and launch the connection from their own AWS account. They do not need a Deployz account. Deployz
-          then deploys the selected release in their AWS environment.
+          Send each customer an installation link. They do not need a Deployz account. Customers can
+          install only while your subscription is active.
         </p>
-        <p class="mt-4 max-w-[520px] text-muted-foreground">
-          Build and select a versioned release before distributing the installation link. Subsequent
-          customers follow the same onboarding pattern without recreating your deployment process.
-        </p>
-        <a class="link-arrow mt-6" href="/security/">How AWS access works <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <a class="link-arrow mt-6" href="/security/#aws-access">How AWS access works <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
-      <ol class="min-w-0 max-w-[640px]" aria-label="How the customer AWS connection works">
+      <ol class="min-w-0 max-w-[640px]" aria-label="What your customer does">
         {connection.map((item, index) => (
           <li class="flow-step grid grid-cols-[32px_minmax(0,1fr)] gap-x-5 pb-8 last:pb-0">
-            <span class:list={['flow-node', index === 1 && 'flow-node-brand']}>{index + 1}</span>
+            <span class:list={['flow-node', index === 2 && 'flow-node-brand']}>{index + 1}</span>
             <div class="min-w-0">
               <h3 class="text-[17px] leading-8 font-semibold">{item.title}</h3>
               <p class="mt-1 text-muted-foreground">{item.text}</p>
@@ -159,14 +142,14 @@ const notPromised = [
     </div>
   </Section>
 
-  <!-- W5. Deploy, update, manage -->
+  <!-- W6. Step 4 -->
   <Section divider labelledby="manage-title">
     <div class="max-w-[780px]">
       <p class="text-eyebrow mb-3 text-muted-foreground">Step 4</p>
-      <h2 id="manage-title" class="text-h2">Deploy today. Manage what comes next.</h2>
+      <h2 id="manage-title" class="text-h2">Deploy and manage updates</h2>
       <p class="text-lead mt-5 text-muted-foreground">
-        Deployz provisions supported resources, deploys your application, and shows deployment progress.
-        When your app changes, use Deployz to release updates, check status, and manage rollbacks.
+        Deployz creates the infrastructure, deploys the release, and marks the environment ready when its
+        health check passes.
       </p>
     </div>
     <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
@@ -177,31 +160,21 @@ const notPromised = [
         </li>
       ))}
     </ul>
-    <p class="mt-10 max-w-[720px] text-[15px] text-muted-foreground">
-      A rollback redeploys an earlier release. It does not reverse database migrations or change customer
-      data.
-    </p>
   </Section>
 
-  <!-- W6. Compatibility -->
+  <!-- W7. Compatibility -->
   <Section divider id="compatibility" labelledby="fit-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <div>
-        <h2 id="fit-title" class="text-h2">Will Deployz work with my SaaS?</h2>
+        <h2 id="fit-title" class="text-h2">Will Deployz work with my app?</h2>
         <p class="mt-5 max-w-[440px] text-muted-foreground">
-          Deployz is built for supported SaaS workloads running in AWS. Start by connecting your GitHub
-          repository to see what the analysis detects, what infrastructure is suggested, and what needs
-          attention before deployment.
+          Deployz supports one application architecture on AWS. Some apps need code changes first.
         </p>
-        <p class="mt-4 max-w-[440px] text-muted-foreground">
-          Works best for SaaS vendors with an existing application, a GitHub repository, and customers who
-          can authorize deployment into their own AWS accounts.
-        </p>
-        <a class="link-arrow mt-6" href="/docs/#supported-architecture">Technical requirements &amp; supported services <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <a class="link-arrow mt-6" href="/docs/#supported-architecture">Technical requirements <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <div class="grid gap-10 sm:grid-cols-2 sm:gap-8">
         <div>
-          <h3 class="text-[16px] font-semibold">Current good fit</h3>
+          <h3 class="text-[16px] font-semibold">Supported</h3>
           <ul class="mt-4 border-b border-border">
             {goodFit.map((item) => (
               <li class="flex items-start gap-3 border-t border-border py-3">
@@ -212,9 +185,9 @@ const notPromised = [
           </ul>
         </div>
         <div>
-          <h3 class="text-[16px] font-semibold">Not currently supported</h3>
+          <h3 class="text-[16px] font-semibold">Not supported</h3>
           <ul class="mt-4 border-b border-border">
-            {notPromised.map((item) => (
+            {notSupported.map((item) => (
               <li class="flex items-start gap-3 border-t border-border py-3 text-muted-foreground">
                 <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3.5 8h9" /></svg>
                 <span>{item}</span>
@@ -224,14 +197,10 @@ const notPromised = [
         </div>
       </div>
     </div>
-    <p class="mt-12 max-w-[780px] border-t border-border pt-8 text-muted-foreground">
-      Some apps need code changes, and not every repository can deploy unchanged. A readiness report is
-      advisory and may miss existing application behavior. Customer AWS authorization is required.
-    </p>
   </Section>
 
   <CtaSection title="See what Deployz finds in your app." cta="hiw-closing">
-    Connect your repository and review the recommended deployment setup.
+    Connect GitHub for a free readiness report.
   </CtaSection>
 </Base>
 

@@ -127,10 +127,10 @@ Control utilities (in `globals.css`):
 | Diagram | Component | Page | Explains |
 | --- | --- | --- | --- |
 | Hero flow | `DeploymentDiagram.astro` | `/` | GitHub → Deployz (blue) → customer AWS with the application container and its resources. |
-| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | You prepare → installation link → your customer connects AWS → Deployz deploys and you manage. Maps to steps 1–4 on the page. |
+| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | You prepare (steps 1–2) → installation link → your customer connects AWS (step 3) → Deployz deploys and you manage (step 4). |
 | Fleet | `diagram/FleetDiagram.astro` | `/use-cases` header | One release process installed into each customer's own AWS account, each with its own status. |
 | Billing | `diagram/BillingDiagram.astro` | `/pricing` | Deployz bills the vendor; AWS bills the AWS account owner. |
-| Relay | `diagram/RelayDiagram.astro` | `/security` | The relay in the customer account starts every request over outbound HTTPS; no inbound connections. |
+| Connector | `diagram/RelayDiagram.astro` | `/security` | The connector in the customer account starts every request over outbound HTTPS; no inbound connections. |
 
 The product preview (`ProductPreview.astro`) is a simplified interface illustration, not a diagram. Its labels follow the product (for example the install steps "Create infrastructure", "Start application", "Check application", "Set up HTTPS").
 
@@ -138,11 +138,11 @@ The product preview (`ProductPreview.astro`) is a simplified interface illustrat
 
 | Page | Composition |
 | --- | --- |
-| `/` | Seven sections: centered hero + diagram; problem (split, text only); solution + three benefits (quiet grid); 3-step process rail; product preview tabs; security summary + FAQ (split); closing CTA. |
-| `/how-it-works` | Left-aligned header; journey diagram (process at a glance); connect and analyze (split); review and configure (quiet grid); customer AWS connection (split + step rail); deploy and manage (quiet grid); compatibility (split, good fit / not supported); closing CTA. |
-| `/use-cases` | Left-aligned header with the fleet diagram aside; three customer-request sections (split, quote heading); who Deployz is for; closing CTA. |
-| `/pricing` | Left-aligned header; one bounded plan frame + included list; cost estimator (range input, inline script); Deployz vs AWS billing diagram; billing FAQ; closing CTA. |
-| `/security` | Left-aligned header; what runs where; AWS access; outbound-only relay diagram; responsibilities, data, secrets, routing; lifecycle disclosures + team; closing CTA. |
+| `/` | Seven sections: centered hero + diagram; three benefits with Lucide icons (quiet grid); 4-step process rail; product preview tabs; ownership summary + supported list (split); FAQ (split); closing CTA. |
+| `/how-it-works` | Left-aligned header; journey diagram (steps 1–4 at a glance); 1 connect GitHub (split); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid); compatibility (split, supported / not supported); closing CTA. |
+| `/use-cases` | Left-aligned header with the fleet diagram aside; one section with three customer-request rows (split, quote heading, hairline between rows); who Deployz is for; closing CTA. |
+| `/pricing` | Left-aligned header; one bounded plan frame (price, free evaluation, "When you pay" definition list) + included list; cost estimator for an active subscription (range input, inline script); who-bills-whom diagram; billing FAQ; closing CTA. |
+| `/security` | Left-aligned header; what runs where (connector diagram); AWS access + connector permissions + responsibilities (split, then definition list); what Deployz receives, secrets, code and AI, routing; lifecycle disclosures + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
 | `/blog` | Editorial list with dates and hairlines. |
 | `/404` | Short centered message. |

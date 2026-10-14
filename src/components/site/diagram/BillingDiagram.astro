@@ -17,10 +17,10 @@ import Connector from '@/components/site/diagram/Connector.astro';
           Deployz
         </p>
         <p class="dg-title">Deployz fees</p>
-        <p class="dg-text">Your subscription and billable managed deployments.</p>
+        <p class="dg-text">Your subscription and billable customer environments.</p>
       </div>
 
-      <Connector variant="brand" label="Bills you monthly" sub="$49 base + $19 per active customer environment" />
+      <Connector variant="brand" label="Bills you monthly" sub="$49 base + $19 per billable customer environment" />
 
       <div role="listitem" class="dg-node">
         <p class="dg-role"><UserRound aria-hidden="true" strokeWidth={1.75} /> You</p>
@@ -33,10 +33,7 @@ import Connector from '@/components/site/diagram/Connector.astro';
       <div role="listitem" class="dg-node">
         <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> AWS</p>
         <p class="dg-title">AWS costs</p>
-        <p class="dg-text">
-          Computing, databases, networking, storage, and other resources used by your SaaS in the
-          customer's account.
-        </p>
+        <p class="dg-text">Compute, database, network, and storage resources in the customer's account.</p>
       </div>
 
       <Connector label="Bills the account owner" sub="Under their AWS arrangement" />
@@ -50,8 +47,8 @@ import Connector from '@/components/site/diagram/Connector.astro';
   </div>
 
   <figcaption id="billing-dg-caption" class="dg-caption">
-    AWS resource costs depend on region, configuration, and usage. They may continue while resources
-    remain provisioned, even if an app deployment is stopped or some resources are retained.
+    AWS costs depend on Region, configuration, and usage. They continue while resources exist, including
+    resources retained after removal.
   </figcaption>
 </figure>
 

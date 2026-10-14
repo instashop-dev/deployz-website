@@ -1,6 +1,6 @@
 ---
 /*
- * Security architecture: the customer-side relay (the Deployz connector) inside the
+ * Security architecture: the Deployz connector inside the
  * customer's AWS account starts every request to the Deployz management service over
  * outbound HTTPS. Deployz makes no inbound connection. Shared diagram system.
  */
@@ -34,13 +34,13 @@ const deployzRows = ['Returns deployment instructions', 'Receives status and err
           <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
           Deployz connector
         </p>
-        <p class="dg-title">Relay</p>
+        <p class="dg-title">Runs deployment steps</p>
         <p class="dg-text">Launched by the customer as a CloudFormation stack.</p>
       </div>
     </div>
 
     <div class="dg-lanes" aria-hidden="true">
-      <Connector variant="brand" label="Relay starts every request" sub="Outbound HTTPS" />
+      <Connector variant="brand" label="Connector starts every request" sub="Outbound HTTPS" />
       <Connector variant="blocked" label="No inbound connections" />
     </div>
 
@@ -56,9 +56,8 @@ const deployzRows = ['Returns deployment instructions', 'Receives status and err
     </div>
   </div>
   <figcaption id="relay-dg-caption" class="dg-caption">
-    The relay checks in over outbound HTTPS about every minute. This describes the deployment-control
-    connection, not every network interaction of the running app or AWS services. Deployz has no inbound
-    path into the account.
+    The connector checks in over outbound HTTPS about every minute. This covers deployment control only,
+    not the network traffic of the running app. Deployz has no inbound path into the account.
   </figcaption>
 </figure>
 

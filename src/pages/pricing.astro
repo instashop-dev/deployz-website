@@ -4,83 +4,90 @@ import CtaSection from '@/components/site/CtaSection.astro';
 import FaqList from '@/components/site/FaqList.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
-import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
+import { BASE_PRICE, CTA_LABEL, ENVIRONMENT_PRICE, SIGNUP_URL } from '@/lib/site';
 import Base from '../layouts/Base.astro';
 
-const BASE_PRICE = 49;
-const ENVIRONMENT_PRICE = 19;
 const DEFAULT_ENVIRONMENTS = 3;
-const estimate = (count: number) => (count > 0 ? BASE_PRICE + ENVIRONMENT_PRICE * count : 0);
+const MAX_ENVIRONMENTS = 30;
+const estimate = (count: number) => BASE_PRICE + ENVIRONMENT_PRICE * count;
 
 const free = [
-  'Sign-up and readiness analysis',
-  'Configuration and release builds',
-  'One test deployment of your own app per application (AWS costs apply in your own account)',
-  'No card required',
+  'Readiness analysis and configuration',
+  'Release builds',
+  'One active test deployment per application, in your own AWS account',
+  'No card and no time limit',
+];
+
+const billing = [
+  {
+    term: `$${BASE_PRICE} base`,
+    text: 'Starts when you activate your subscription. Deployz asks you to subscribe when you start your first customer deployment, and customers can install only while it is active. It continues until you cancel, even with zero environments.',
+  },
+  {
+    term: `$${ENVIRONMENT_PRICE} per environment`,
+    text: 'Starts when a customer environment first becomes ready. Stops when its removal starts. Paddle prorates partial months.',
+  },
+  {
+    term: 'No charge',
+    text: 'Test deployments, installations that never become ready, updates, retries, and rollbacks.',
+  },
 ];
 
 const included = [
-  'Readiness analysis',
-  'Release builds',
-  'Guided customer installation links',
-  'Supported infrastructure: PostgreSQL or MySQL, cache, S3 storage, HTTPS, custom domains',
+  'Readiness analysis and release builds',
+  'Customer installation links',
+  'Database, cache, S3 storage, HTTPS, and custom domains',
   'Updates, retries, and rollbacks',
-  'Deployment status, failure diagnosis, and removal controls',
+  'Deployment status, failure diagnosis, and removal',
 ];
 
 const questions = [
   {
-    question: 'Can I try Deployz for free?',
+    question: 'What is a billable customer environment?',
     answer:
-      'Yes. Sign-up, readiness analysis, configuration, release builds, and one test deployment of your own app per application are free, with no card. The test deployment runs in your own AWS account, and AWS bills that account for its resources. Your subscription starts when you start your first customer deployment.',
-  },
-  {
-    question: 'What counts as a billable environment?',
-    answer:
-      'One Deployz-managed deployment in a customer AWS account that has become ready and has not been removed. Each environment counts separately. A first installation that never becomes ready has no environment charge.',
+      "One Deployz-managed deployment of your app in a customer's AWS account that has become ready and has not started removal. Test deployments in your own account are not billable.",
   },
   {
     question: 'Are AWS costs included?',
     answer:
-      "No. AWS costs are separate and billed by AWS to the AWS account owner. For a customer environment, that is your customer. Before they connect, your customer sees an AWS cost estimate for their Region.",
+      'No. AWS bills the AWS account owner directly. For a customer environment, that is your customer.',
   },
   {
-    question: 'What happens if an installation fails or a payment fails?',
+    question: 'What happens if a payment fails or I cancel?',
     answer:
-      'A first installation that never becomes ready has no $19 environment charge. The $49 base subscription starts when you start your first customer deployment, so it can already be active. Updates, retries, and rollbacks have no additional charge. If a payment fails, existing customer environments keep running, but you cannot start new customer deployments until the payment is resolved.',
+      'Existing customer environments keep running, and you can still update, roll back, and remove them. You cannot start new customer deployments until your subscription is active again. Manage invoices, payment details, and cancellation in the Paddle billing portal.',
   },
   {
-    question: 'When do charges stop, and what happens if I cancel?',
+    question: 'Do costs continue after I remove an environment?',
     answer:
-      "An environment's $19 charge stops when its removal starts. You manage invoices, payment details, and cancellation in the portal of our billing partner, Paddle. If you cancel, existing customer environments keep running, but you cannot start new customer deployments. Resources that stay in an AWS account after removal, such as a retained database, continue to cause AWS charges until they are deleted.",
+      'The Deployz charge stops when removal starts. Removal keeps the database and the S3 bucket, and they continue to cause AWS charges until someone deletes them.',
   },
 ];
 ---
 
 <Base
-  title="Deployz Pricing — Simple Customer Deployment Pricing"
-  description="Understand Deployz subscription and deployment charges, estimate fees, and see how AWS infrastructure costs are billed separately."
+  title="Deployz Pricing — $49/month + $19 per Customer Environment"
+  description="Free evaluation with no card. Then $49 a month plus $19 a month per billable customer environment. AWS bills infrastructure costs separately."
 >
   <!-- P1. Hero -->
-  <PageHeader eyebrow="Pricing" title="Simple pricing. No surprises.">
-    Start with free application analysis. Your subscription starts with your first customer deployment.
-    Your customer pays AWS separately.
+  <PageHeader eyebrow="Pricing" title="Free to evaluate. Pay when you deploy for customers.">
+    AWS bills your customers separately for the infrastructure in their accounts.
   </PageHeader>
 
-  <!-- P2. One plan -->
+  <!-- P2. Plan -->
   <Section labelledby="plan-title">
     <div class="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
       <div class="min-w-0 overflow-hidden rounded-xl border border-border-strong bg-background">
         <div class="px-6 pt-8 sm:px-8">
-          <p class="text-[15px] font-semibold">Deployz</p>
-          <h2 id="plan-title" class="text-h3 mt-1">One plan. Pay as you grow.</h2>
-          <p class="mt-8 flex flex-wrap items-baseline gap-x-2">
-            <span class="text-[64px] leading-none font-semibold tracking-[-0.04em] tabular-nums sm:text-[80px]">$49</span>
+          <h2 id="plan-title" class="text-[15px] font-semibold">Deployz</h2>
+          <p class="mt-6 flex flex-wrap items-baseline gap-x-2">
+            <span class="text-[64px] leading-none font-semibold tracking-[-0.04em] tabular-nums sm:text-[80px]">${BASE_PRICE}</span>
             <span class="text-[18px] text-muted-foreground">/ month</span>
           </p>
           <p class="mt-4 text-[18px]">
-            + <span class="font-semibold tabular-nums">$19</span> / active customer environment / month
+            + <span class="font-semibold tabular-nums">${ENVIRONMENT_PRICE}</span> / billable customer environment / month
           </p>
+          <p class="mt-2 text-[14px] text-muted-foreground">US dollars, billed monthly. Taxes may apply.</p>
         </div>
         <div class="mt-8 border-t border-border px-6 py-6 sm:px-8">
           <h3 class="text-[16px] font-semibold">Free evaluation</h3>
@@ -94,15 +101,18 @@ const questions = [
           </ul>
         </div>
         <div class="border-t border-border px-6 py-6 sm:px-8">
-          <h3 class="text-[16px] font-semibold">When billing starts</h3>
-          <p class="mt-2 text-[15px] text-muted-foreground">
-            The $49 base subscription starts when you start your first customer deployment. The $19 for an
-            environment starts when it first becomes ready and stops when its removal starts.
-          </p>
+          <h3 class="text-[16px] font-semibold">When you pay</h3>
+          <dl class="mt-3">
+            {billing.map((row) => (
+              <div class="grid gap-1 py-2 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-x-6">
+                <dt class="text-[15px] font-semibold">{row.term}</dt>
+                <dd class="text-[15px] text-muted-foreground">{row.text}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
         <div class="border-t border-border px-6 py-6 sm:px-8">
           <a class="btn btn-primary btn-lg w-full sm:w-auto" href={SIGNUP_URL} data-cta="pricing-plan">{CTA_LABEL}</a>
-          <p class="mt-4 text-[14px] text-muted-foreground">AWS charges are separate and are billed by AWS to the AWS account owner.</p>
         </div>
       </div>
       <div class="min-w-0 lg:pt-2">
@@ -115,7 +125,6 @@ const questions = [
             </li>
           ))}
         </ul>
-        <p class="mt-5 text-[14px] text-muted-foreground">Prices are in US dollars and are billed monthly. Applicable taxes may be added.</p>
       </div>
     </div>
   </Section>
@@ -124,10 +133,10 @@ const questions = [
   <Section divider labelledby="estimate-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
-        <h2 id="estimate-title" class="text-h2">Estimate your Deployz cost.</h2>
+        <h2 id="estimate-title" class="text-h2">Estimate your monthly cost.</h2>
         <p class="mt-5 max-w-[440px] text-muted-foreground">
-          Choose the number of active billable customer environments to estimate your monthly Deployz
-          subscription.
+          Before you subscribe, Deployz costs $0. After you subscribe, choose the number of billable customer
+          environments.
         </p>
       </div>
       <div data-estimator class="min-w-0 rounded-xl border border-border-strong p-6 sm:p-8">
@@ -139,26 +148,22 @@ const questions = [
           id="environments"
           type="range"
           min="0"
-          max="30"
+          max={MAX_ENVIRONMENTS}
           step="1"
           value={DEFAULT_ENVIRONMENTS}
+          data-base={BASE_PRICE}
+          data-environment={ENVIRONMENT_PRICE}
           aria-describedby="estimate-formula"
           class="estimator-range mt-4 w-full"
         />
-        <div class="mt-1 flex justify-between text-[13px] text-subtle" aria-hidden="true"><span>0</span><span>30</span></div>
+        <div class="mt-1 flex justify-between text-[13px] text-subtle" aria-hidden="true"><span>0</span><span>{MAX_ENVIRONMENTS}</span></div>
         <div class="mt-8 border-t border-border pt-6">
-          <p class="text-[14px] text-muted-foreground">Estimated Deployz charges / month</p>
+          <p class="text-[14px] text-muted-foreground">Estimated Deployz charges / month, with an active subscription</p>
           <output for="environments" data-estimator-total aria-live="polite" aria-atomic="true" class="mt-1 block text-[48px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
             ${estimate(DEFAULT_ENVIRONMENTS)}
           </output>
           <p id="estimate-formula" class="mt-4 text-[15px] text-muted-foreground">
-            Before your first customer deployment: $0 / month. After that: $49 + $19 × active billable
-            environments.
-          </p>
-          <p class="mt-3 text-[14px] text-muted-foreground">
-            Excludes AWS charges, applicable taxes, and any charges not covered by the published plan. The $49
-            base starts with your first customer deployment, before it is ready. If you remove all
-            environments, the $49 base continues until you cancel. At 0 environments, the estimate assumes you have not started a customer deployment.
+            ${BASE_PRICE} + ${ENVIRONMENT_PRICE} × billable environments. Excludes AWS charges and taxes.
           </p>
         </div>
       </div>
@@ -167,7 +172,7 @@ const questions = [
 
   <!-- P4. Deployz vs AWS -->
   <Section divider labelledby="costs-title">
-    <h2 id="costs-title" class="text-h2 max-w-[780px]">Deployz fees and AWS costs are different.</h2>
+    <h2 id="costs-title" class="text-h2 max-w-[780px]">Who bills whom</h2>
     <div class="mt-10">
       <BillingDiagram />
     </div>
@@ -182,8 +187,8 @@ const questions = [
   </Section>
 
   <!-- P6. Final CTA -->
-  <CtaSection title="Start with your SaaS. Grow from there." cta="pricing-closing">
-    Connect your application and explore how Deployz prepares customer AWS deployments.
+  <CtaSection title="Start with a free readiness report." cta="pricing-closing">
+    No card needed until you subscribe.
   </CtaSection>
 </Base>
 
@@ -206,11 +211,13 @@ const questions = [
     var input = root.querySelector('input');
     var count = root.querySelector('[data-estimator-count]');
     var total = root.querySelector('[data-estimator-total]');
+    var base = Number(input.dataset.base);
+    var perEnvironment = Number(input.dataset.environment);
 
     function update() {
       var environments = Number(input.value);
       count.textContent = String(environments);
-      total.textContent = '$' + (environments > 0 ? 49 + 19 * environments : 0);
+      total.textContent = '$' + (base + perEnvironment * environments);
     }
 
     input.addEventListener('input', update);

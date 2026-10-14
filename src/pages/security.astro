@@ -8,36 +8,24 @@ import Section from '@/components/site/Section.astro';
 import SectionHeading from '@/components/site/SectionHeading.astro';
 import Base from '../layouts/Base.astro';
 
-const deployzSide = [
-  'Application and deployment configuration',
-  'Deployment instructions and status',
-  'Release management',
-];
-
-const customerSide = [
-  'Running SaaS application',
-  'Supported compute, database, storage, and network resources',
-  'Customer-side deployment relay (the Deployz connector)',
-];
-
 const permissions = [
   'Create and manage a dedicated network (VPC), load balancer, and security groups',
   'Run the application on Amazon ECS',
-  'Create the database, cache, and S3 bucket that your app needs',
-  'Create IAM roles (AWS permission settings) that the application and AWS services use',
+  'Create the database, cache, and S3 bucket your app needs',
+  'Create IAM roles that the application and AWS services use',
   'Write and read secrets tagged for the installation in AWS Secrets Manager',
 ];
 
-const accessFacts = [
-  { title: 'Customer owns the AWS account', text: 'The customer launches the connector as a CloudFormation stack from their own AWS console. Deployz never asks for AWS access keys.' },
-  { title: 'AWS policies define integration permissions', text: 'Most write actions are limited to resources tagged for the installation, and the connector role has a permissions boundary (a limit on what the role can ever do). The CloudFormation role that creates application resources can create IAM roles and has no permissions boundary.' },
-  { title: 'Authorization is required before deployment', text: 'Before connecting, the customer can review every IAM action that the connector requests. The connector has no permission to read application logs.' },
+const limits = [
+  'Before connecting, the customer can review every IAM action the connector requests.',
+  'Most write actions are limited to resources tagged for the installation, and the connector role has a permissions boundary. The CloudFormation role that creates application resources can create IAM roles and has no permissions boundary.',
+  'The connector has no permission to read application logs.',
 ];
 
 const responsibilities = [
-  { title: 'Deployz handles', text: 'Supported infrastructure provisioning, deployment orchestration, update and rollback actions, and deployment status.' },
-  { title: 'The SaaS vendor handles', text: 'Application code, application-specific configuration, remediation of issues in its own code, data-handling choices, and integrations.' },
-  { title: 'The AWS account owner handles', text: 'AWS account administration, billing, and the access and governance controls of their environment.' },
+  { owner: 'Deployz', text: 'Provisioning supported infrastructure, deployments, updates, rollbacks, and status.' },
+  { owner: 'The SaaS vendor', text: 'Application code and configuration, data-handling choices, and integrations.' },
+  { owner: 'The AWS account owner', text: 'AWS account administration, billing, access, and governance.' },
 ];
 
 const receives = [
@@ -61,129 +49,93 @@ const lifecycle = [
   {
     question: 'Updates and rollbacks',
     answer:
-      'The SaaS vendor starts each update; deployments do not update automatically. If a migration or a new version fails, the previous version continues to run. Database migrations are not automatically reversed, and a rollback to an earlier release does not undo customer data changes.',
+      'The SaaS vendor starts each update; nothing updates automatically. If a migration or a new version fails, the previous version keeps running. A rollback does not reverse database migrations or data changes.',
   },
   {
     question: 'Removal and retained data',
     answer:
-      'Removing a deployment deletes the application, cache, load balancer, and most networking. It keeps the database (with deletion protection and automated backups), its credentials, the S3 bucket, and the network parts that the database uses. Retained resources can continue to cause AWS charges.',
+      'Removal deletes the application, cache, load balancer, and most networking. It keeps the database (with deletion protection and automated backups), its credentials, the S3 bucket, and the network parts the database uses. Retained resources continue to cause AWS charges.',
   },
   {
-    question: 'Data purge',
+    question: 'Deleting retained data',
     answer:
       'Deleting retained data is a separate step that the vendor confirms. It permanently deletes the database, the bucket, and the secrets, with no final snapshot.',
   },
   {
-    question: 'Connector removal',
+    question: 'Removing the connector',
     answer:
-      'The customer deletes the connector stack in their AWS console. This ends Deployz access. Remove the deployment and its retained data first: after the connector is deleted, Deployz cannot change or remove the application.',
+      'The customer deletes the connector stack in their AWS console, which ends Deployz access. Remove the deployment and its retained data first: after the connector is deleted, Deployz cannot change or remove the application.',
   },
   {
     question: 'If Deployz is unavailable',
     answer:
-      "The application runs in the customer's AWS account and does not send its requests through the Deployz management service. While Deployz is unavailable, new installations, updates, status refreshes, and recovery actions pause. Traffic to the default deployz.dev URL depends on the Deployz DNS proxy, and new application tasks pull the release image from the Deployz registry. A custom domain routes directly to the customer's load balancer.",
+      "The application keeps running in the customer's account; its requests do not pass through the Deployz management service. New installations, updates, status refreshes, and recovery actions pause. Traffic to the default deployz.dev URL depends on the Deployz DNS proxy, and new application tasks pull the release image from the Deployz registry. A custom domain routes directly to the customer's load balancer.",
   },
 ];
 ---
 
 <Base
   title="Deployz Security & Architecture — Customer AWS"
-  description="Learn where Deployz-managed applications run, how customer AWS access works, and what happens to resources and data."
+  description="Where Deployz-managed apps run, what the connector can do in customer AWS, what data Deployz receives, and what happens on update and removal."
 >
   <!-- S1. Hero -->
-  <PageHeader eyebrow="Security & Architecture" title="Your customer's infrastructure stays in their AWS account.">
-    Deployz coordinates deployments while your SaaS runs in customer-owned AWS infrastructure. Here's how
-    account access, application resources, and deployment management are separated.
+  <PageHeader eyebrow="Security & Architecture" title="Your app runs in your customer's AWS account.">
+    Deployz coordinates deployments from outside the account, through a connector the customer approves.
   </PageHeader>
 
   <!-- S2. What runs where -->
   <Section labelledby="where-title">
-    <SectionHeading id="where-title" title="Your application runs in their cloud.">
-      The customer AWS account hosts the deployed application and supported infrastructure, such as
-      application services, databases, and storage. Deployz operates a separate management service to
-      configure and coordinate deployments.
-    </SectionHeading>
-    <div class="mt-10 grid gap-10 md:grid-cols-2 md:gap-12 lg:mt-12">
-      <div class="border-t border-foreground pt-5">
-        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">Deployz management service</h3>
-        <ul class="mt-4 grid gap-2 text-muted-foreground">
-          {deployzSide.map((item) => <li>{item}</li>)}
-        </ul>
-      </div>
-      <div class="border-t border-foreground pt-5">
-        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">Customer AWS</h3>
-        <ul class="mt-4 grid gap-2 text-muted-foreground">
-          {customerSide.map((item) => <li>{item}</li>)}
-        </ul>
-      </div>
-    </div>
-    <p class="mt-10 max-w-[780px] text-[15px] text-muted-foreground">
-      Customer-hosted application data does not mean Deployz handles no operational information. Deployz
-      processes deployment configuration, release images, and the status information listed below.
-    </p>
-  </Section>
-
-  <!-- S3. Connecting the AWS account -->
-  <Section divider labelledby="access-title">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-      <div>
-        <h2 id="access-title" class="text-h2">Your customer approves AWS access.</h2>
-        <p class="mt-5 max-w-[520px] text-muted-foreground">
-          Your customer starts the connector from their own AWS console. Its AWS roles and permissions
-          govern deployment operations. The management service coordinates with the connector instead of
-          using the customer's personal AWS login.
-        </p>
-        <a class="link-arrow mt-6" href="/docs/#aws-access">View AWS permissions and setup <ArrowRight className="size-4" aria-hidden="true" /></a>
-      </div>
-      <div class="min-w-0">
-        <h3 class="text-[16px] font-semibold">The connector can create significant resources. In plain language, it can:</h3>
-        <ul class="mt-4 border-b border-border">
-          {permissions.map((item) => <li class="border-t border-border py-3 text-muted-foreground">{item}</li>)}
-        </ul>
-      </div>
-    </div>
-    <ul class="mt-12 grid gap-x-10 md:grid-cols-3">
-      {accessFacts.map((fact) => (
-        <li class="border-t border-border py-6">
-          <h3 class="text-[16px] font-semibold tracking-[-0.01em]">{fact.title}</h3>
-          <p class="mt-2 text-[15px] leading-[1.6] text-muted-foreground">{fact.text}</p>
-        </li>
-      ))}
-    </ul>
-  </Section>
-
-  <!-- S4. Customer-side relay -->
-  <Section divider labelledby="relay-title">
-    <SectionHeading id="relay-title" title="A deployment connection initiated from customer AWS.">
-      Deployz uses a relay in the customer's AWS account to request deployment instructions through
-      outbound communication. The relay carries out supported deployment operations within the permissions
-      granted to it.
-    </SectionHeading>
-
+    <SectionHeading id="where-title" title="What runs where" />
     <div class="mt-10 lg:mt-12">
       <RelayDiagram />
     </div>
   </Section>
 
-  <!-- S5. Responsibilities and data -->
-  <Section divider labelledby="owners-title">
-    <SectionHeading id="owners-title" title="Clear ownership. Clear responsibilities." />
-    <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-12 lg:gap-12">
-      {responsibilities.map((item) => (
-        <li class="border-t border-foreground pt-5">
-          <h3 class="text-[18px] font-semibold tracking-[-0.01em]">{item.title}</h3>
-          <p class="mt-2 text-muted-foreground">{item.text}</p>
-        </li>
-      ))}
-    </ul>
-    <p class="mt-8 max-w-[780px] text-[15px] text-muted-foreground">
-      Responsibilities may overlap. Hosting in customer AWS alone does not confer compliance or guarantee
-      application security.
-    </p>
+  <!-- S3. Access and responsibilities -->
+  <Section divider id="aws-access" labelledby="access-title">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div>
+        <h2 id="access-title" class="text-h2">Your customer approves AWS access.</h2>
+        <p class="mt-5 max-w-[520px] text-muted-foreground">
+          The connector's AWS roles govern every deployment action. Its permissions are substantial.
+        </p>
+        <ul class="mt-6 grid max-w-[520px] list-disc gap-3 pl-5 text-[15px] text-muted-foreground marker:text-subtle">
+          {limits.map((item) => <li>{item}</li>)}
+        </ul>
+        <a class="link-arrow mt-6" href="/docs/#aws-access">AWS access details <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
+      <div class="min-w-0">
+        <h3 class="text-[16px] font-semibold">In plain language, the connector can:</h3>
+        <ul class="mt-4 border-b border-border">
+          {permissions.map((item) => <li class="border-t border-border py-3 text-muted-foreground">{item}</li>)}
+        </ul>
+      </div>
+    </div>
 
-    <div class="mt-14 grid border-t border-border-strong md:grid-cols-2">
+    <h3 class="mt-16 text-[18px] font-semibold tracking-[-0.01em]">Who is responsible for what</h3>
+    <dl class="mt-4 border-b border-border">
+      {responsibilities.map((row) => (
+        <div class="grid gap-1 border-t border-border py-4 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-x-8">
+          <dt class="font-semibold">{row.owner}</dt>
+          <dd class="text-muted-foreground">{row.text}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="mt-4 max-w-[780px] text-[15px] text-muted-foreground">
+      Responsibilities can overlap. Hosting in customer AWS does not by itself make an application compliant
+      or secure.
+    </p>
+  </Section>
+
+  <!-- S4. Data -->
+  <Section divider labelledby="data-title">
+    <SectionHeading id="data-title" title="What Deployz receives">
+      Deployz processes deployment configuration, release images, and the operational metadata below.
+    </SectionHeading>
+
+    <div class="mt-10 grid border-t border-border-strong md:grid-cols-2 lg:mt-12">
       <div class="py-8 md:border-r md:border-border md:pr-10">
-        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">Operational metadata Deployz receives</h3>
+        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">Deployz receives</h3>
         <ul class="mt-5 grid">
           {receives.map((item) => (
             <li class="border-t border-border py-3 text-[15px] leading-[1.5] first:border-t-0 first:pt-0">{item}</li>
@@ -191,13 +143,12 @@ const lifecycle = [
         </ul>
       </div>
       <div class="border-t border-border py-8 md:border-t-0 md:pl-10">
-        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">What Deployz does not receive</h3>
+        <h3 class="text-[18px] font-semibold tracking-[-0.01em]">Deployz does not receive</h3>
         <ul class="mt-5 grid">
           {doesNotReceive.map((item) => (
             <li class="border-t border-border py-3 text-[15px] leading-[1.5] first:border-t-0 first:pt-0">{item}</li>
           ))}
         </ul>
-        <p class="mt-4 text-[15px] text-muted-foreground">Deployz does not automatically copy raw application logs outside the customer's AWS account.</p>
       </div>
     </div>
 
@@ -205,54 +156,50 @@ const lifecycle = [
       <div>
         <h3 class="text-[16px] font-semibold">Secrets</h3>
         <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">
-          Secrets you enter are sent to Deployz over HTTPS and stored encrypted until your AWS account
-          connects. Deployz then delivers them to AWS Secrets Manager in your account and deletes the active
-          copy. If your account does not connect within 24 hours, the secret is deleted and must be entered
-          again. Encrypted backup copies may remain for up to 7 days. Deployz does not display secret values
-          or write them to application logs.
+          Secrets you enter are stored encrypted until the AWS account connects, then delivered to AWS
+          Secrets Manager in that account. Deployz deletes its active copy, or the secret itself if the
+          account does not connect within 24 hours. Encrypted backups may remain for up to 7 days. Deployz
+          does not display secret values or write them to application logs. Values the vendor sets for every customer stay encrypted in
+          Deployz.
         </p>
-        <p class="mt-3 text-[15px] leading-[1.65] text-muted-foreground">Values that the SaaS vendor sets for every customer are stored encrypted in Deployz.</p>
       </div>
       <div>
         <h3 class="text-[16px] font-semibold">Code and AI</h3>
         <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">
-          Repository access is read-only. Deployz builds versioned container images in its own AWS account
-          and stores them in a Deployz registry, and the customer account pulls them. To answer open
-          questions during analysis, Deployz can send limited repository excerpts to an AI service after it
-          redacts values that look like secrets. The AI does not change deployments.
+          Repository access is read-only. Deployz builds container images in its own AWS account and stores
+          them in a Deployz registry; the customer account pulls them. During analysis, Deployz can send
+          limited repository excerpts to an AI service after it redacts values that look like secrets. The AI
+          does not change deployments.
         </p>
       </div>
       <div>
         <h3 class="text-[16px] font-semibold">Network routing</h3>
         <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">
           Each deployment gets a default deployz.dev URL. Traffic to that URL, including its content, passes
-          through the Deployz DNS proxy on Cloudflare before it reaches the load balancer in the customer's
-          account. With a custom domain, traffic goes directly to the customer's load balancer.
+          through the Deployz DNS proxy on Cloudflare before it reaches the customer's load balancer. With a
+          custom domain, traffic goes directly to the customer's load balancer.
         </p>
       </div>
     </div>
   </Section>
 
-  <!-- S6. Updates, removal, and continuity -->
+  <!-- S5. Updates, removal, and continuity -->
   <Section divider labelledby="lifecycle-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <div>
-        <h2 id="lifecycle-title" class="text-h2 max-w-[440px]">Know what happens after deployment.</h2>
-        <a class="link-arrow mt-6" href="/docs/#lifecycle">Technical documentation <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <h2 id="lifecycle-title" class="text-h2 max-w-[440px]">After deployment</h2>
+        <a class="link-arrow mt-6" href="/docs/#lifecycle">Updates and removal details <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <FaqList items={lifecycle} class="max-w-[760px]" />
     </div>
 
-    <div class="mt-16 max-w-[720px] border-t border-border pt-10">
-      <h3 class="text-h3">Built by a team that runs SaaS products.</h3>
-      <p class="mt-3 text-muted-foreground">
-        Deployz is built by Thalia Technologies, the team behind CSVBox, Spreadr, and other SaaS products.
-      </p>
-    </div>
+    <p class="mt-16 max-w-[720px] border-t border-border pt-8 text-muted-foreground">
+      Deployz is built by Thalia Technologies, the team behind CSVBox, Spreadr, and other SaaS products.
+    </p>
   </Section>
 
-  <!-- S7. Final CTA -->
-  <CtaSection title="Deploy into customer AWS with a clearer view of control." cta="security-closing">
-    See how Deployz prepares and manages deployments in your customer's account.
+  <!-- S6. Final CTA -->
+  <CtaSection title="Check what your app needs before you promise a customer." cta="security-closing">
+    Connect GitHub for a free readiness report.
   </CtaSection>
 </Base>

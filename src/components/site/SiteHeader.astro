@@ -1,5 +1,5 @@
 ---
-import { LOGIN_URL, SIGNUP_URL } from '@/lib/site';
+import { CTA_LABEL, LOGIN_URL, SIGNUP_URL } from '@/lib/site';
 import Logo from './Logo.astro';
 
 const navLinks = [
@@ -38,10 +38,10 @@ const isCurrent = (href: string) => pathname === href || pathname === href.repla
         ))}
       </ul>
       <a class="nav-link nav-signin" href={LOGIN_URL}>Log In</a>
-      <a class="btn btn-primary nav-menu-cta min-[370px]:hidden" href={SIGNUP_URL} data-cta="header">Get Started Free</a>
+      <a class="btn btn-primary nav-menu-cta min-[370px]:hidden" href={SIGNUP_URL} data-cta="header">{CTA_LABEL}</a>
     </div>
 
-    <a class="btn btn-primary hidden min-h-11 px-3.5 text-[14px] whitespace-nowrap min-[370px]:inline-flex sm:px-4" href={SIGNUP_URL} data-cta="header">Get Started Free</a>
+    <a class="btn btn-primary hidden min-h-11 px-3.5 text-[14px] whitespace-nowrap min-[370px]:inline-flex sm:px-4" href={SIGNUP_URL} data-cta="header">{CTA_LABEL}</a>
 
     <button
       type="button"

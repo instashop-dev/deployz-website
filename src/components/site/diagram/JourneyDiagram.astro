@@ -7,10 +7,10 @@
 import { Cloud, GitBranch, UserRound } from 'lucide-react';
 import Connector from '@/components/site/diagram/Connector.astro';
 
-const vendorSteps = ['Connect your GitHub repository', 'Review the readiness report', 'Build a release'];
+const vendorSteps = ['Connect GitHub', 'Configure the app', 'Build a release'];
 const customerSteps = [
   'Open the installation link',
-  'Review the access and cost estimate',
+  'Review access and AWS cost estimate',
   'Launch the connector in their AWS console',
 ];
 const runSteps = ['You start each update', 'Roll back to an earlier release'];
@@ -30,7 +30,7 @@ const runSteps = ['You start each update', 'Roll back to an earlier release'];
 
     <div role="listitem" class="dg-node">
       <p class="dg-role"><UserRound aria-hidden="true" strokeWidth={1.75} /> Your customer · Step 3</p>
-      <p class="dg-title">Connect their AWS account</p>
+      <p class="dg-title">Connect AWS</p>
       <ul class="dg-stack">
         {customerSteps.map((step) => <li class="dg-chip">{step}</li>)}
       </ul>
@@ -48,9 +48,9 @@ const runSteps = ['You start each update', 'Roll back to an earlier release'];
     </div>
   </div>
 
-  <figcaption id="journey-dg-caption" class="dg-caption">
+  <figcaption id="journey-dg-caption" class="sr-only">
     You prepare the app and send an installation link. Your customer approves AWS access in their own
-    console. Deployz deploys the release in their account, and you start each update.
+    console. Deployz deploys the release in their account. You start each update.
   </figcaption>
 </figure>
 
