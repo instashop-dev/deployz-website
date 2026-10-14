@@ -8,3 +8,6 @@ astro-dev.log
 .codegraph/
 test-results/
 playwright-report/
+.env*
+.dev.vars*
+.wrangler/

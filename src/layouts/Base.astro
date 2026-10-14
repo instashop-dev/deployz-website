@@ -6,11 +6,13 @@ import '@/styles/globals.css';
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description = "Deploy your SaaS in your customers' AWS accounts. Connect GitHub, configure your app, and manage private deployments with Deployz.",
+  noindex = false,
 } = Astro.props;
 
 const pathname = Astro.url.pathname;
@@ -25,14 +27,17 @@ const canonicalURL = new URL(pathname, Astro.site);
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalURL} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonicalURL} />}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="Deployz" />
     <meta property="og:image" content={new URL('/android-chrome-512x512.png', Astro.site)} />
+    <meta property="og:image:alt" content="Deployz logo" />
     <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/deployz-icon-master.svg" />
