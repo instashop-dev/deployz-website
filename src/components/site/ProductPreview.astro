@@ -14,11 +14,11 @@ const analysis = [
 ];
 
 const progress = [
-  { label: 'Connecting your AWS account', state: 'done' },
-  { label: 'Creating network', state: 'done' },
-  { label: 'Creating database & storage', state: 'current' },
-  { label: 'Starting application', state: 'pending' },
-  { label: 'Waiting for certificate', state: 'pending' },
+  { label: 'AWS account connected', state: 'done' },
+  { label: 'Create infrastructure', state: 'done' },
+  { label: 'Start application', state: 'current' },
+  { label: 'Check application', state: 'pending' },
+  { label: 'Set up HTTPS', state: 'pending' },
 ];
 
 const deployments = [
@@ -62,7 +62,6 @@ const tabs = [
     >
       <div class="frame" aria-hidden="true">
         <div class="frame-bar">
-          <span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span>
           <span class="frame-title">Example app</span>
         </div>
 
@@ -196,15 +195,7 @@ const tabs = [
     background: var(--surface-subtle);
   }
 
-  .frame-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 9999px;
-    background: var(--border-strong);
-  }
-
   .frame-title {
-    margin-left: 10px;
     font-size: 13px;
     font-weight: 500;
     color: var(--muted-foreground);

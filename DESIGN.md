@@ -100,6 +100,7 @@ All marketing components are static Astro in `src/components/site/`.
 | Page header | `PageHeader.astro` | Inner-page h1, lead, actions slot, optional `aside` visual slot. |
 | FAQ list | `FaqList.astro` | Native `<details>`, 56px rows, plus/minus icon, hairlines. |
 | Deployment diagram | `DeploymentDiagram.astro` | Signature hero diagram (see section 7). |
+| Diagram system | `diagram/*.astro` | `Connector.astro` and the page diagrams (see section 7). |
 | Product preview | `ProductPreview.astro` | Home Configure / Deploy / Manage tabs (ARIA tabs, Arrow/Home/End keys). Each panel is a labelled, simplified illustration built from real product labels, not a screenshot. Without JavaScript all panels show. Replace with real anonymized screenshots when they exist. |
 | Closing CTA | `CtaSection.astro` | Centered closing section with one **Get Started Free** button. It is the one `bg-surface-subtle` section on each page that uses it. |
 
@@ -114,26 +115,34 @@ Control utilities (in `globals.css`):
 
 ## 7. Diagrams
 
-- Original HTML/CSS with inline SVG strokes. No graphing or animation libraries.
-- Stroke 1.5px; neutral `#D4D4D8`; the single Deployz-controlled connector in blue `#2563EB`.
-- Nodes: 8–12px radius, 16–24px padding, labels ≥14px (12px only for non-essential meta).
-- The Deployz node may use `bg-brand-subtle` + `border-brand-border`. Never a solid blue card.
-- Account boundary: `bg-surface-subtle`, `border-border-strong`, label top-left.
-- Connectors are `aria-hidden`; the node text is real text in a labelled list.
-- Mobile is a separate vertical composition, never a scaled SVG, never hidden.
-- Text in diagrams comes from existing site copy only.
+- One diagram system for the whole site: `src/styles/diagrams.css` plus `src/components/site/diagram/` (see its `README.md`). Original HTML/CSS. No graphing or animation libraries.
+- Layout follows the figure width (CSS container queries on `.dg`), not the viewport: vertical below 760px container width, horizontal above. Mobile is the vertical composition, never a scaled drawing, never hidden.
+- Stroke 1.5px; neutral `#D4D4D8`; the single Deployz-controlled connector in blue `#2563EB`. A dashed connector with a crossed marker shows a connection that does not exist.
+- Nodes: 12px radius, 20px padding (24px when horizontal), role label 12px with a 16px Lucide icon, title 16px, text 14px. Items inside a node are 8px-radius chips.
+- The Deployz node may use `bg-brand-subtle` + `border-brand-border`. Never a solid blue card. At most one blue node and one blue connector per diagram.
+- Account boundary: `bg-surface-subtle`, `border-border-strong`, role label top-left.
+- Connectors are `aria-hidden`; every figure has a caption (visible or `sr-only`) that states the relationships, and node text is real text.
+- Text in diagrams comes from verified product behavior and existing site copy only.
 
-The hero diagram shows: GitHub ("Connect your code") → Deployz ("Configure & deploy"; the blue stage) → Customer AWS ("Run in their cloud": application container with an optional database, an optional Redis-compatible cache, and S3 file storage as a thin tree). It is horizontal at ≥900px and vertical below.
+| Diagram | Component | Page | Explains |
+| --- | --- | --- | --- |
+| Hero flow | `DeploymentDiagram.astro` | `/` | GitHub → Deployz (blue) → customer AWS with the application container and its resources. |
+| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | You prepare → installation link → your customer connects AWS → Deployz deploys and you manage. Maps to steps 1–4 on the page. |
+| Fleet | `diagram/FleetDiagram.astro` | `/use-cases` header | One release process installed into each customer's own AWS account, each with its own status. |
+| Billing | `diagram/BillingDiagram.astro` | `/pricing` | Deployz bills the vendor; AWS bills the AWS account owner. |
+| Relay | `diagram/RelayDiagram.astro` | `/security` | The relay in the customer account starts every request over outbound HTTPS; no inbound connections. |
+
+The product preview (`ProductPreview.astro`) is a simplified interface illustration, not a diagram. Its labels follow the product (for example the install steps "Create infrastructure", "Start application", "Check application", "Set up HTTPS").
 
 ## 8. Page compositions
 
 | Page | Composition |
 | --- | --- |
 | `/` | Seven sections: centered hero + diagram; problem (split, text only); solution + three benefits (quiet grid); 3-step process rail; product preview tabs; security summary + FAQ (split); closing CTA. |
-| `/how-it-works` | Left-aligned header; connect and analyze (split); review and configure (quiet grid); customer AWS connection (split + step rail); deploy and manage (quiet grid); compatibility (split, good fit / not supported); closing CTA. |
-| `/use-cases` | Left-aligned header; three customer-request sections (split, quote heading); who Deployz is for; closing CTA. |
-| `/pricing` | Left-aligned header; one bounded plan frame + included list; cost estimator (range input, inline script); Deployz vs AWS; billing FAQ; closing CTA. |
-| `/security` | Left-aligned header; what runs where; AWS access; outbound-only relay schematic; responsibilities, data, secrets, routing; lifecycle disclosures + team; closing CTA. |
+| `/how-it-works` | Left-aligned header; journey diagram (process at a glance); connect and analyze (split); review and configure (quiet grid); customer AWS connection (split + step rail); deploy and manage (quiet grid); compatibility (split, good fit / not supported); closing CTA. |
+| `/use-cases` | Left-aligned header with the fleet diagram aside; three customer-request sections (split, quote heading); who Deployz is for; closing CTA. |
+| `/pricing` | Left-aligned header; one bounded plan frame + included list; cost estimator (range input, inline script); Deployz vs AWS billing diagram; billing FAQ; closing CTA. |
+| `/security` | Left-aligned header; what runs where; AWS access; outbound-only relay diagram; responsibilities, data, secrets, routing; lifecycle disclosures + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
 | `/blog` | Editorial list with dates and hairlines. |
 | `/404` | Short centered message. |
