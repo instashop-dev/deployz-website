@@ -1,0 +1,14 @@
+---
+/* Checklist state mark: done (green check), warn (!), brand (current), idle (empty ring). */
+interface Props {
+  state?: 'done' | 'warn' | 'brand' | 'idle';
+}
+
+const { state = 'done' } = Astro.props;
+---
+
+<span class:list={['sc-mark', state !== 'done' && `sc-mark-${state}`]} aria-hidden="true">
+  {state === 'done' && <svg viewBox="0 0 10 10"><path d="M2 5.2l2 2 4-4.4" /></svg>}
+  {state === 'warn' && <svg viewBox="0 0 10 10"><path d="M5 2.4v3.2M5 7.6v.1" /></svg>}
+  {state === 'brand' && <svg viewBox="0 0 10 10"><path d="M5 2.5v2.5l1.6 1" /></svg>}
+</span>

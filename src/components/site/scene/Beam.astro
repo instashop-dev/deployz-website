@@ -1,0 +1,36 @@
+---
+/*
+ * Connector for scenes (src/styles/scene.css): a track with a travelling light, a port at
+ * each end, and an optional mono label chip on the line. Vertical in narrow scenes,
+ * horizontal in wide ones. Decorative: the figure caption states the relationship.
+ *   variant  brand (the Deployz-controlled path) | neutral | blocked (does not exist)
+ *   reverse  the light travels up / left
+ *   delay    animation delay in seconds, to stagger beams in one scene
+ */
+interface Props {
+  label?: string;
+  variant?: 'brand' | 'neutral' | 'blocked';
+  reverse?: boolean;
+  delay?: number;
+  class?: string;
+}
+
+const { label, variant = 'neutral', reverse = false, delay = 0, class: className } = Astro.props;
+const blocked = variant === 'blocked';
+---
+
+<div
+  class:list={['sc-beam', `sc-beam-${variant}`, blocked && 'sc-beam-dashed', reverse && 'sc-beam-reverse', className]}
+  style={delay ? `--sc-delay: ${delay}s` : undefined}
+  aria-hidden="true"
+>
+  <span class="sc-beam-track">{!blocked && <span class="sc-beam-pulse"></span>}</span>
+  {label && (
+    <span class="sc-beam-chip">
+      {blocked && (
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3l6 6M9 3L3 9" /></svg>
+      )}
+      {label}
+    </span>
+  )}
+</div>
