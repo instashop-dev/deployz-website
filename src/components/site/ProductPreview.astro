@@ -1,0 +1,420 @@
+---
+/*
+ * Home product preview: three keyboard-accessible tabs. Each panel is a simplified,
+ * labelled illustration built from real Deployz interface labels, not a screenshot.
+ * Without JavaScript, all three panels show in sequence.
+ */
+const analysis = [
+  { label: 'Runtime', value: 'Node.js', status: 'Passed' },
+  { label: 'Port', value: '3000', status: 'Passed' },
+  { label: 'Health check', value: '/health', status: 'Passed' },
+  { label: 'Database', value: 'PostgreSQL', status: 'Passed' },
+  { label: 'Environment variables', value: '1 value to set', status: 'Needs input' },
+  { label: 'File storage', value: 'Writes to local disk', status: 'Changes needed' },
+];
+
+const progress = [
+  { label: 'Connecting your AWS account', state: 'done' },
+  { label: 'Creating network', state: 'done' },
+  { label: 'Creating database & storage', state: 'current' },
+  { label: 'Starting application', state: 'pending' },
+  { label: 'Waiting for certificate', state: 'pending' },
+];
+
+const deployments = [
+  { customer: 'Customer A', version: 'v1.4.0', status: 'Live' },
+  { customer: 'Customer B', version: 'v1.4.0', status: 'Updating' },
+  { customer: 'Customer C', version: 'v1.3.2', status: 'Needs attention' },
+];
+
+const tabs = [
+  { id: 'configure', label: 'Configure', caption: 'See what passed, what needs attention, and any blockers before deployment.' },
+  { id: 'deploy', label: 'Deploy', caption: "Follow deployment progress in your customer's AWS account." },
+  { id: 'manage', label: 'Manage', caption: 'Check status, release updates, and manage rollbacks.' },
+];
+---
+
+<div data-tabs class="preview">
+  <div role="tablist" aria-label="Product preview" class="preview-tabs">
+    {tabs.map((tab, index) => (
+      <button
+        type="button"
+        role="tab"
+        id={`tab-${tab.id}`}
+        aria-controls={`panel-${tab.id}`}
+        aria-selected={index === 0 ? 'true' : 'false'}
+        tabindex={index === 0 ? undefined : '-1'}
+        class="preview-tab"
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+
+  {tabs.map((tab, index) => (
+    <figure
+      role="tabpanel"
+      id={`panel-${tab.id}`}
+      aria-labelledby={`tab-${tab.id}`}
+      tabindex="0"
+      class="preview-panel"
+      data-hidden={index === 0 ? undefined : ''}
+    >
+      <div class="frame" aria-hidden="true">
+        <div class="frame-bar">
+          <span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span>
+          <span class="frame-title">Example app</span>
+        </div>
+
+        {tab.id === 'configure' && (
+          <div class="frame-body">
+            <div class="frame-head">
+              <p class="frame-heading">Deployment setup</p>
+              <span class="pill pill-warning">Needs input</span>
+            </div>
+            <ul class="rows">
+              {analysis.map((row) => (
+                <li class="row">
+                  <span class="row-label">{row.label}</span>
+                  <span class="row-value">{row.value}</span>
+                  <span class:list={['row-status', row.status !== 'Passed' && 'row-status-attention']}>{row.status}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {tab.id === 'deploy' && (
+          <div class="frame-body">
+            <div class="frame-head">
+              <p class="frame-heading">Customer A · first installation</p>
+              <span class="pill pill-info">Setting up</span>
+            </div>
+            <ol class="steps">
+              {progress.map((step) => (
+                <li class:list={['step', `step-${step.state}`]}>
+                  <span class="step-mark"></span>
+                  <span>{step.label}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {tab.id === 'manage' && (
+          <div class="frame-body">
+            <div class="frame-head">
+              <p class="frame-heading">Customer deployments</p>
+              <span class="pill">Release v1.4.0</span>
+            </div>
+            <ul class="rows">
+              {deployments.map((row) => (
+                <li class="row">
+                  <span class="row-label">{row.customer}</span>
+                  <span class="row-value">{row.version}</span>
+                  <span class:list={['row-status', row.status === 'Needs attention' && 'row-status-attention']}>{row.status}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="frame-actions">
+              <span class="fake-btn fake-btn-primary">Deploy update</span>
+              <span class="fake-btn">Roll back</span>
+            </div>
+          </div>
+        )}
+      </div>
+      <figcaption class="mt-4">
+        <span class="block text-[16px] text-foreground">{tab.caption}</span>
+        <span class="mt-1 block text-[14px] text-muted-foreground">Simplified illustration of the Deployz interface, not a screenshot.</span>
+      </figcaption>
+    </figure>
+  ))}
+</div>
+
+<style>
+  .preview-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+    max-width: 420px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-subtle);
+  }
+
+  .preview-tab {
+    min-width: 0;
+    min-height: 44px;
+    padding-inline: 4px;
+    overflow-wrap: anywhere;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition-property: color, background-color;
+    transition-duration: 150ms;
+  }
+
+  .preview-tab:hover {
+    color: var(--foreground);
+  }
+
+  .preview-tab[aria-selected='true'] {
+    background: var(--background);
+    color: var(--foreground);
+    box-shadow: inset 0 0 0 1px var(--border-strong);
+  }
+
+  /* Without JavaScript, the tab list is hidden and every panel shows. */
+  :global(html:not(.js)) .preview-tabs {
+    display: none;
+  }
+
+  .preview-panel {
+    margin-top: 24px;
+    border-radius: 12px;
+  }
+
+  :global(html.js) .preview-panel[data-hidden] {
+    display: none;
+  }
+
+  .frame {
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: var(--background);
+  }
+
+  .frame-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-subtle);
+  }
+
+  .frame-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 9999px;
+    background: var(--border-strong);
+  }
+
+  .frame-title {
+    margin-left: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .frame-body {
+    padding: 20px 16px 24px;
+  }
+
+  @media (min-width: 640px) {
+    .frame-body {
+      padding: 28px 32px 32px;
+    }
+  }
+
+  .frame-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+  }
+
+  .frame-heading {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding-inline: 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .pill-warning {
+    color: var(--warning);
+    border-color: color-mix(in oklab, var(--warning) 35%, white);
+  }
+
+  .pill-info {
+    color: var(--brand-hover);
+    border-color: var(--brand-border);
+    background: var(--brand-subtle);
+  }
+
+  .rows {
+    margin-top: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2px 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: 13rem minmax(0, 1fr) auto;
+      align-items: center;
+    }
+  }
+
+  .row-label {
+    font-weight: 500;
+  }
+
+  .row-value {
+    color: var(--muted-foreground);
+    grid-row: 2;
+  }
+
+  @media (min-width: 640px) {
+    .row-value {
+      grid-row: auto;
+    }
+  }
+
+  .row-status {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  @media (min-width: 640px) {
+    .row-status {
+      grid-row: auto;
+      grid-column: auto;
+    }
+  }
+
+  .row-status-attention {
+    color: var(--warning);
+  }
+
+  .steps {
+    margin-top: 20px;
+    display: grid;
+    gap: 14px;
+    font-size: 15px;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted-foreground);
+  }
+
+  .step-mark {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 9999px;
+  }
+
+  .step-done {
+    color: var(--foreground);
+  }
+
+  .step-done .step-mark {
+    border-color: var(--foreground);
+    background: var(--foreground);
+  }
+
+  .step-current {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  .step-current .step-mark {
+    border-color: var(--brand);
+    background: var(--brand-subtle);
+  }
+
+  .frame-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .fake-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding-inline: 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .fake-btn-primary {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var root = document.querySelector('[data-tabs]');
+    if (!root) return;
+    var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+
+    function select(tab, focus) {
+      tabs.forEach(function (item) {
+        var selected = item === tab;
+        item.setAttribute('aria-selected', selected ? 'true' : 'false');
+        if (selected) item.removeAttribute('tabindex');
+        else item.setAttribute('tabindex', '-1');
+        var panel = document.getElementById(item.getAttribute('aria-controls'));
+        if (selected) panel.removeAttribute('data-hidden');
+        else panel.setAttribute('data-hidden', '');
+      });
+      if (focus) tab.focus();
+    }
+
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener('click', function () {
+        select(tab, false);
+      });
+      tab.addEventListener('keydown', function (event) {
+        var next = null;
+        if (event.key === 'ArrowRight') next = tabs[(index + 1) % tabs.length];
+        if (event.key === 'ArrowLeft') next = tabs[(index - 1 + tabs.length) % tabs.length];
+        if (event.key === 'Home') next = tabs[0];
+        if (event.key === 'End') next = tabs[tabs.length - 1];
+        if (next) {
+          event.preventDefault();
+          select(next, true);
+        }
+      });
+    });
+  })();
+</script>

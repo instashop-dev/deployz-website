@@ -1,0 +1,73 @@
+---
+import { ArrowRight } from 'lucide-react';
+import CtaSection from '@/components/site/CtaSection.astro';
+import PageHeader from '@/components/site/PageHeader.astro';
+import Section from '@/components/site/Section.astro';
+import Base from '../layouts/Base.astro';
+
+const cases = [
+  {
+    id: 'customer-owned-infrastructure',
+    quote: 'We need your software in our AWS account.',
+    text: 'Some customers want applications running on infrastructure they own and administer. Deployz helps you prepare and manage a deployment in their AWS account.',
+    outcome: 'Offer a customer-hosted deployment alongside your existing SaaS delivery model.',
+  },
+  {
+    id: 'customer-hosted-data',
+    quote: 'Our application data needs to stay in our environment.',
+    text: "Deploy supported application and data resources inside the customer's AWS account, so they control the cloud environment hosting them. Application integrations and external data flows still depend on your SaaS design.",
+    outcome: 'Give customers an infrastructure option that aligns with their hosting requirements.',
+  },
+  {
+    id: 'updates-after-installation',
+    quote: 'How will you keep our installation up to date?',
+    text: 'Customer-hosted deployments continue to need new versions, fixes, and visibility. Deployz lets your team manage supported releases and rollbacks from one place.',
+    outcome: 'Deliver updates without rebuilding deployment tooling for every customer.',
+  },
+];
+---
+
+<Base
+  title="Deployz Use Cases — Customer-Hosted SaaS"
+  description="Offer your SaaS in customer-owned AWS accounts for teams needing infrastructure control, customer-hosted data, and ongoing updates."
+>
+  <!-- U1. Hero -->
+  <PageHeader eyebrow="Use cases" title="Different customer requirements. One way to deploy.">
+    When customers need your SaaS in their own AWS account, Deployz helps you offer that option without
+    creating a custom deployment process for each deal.
+  </PageHeader>
+
+  <!-- U2–U4. Customer requests -->
+  {cases.map((item, index) => (
+    <Section divider={index > 0} id={item.id} labelledby={`${item.id}-title`}>
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+        <h2 id={`${item.id}-title`} class="text-h2 max-w-[520px]">“{item.quote}”</h2>
+        <div class="max-w-[640px] lg:pt-2">
+          <p class="text-lead text-muted-foreground">{item.text}</p>
+          <p class="mt-6 border-t border-border pt-5 font-medium">{item.outcome}</p>
+        </div>
+      </div>
+    </Section>
+  ))}
+
+  <!-- U5. Who Deployz is for -->
+  <Section divider labelledby="fit-title">
+    <div class="max-w-[780px]">
+      <h2 id="fit-title" class="text-h2">Built for SaaS vendors. Not general-purpose AWS hosting.</h2>
+      <p class="text-lead mt-5 text-muted-foreground">
+        Deployz is for teams shipping their own software to customers who require deployments in
+        customer-owned AWS accounts. It is not currently an on-premises, multi-cloud, or any-repository
+        hosting solution.
+      </p>
+      <p class="mt-5 text-muted-foreground">
+        Your app must fit Deployz's supported deployment capabilities. Check compatibility before promising
+        a private installation to a customer.
+      </p>
+      <a class="link-arrow mt-6" href="/how-it-works">Check how it works <ArrowRight className="size-4" aria-hidden="true" /></a>
+    </div>
+  </Section>
+
+  <CtaSection title="Have a customer asking for private deployment?" cta="use-cases-closing">
+    See how Deployz can help you deliver your SaaS into their AWS account.
+  </CtaSection>
+</Base>
