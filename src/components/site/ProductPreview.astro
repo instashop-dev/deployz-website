@@ -4,6 +4,8 @@
  * labelled illustration built from real Deployz interface labels, not a screenshot.
  * Without JavaScript, all three panels show in sequence.
  */
+import Mark from '@/components/site/scene/Mark.astro';
+
 const analysis = [
   { label: 'Runtime', value: 'Node.js', status: 'Passed' },
   { label: 'Port', value: '3000', status: 'Passed' },
@@ -34,7 +36,7 @@ const tabs = [
 ];
 ---
 
-<div data-tabs class="preview">
+<div data-tabs class="preview sc">
   <div role="tablist" aria-label="Product preview" class="preview-tabs">
     {tabs.map((tab, index) => (
       <button
@@ -60,23 +62,28 @@ const tabs = [
       class="preview-panel"
       data-hidden={index === 0 ? undefined : ''}
     >
-      <div class="frame" aria-hidden="true">
+      <div class="sc-stage preview-stage" aria-hidden="true">
+      <div class="frame">
         <div class="frame-bar">
+          <span class="sc-icon sc-icon-sm sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="13" height="13" /></span>
           <span class="frame-title">Example app</span>
+          <span class="sc-mono frame-repo">your-org/your-app</span>
         </div>
 
         {tab.id === 'configure' && (
           <div class="frame-body">
             <div class="frame-head">
               <p class="frame-heading">Deployment setup</p>
-              <span class="pill pill-warning">Needs input</span>
+              <span class="sc-badge sc-badge-warn">Needs input</span>
             </div>
             <ul class="rows">
               {analysis.map((row) => (
                 <li class="row">
                   <span class="row-label">{row.label}</span>
-                  <span class="row-value">{row.value}</span>
-                  <span class:list={['row-status', row.status !== 'Passed' && 'row-status-attention']}>{row.status}</span>
+                  <span class="row-value sc-mono">{row.value}</span>
+                  <span class:list={['row-status', row.status !== 'Passed' && 'row-status-attention']}>
+                    <Mark state={row.status === 'Passed' ? 'done' : 'warn'} />{row.status}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -87,12 +94,12 @@ const tabs = [
           <div class="frame-body">
             <div class="frame-head">
               <p class="frame-heading">Customer A · first installation</p>
-              <span class="pill pill-info">Setting up</span>
+              <span class="sc-badge sc-badge-brand"><span class="sc-dot sc-dot-pulse"></span>Setting up</span>
             </div>
             <ol class="steps">
               {progress.map((step) => (
                 <li class:list={['step', `step-${step.state}`]}>
-                  <span class="step-mark"></span>
+                  <Mark state={step.state === 'done' ? 'done' : step.state === 'current' ? 'brand' : 'idle'} />
                   <span>{step.label}</span>
                 </li>
               ))}
@@ -104,14 +111,18 @@ const tabs = [
           <div class="frame-body">
             <div class="frame-head">
               <p class="frame-heading">Customer deployments</p>
-              <span class="pill">Release v1.4.0</span>
+              <span class="sc-badge">Release <span class="sc-mono text-foreground">v1.4.0</span></span>
             </div>
             <ul class="rows">
               {deployments.map((row) => (
                 <li class="row">
                   <span class="row-label">{row.customer}</span>
-                  <span class="row-value">{row.version}</span>
-                  <span class:list={['row-status', row.status === 'Needs attention' && 'row-status-attention']}>{row.status}</span>
+                  <span class="row-value sc-mono">{row.version}</span>
+                  <span class="row-status">
+                    <span class:list={['sc-badge', row.status === 'Live' && 'sc-badge-live', row.status === 'Updating' && 'sc-badge-brand', row.status === 'Needs attention' && 'sc-badge-warn']}>
+                      {row.status !== 'Needs attention' && <span class:list={['sc-dot', row.status === 'Live' && 'sc-dot-pulse']}></span>}{row.status}
+                    </span>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -121,6 +132,7 @@ const tabs = [
             </div>
           </div>
         )}
+      </div>
       </div>
       <p class="mt-4 text-[16px] text-foreground">{tab.caption}</p>
       <p class="mt-1 text-[14px] text-muted-foreground">Simplified illustration of the Deployz interface, not a screenshot.</p>
@@ -179,11 +191,22 @@ const tabs = [
     display: none;
   }
 
+  .preview-stage {
+    padding: 20px 12px;
+  }
+
+  @container sc (min-width: 760px) {
+    .preview-stage {
+      padding: 40px 48px;
+    }
+  }
+
   .frame {
     overflow: hidden;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border);
     border-radius: 12px;
     background: var(--background);
+    box-shadow: var(--sc-shadow);
   }
 
   .frame-bar {
@@ -193,6 +216,14 @@ const tabs = [
     padding: 12px 16px;
     border-bottom: 1px solid var(--border);
     background: var(--surface-subtle);
+  }
+
+  .frame-repo {
+    margin-left: auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .frame-title {
@@ -223,29 +254,6 @@ const tabs = [
     font-size: 17px;
     font-weight: 600;
     letter-spacing: -0.01em;
-  }
-
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    min-height: 26px;
-    padding-inline: 10px;
-    border: 1px solid var(--border-strong);
-    border-radius: 9999px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--muted-foreground);
-  }
-
-  .pill-warning {
-    color: var(--warning);
-    border-color: color-mix(in oklab, var(--warning) 35%, white);
-  }
-
-  .pill-info {
-    color: var(--brand-hover);
-    border-color: var(--brand-border);
-    background: var(--brand-subtle);
   }
 
   .rows {
@@ -285,6 +293,10 @@ const tabs = [
   }
 
   .row-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
     grid-row: 1 / span 2;
     grid-column: 2;
     align-self: center;
@@ -318,31 +330,13 @@ const tabs = [
     color: var(--muted-foreground);
   }
 
-  .step-mark {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-    border: 1.5px solid var(--border-strong);
-    border-radius: 9999px;
-  }
-
   .step-done {
     color: var(--foreground);
-  }
-
-  .step-done .step-mark {
-    border-color: var(--foreground);
-    background: var(--foreground);
   }
 
   .step-current {
     color: var(--foreground);
     font-weight: 500;
-  }
-
-  .step-current .step-mark {
-    border-color: var(--brand);
-    background: var(--brand-subtle);
   }
 
   .frame-actions {
