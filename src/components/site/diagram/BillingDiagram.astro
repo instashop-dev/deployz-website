@@ -1,88 +1,338 @@
 ---
 /*
- * "Who bills whom" diagram for the pricing page: two parallel billing rows.
- * Built from the shared diagram system (src/styles/diagrams.css). Connectors are
- * decorative; the visible caption states the relationships.
+ * "Who bills whom" scene for the pricing page: two invoices side by side.
+ * Deployz bills the SaaS vendor; AWS bills the AWS account owner (the customer).
+ * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only text
+ * describes it and the visible caption states the AWS cost caveat.
  */
-import { Building2, Cloud, UserRound } from 'lucide-react';
-import Connector from '@/components/site/diagram/Connector.astro';
+import { Cloud } from 'lucide-react';
+
+const awsLines = [
+  { label: 'Compute', sub: 'ECS Fargate' },
+  { label: 'Database', sub: 'RDS' },
+  { label: 'Networking', sub: 'NAT gateway, load balancer' },
+  { label: 'Storage', sub: 'S3' },
+];
 ---
 
-<figure class="dg billing-dg" aria-labelledby="billing-dg-caption">
-  <div class="billing-rows">
-    <div role="list" class="dg-flow">
-      <div role="listitem" class="dg-node dg-node-brand">
-        <p class="dg-role">
-          <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
-          Deployz
-        </p>
-        <p class="dg-title">Deployz fees</p>
-        <p class="dg-text">Your subscription and billable managed deployments.</p>
+<figure class="sc billing-sc">
+  <p class="sr-only">
+    Deployz bills you, the SaaS vendor, monthly: a $49 base subscription plus $19 for each active
+    customer environment, for example $106 with three environments. AWS bills the AWS account owner,
+    your customer, for compute, database, networking, and storage usage.
+  </p>
+
+  <div class="sc-stage" aria-hidden="true">
+    <div class="billing-grid">
+      <!-- Invoice 1: Deployz -> You -->
+      <div class="billing-col">
+        <div class="billing-route billing-route-brand">
+          <span class="sc-badge sc-badge-brand">Deployz</span>
+          <span class="billing-line"></span>
+          <span class="sc-badge">You</span>
+        </div>
+
+        <div class="sc-card sc-card-brand billing-invoice">
+          <div class="sc-head">
+            <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+            <p class="sc-head-title">Invoice from Deployz<small>Billed monthly through Paddle</small></p>
+            <span class="sc-badge sc-badge-brand">Monthly</span>
+          </div>
+          <div class="sc-body billing-body">
+            <ul class="billing-rows">
+              <li>
+                <span class="billing-label">Base subscription</span>
+                <span class="billing-value">$49</span>
+              </li>
+              <li>
+                <span class="billing-label">
+                  Active customer environments
+                  <span class="sc-mono">3 × $19</span>
+                </span>
+                <span class="billing-value">$57</span>
+              </li>
+            </ul>
+            <div class="billing-total">
+              <span class="billing-total-label">Total</span>
+              <span class="billing-total-value">$106<span> / month</span></span>
+            </div>
+          </div>
+          <div class="sc-foot">
+            <span class="billing-foot">Starts with your first customer deployment</span>
+          </div>
+        </div>
       </div>
 
-      <Connector variant="brand" label="Bills you monthly" sub="$49 base + $19 per active customer environment" />
+      <!-- Invoice 2: AWS -> Your customer -->
+      <div class="billing-col">
+        <div class="billing-route">
+          <span class="sc-badge">AWS</span>
+          <span class="billing-line"></span>
+          <span class="sc-badge">Your customer</span>
+        </div>
 
-      <div role="listitem" class="dg-node">
-        <p class="dg-role"><UserRound aria-hidden="true" strokeWidth={1.75} /> You</p>
-        <p class="dg-title">The SaaS vendor</p>
-        <p class="dg-text">Invoices, payment details, and cancellation are in the Paddle billing portal.</p>
-      </div>
-    </div>
-
-    <div role="list" class="dg-flow billing-row-aws">
-      <div role="listitem" class="dg-node">
-        <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> AWS</p>
-        <p class="dg-title">AWS costs</p>
-        <p class="dg-text">
-          Computing, databases, networking, storage, and other resources used by your SaaS in the
-          customer's account.
-        </p>
-      </div>
-
-      <Connector label="Bills the account owner" sub="Under their AWS arrangement" />
-
-      <div role="listitem" class="dg-boundary">
-        <p class="dg-role"><Building2 aria-hidden="true" strokeWidth={1.75} /> Your customer</p>
-        <p class="dg-title">The AWS account owner</p>
-        <p class="dg-text">Before they connect, they see an AWS cost estimate for their Region.</p>
+        <div class="sc-card billing-invoice">
+          <div class="sc-head">
+            <span class="sc-icon"><Cloud strokeWidth={1.75} /></span>
+            <p class="sc-head-title">Bill from AWS<small>To the AWS account owner</small></p>
+            <span class="sc-badge">Usage-based</span>
+          </div>
+          <div class="sc-body billing-body">
+            <ul class="billing-rows">
+              {awsLines.map((line) => (
+                <li>
+                  <span class="billing-label">
+                    {line.label}
+                    <span class="sc-mono">{line.sub}</span>
+                  </span>
+                  <span class="sc-mono">usage</span>
+                </li>
+              ))}
+            </ul>
+            <div class="billing-total">
+              <span class="billing-total-label">Total</span>
+              <span class="billing-set">Set by AWS</span>
+            </div>
+          </div>
+          <div class="sc-foot">
+            <span class="billing-foot">Your customer sees an AWS cost estimate before connecting</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <figcaption id="billing-dg-caption" class="dg-caption">
+  <figcaption class="mt-6 max-w-[780px] text-[15px] text-muted-foreground">
     AWS resource costs depend on region, configuration, and usage. They may continue while resources
     remain provisioned, even if an app deployment is stopped or some resources are retained.
   </figcaption>
 </figure>
 
 <style>
+  .billing-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    max-width: 520px;
+    margin-inline: auto;
+  }
+
+  @container sc (min-width: 760px) {
+    .billing-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: none;
+    }
+
+    .sc-stage {
+      padding: 40px 32px;
+    }
+  }
+
+  .billing-col {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* Route row: two pills joined by a short line with an arrow. */
+  .billing-route {
+    --route: var(--border-strong);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    color: var(--route);
+  }
+
+  .billing-route-brand {
+    --route: var(--brand);
+  }
+
+  .billing-route .sc-badge {
+    color: var(--foreground);
+  }
+
+  .billing-route-brand .sc-badge:first-child {
+    color: var(--brand-hover);
+  }
+
+  .billing-line {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 1.5px;
+    background: currentColor;
+  }
+
+  .billing-line::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    transform: translate(0, -50%) rotate(45deg);
+    transform-origin: center;
+  }
+
+  /* Invoice: flex column so both cards match heights; receipt zig-zag edge. */
+  .billing-invoice {
+    --tooth: 12px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-bottom: 6px;
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: none;
+    filter: drop-shadow(0 1px 1px rgb(17 17 17 / 0.05)) drop-shadow(0 14px 14px rgb(17 17 17 / 0.07));
+  }
+
+  .billing-invoice.sc-card-brand {
+    filter: drop-shadow(0 0 5px rgb(37 99 235 / 0.1)) drop-shadow(0 14px 14px rgb(37 99 235 / 0.1));
+  }
+
+  .billing-invoice .sc-foot {
+    border-radius: 0;
+  }
+
+  .billing-invoice::before,
+  .billing-invoice::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    top: 100%;
+    height: 6px;
+    pointer-events: none;
+    background-size: var(--tooth) 6px;
+    background-repeat: repeat-x;
+    background-position: center top;
+  }
+
+  /* Outline layer, then the fill layer one pixel higher. */
+  .billing-invoice::before {
+    background-image: conic-gradient(from 135deg at 50% 0, var(--border) 90deg, transparent 0);
+  }
+
+  .billing-invoice.sc-card-brand::before {
+    background-image: conic-gradient(from 135deg at 50% 0, var(--brand-border) 90deg, transparent 0);
+  }
+
+  .billing-invoice::after {
+    top: calc(100% - 1.5px);
+    background-image: conic-gradient(from 135deg at 50% 0, var(--surface-subtle) 90deg, transparent 0);
+  }
+
+  .billing-invoice .sc-head {
+    flex-wrap: wrap;
+  }
+
+  .billing-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 16px 14px;
+  }
+
   .billing-rows {
     display: grid;
-    gap: 32px;
+    gap: 12px;
   }
 
-  .billing-dg .dg-flow {
-    --dg-cols: minmax(0, 1fr) 200px minmax(0, 1.2fr);
+  .billing-rows > li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--foreground);
   }
 
-  /* Narrow: a hairline and extra space keep the two rows from reading as one chain. */
-  .billing-row-aws {
-    border-top: 1px solid var(--border);
-    padding-top: 32px;
+  .billing-label {
+    min-width: 0;
+    font-weight: 500;
   }
 
-  @container dg (min-width: 760px) {
+  .billing-label .sc-mono {
+    display: block;
+    margin-top: 2px;
+  }
+
+  .billing-rows > li > :last-child {
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .billing-value {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .billing-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1.5px dashed var(--border-strong);
+  }
+
+  .billing-rows + .billing-total {
+    margin-top: 16px;
+  }
+
+  @supports (margin-top: auto) {
+    .billing-body {
+      justify-content: flex-start;
+    }
+
     .billing-rows {
-      gap: 16px;
+      margin-bottom: 16px;
     }
 
-    .billing-row-aws {
-      border-top: 0;
-      padding-top: 0;
+    .billing-rows + .billing-total {
+      margin-top: auto;
     }
+  }
 
-    .billing-dg .dg-flow {
-      align-items: stretch;
-    }
+  .billing-total-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .billing-total-value {
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--foreground);
+  }
+
+  .billing-total-value span {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--muted-foreground);
+  }
+
+  .billing-set {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .billing-foot {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted-foreground);
   }
 </style>
