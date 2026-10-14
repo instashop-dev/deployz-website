@@ -22,7 +22,7 @@ const deployzRows = ['Returns deployment instructions', 'Receives status and err
     <div role="listitem" class="dg-boundary relay-account">
       <div class="relay-account-head">
         <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> Customer's AWS account</p>
-        <p class="dg-text">Application data and logs stay here.</p>
+        <p class="dg-text">Database, cache, file data, and application logs stay here.</p>
       </div>
       <ul class="relay-resources" aria-label="Application resources">
         {resources.map((item) => (
@@ -57,7 +57,8 @@ const deployzRows = ['Returns deployment instructions', 'Receives status and err
   </div>
   <figcaption id="relay-dg-caption" class="dg-caption">
     The relay checks in over outbound HTTPS about every minute. This describes the deployment-control
-    connection, not every network interaction of the running app or AWS services.
+    connection, not every network interaction of the running app or AWS services. Deployz has no inbound
+    path into the account.
   </figcaption>
 </figure>
 

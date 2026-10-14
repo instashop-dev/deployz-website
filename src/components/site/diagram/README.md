@@ -9,7 +9,7 @@ Every explanatory diagram uses one grammar. Styles: `src/styles/diagrams.css`. R
 | Node | `.dg-node` | White card, 12px radius, 20/24px padding. |
 | Deployz node | `.dg-node-brand` | The one Deployz-controlled node. Blue tint, never solid blue. |
 | Boundary | `.dg-boundary` | An AWS account or other ownership boundary. |
-| Item | `.dg-chip`, `.dg-chip-strong`, `.dg-chip-brand`, `.dg-chip-meta` | Resources or small items inside a node. |
+| Item | `.dg-chip`, `.dg-chip-strong`, `.dg-chip-meta` | Resources or small items inside a node. |
 | Text | `.dg-role`, `.dg-title`, `.dg-text`, `.dg-rows` | 12px label with a 16px icon, 16px title, 14px text, hairline rows. |
 | Tree | `.dg-tree` | Resources that hang from a parent chip. |
 | Connector | `Connector.astro` | `variant="brand"` for the single Deployz-controlled connector, `variant="blocked"` for a connection that does not exist, `reverse` to point up or left. |

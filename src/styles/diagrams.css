@@ -73,11 +73,6 @@
     color: var(--foreground);
   }
 
-  .dg-chip-brand {
-    border-color: var(--brand-border);
-    color: var(--foreground);
-  }
-
   .dg-chip-meta {
     min-width: 0;
     font-size: 12px;
