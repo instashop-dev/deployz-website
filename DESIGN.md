@@ -100,6 +100,8 @@ All marketing components are static Astro in `src/components/site/`.
 | Page header | `PageHeader.astro` | Inner-page h1, lead, actions slot, optional `aside` visual slot. |
 | FAQ list | `FaqList.astro` | Native `<details>`, 56px rows, plus/minus icon, hairlines. |
 | Deployment diagram | `DeploymentDiagram.astro` | Signature hero diagram (see section 7). |
+| Product preview | `ProductPreview.astro` | Home Configure / Deploy / Manage tabs (ARIA tabs, Arrow/Home/End keys). Each panel is a labelled, simplified illustration built from real product labels, not a screenshot. Without JavaScript all panels show. Replace with real anonymized screenshots when they exist. |
+| Closing CTA | `CtaSection.astro` | Centered closing section with one **Get Started Free** button. It is the one `bg-surface-subtle` section on each page that uses it. |
 
 Control utilities (in `globals.css`):
 
@@ -121,17 +123,17 @@ Control utilities (in `globals.css`):
 - Mobile is a separate vertical composition, never a scaled SVG, never hidden.
 - Text in diagrams comes from existing site copy only.
 
-The hero diagram shows: You (your application, releases) → Deployz (installation and updates; the blue stage) → your customer's AWS account (application container with PostgreSQL, Redis-compatible cache, and S3 file storage as a thin tree). It is horizontal at ≥900px and vertical below.
+The hero diagram shows: GitHub ("Connect your code") → Deployz ("Configure & deploy"; the blue stage) → Customer AWS ("Run in their cloud": application container with an optional database, an optional Redis-compatible cache, and S3 file storage as a thin tree). It is horizontal at ≥900px and vertical below.
 
 ## 8. Page compositions
 
 | Page | Composition |
 | --- | --- |
-| `/` | Centered hero + deployment diagram; problem (editorial split); solution (quiet grid, the one subtle section); process rail + example readiness report; numbers; fit (split); team (centered); FAQ (split); closing CTA (centered, white). |
-| `/how-it-works` | Left-aligned header; actor-marked process; who-does-what split; supported architecture; CTA band. |
-| `/security` | Left-aligned header; account-boundary schematic (outbound-only connector); responsibility matrix; data received / not received; failure behavior; lifecycle disclosures. |
-| `/pricing` | Typography-first price display in one bounded frame; quiet supporting sections. |
-| `/get-started` | Efficient conversion layout around the real sign-in and sign-up actions. |
+| `/` | Seven sections: centered hero + diagram; problem (split, text only); solution + three benefits (quiet grid); 3-step process rail; product preview tabs; security summary + FAQ (split); closing CTA. |
+| `/how-it-works` | Left-aligned header; connect and analyze (split); review and configure (quiet grid); customer AWS connection (split + step rail); deploy and manage (quiet grid); compatibility (split, good fit / not supported); closing CTA. |
+| `/use-cases` | Left-aligned header; three customer-request sections (split, quote heading); who Deployz is for; closing CTA. |
+| `/pricing` | Left-aligned header; one bounded plan frame + included list; cost estimator (range input, inline script); Deployz vs AWS; billing FAQ; closing CTA. |
+| `/security` | Left-aligned header; what runs where; AWS access; outbound-only relay schematic; responsibilities, data, secrets, routing; lifecycle disclosures + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
 | `/blog` | Editorial list with dates and hairlines. |
 | `/404` | Short centered message. |
@@ -147,7 +149,8 @@ The hero diagram shows: You (your application, releases) → Deployz (installati
 ## 10. Technical rules
 
 - Astro 5 static output, Tailwind 4, shadcn variables, Cloudflare Wrangler deploy. No framework migration.
-- Zero hydration: no `client:*`, no module scripts. Small `is:inline` scripts only where native HTML is not sufficient (header menu).
+- Zero hydration: no `client:*`, no module scripts. Small `is:inline` scripts only where native HTML is not sufficient (header menu, product preview tabs, pricing estimator).
 - Do not add animation, icon, UI, graphing, or font libraries. Lucide (`lucide-react`, rendered at build time) is the icon set, 16–20px, used sparingly.
-- Preserve routes, copy, hrefs, anchors, metadata, favicons, and the manifest.
+- Preserve routes, copy, hrefs, anchors, metadata, favicons, and the manifest. Every **Get Started Free** button uses `SIGNUP_URL` from `src/lib/site.ts`. `/get-started` redirects to sign-up through `public/_redirects`.
+- `public/_headers` sets the security headers and CSP. Keep scripts and styles inline or same-origin, or update the CSP.
 - Quality gate: `npm run build`, `npx astro check`, and `npx playwright test` (route smoke, landmarks, focus, axe, overflow, 44px targets, reduced motion, no hydration).
