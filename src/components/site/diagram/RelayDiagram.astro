@@ -36,7 +36,7 @@ const account = [
 
         <div class="relay-resources">
           <div class="sc-boundary relay-vpc">
-            <span class="sc-boundary-tag"><Network strokeWidth={1.75} /> VPC <span class="sc-mono">private subnets</span></span>
+            <span class="sc-boundary-tag"><Network strokeWidth={1.75} /> VPC</span>
             <ul class="sc-tiles relay-tiles">
               {vpc.map((tile) => (
                 <li class="sc-tile">
@@ -68,7 +68,7 @@ const account = [
             <ul class="sc-kv">
               <li><span>Launched by</span><span>customer</span></li>
               <li><span>Stack</span><span>CloudFormation</span></li>
-              <li><span>Check-in</span><span>every 1 min</span></li>
+              <li><span>Check-in</span><span>about 1 min</span></li>
               <li><span>Role</span><span>permissions boundary</span></li>
             </ul>
           </div>
@@ -170,12 +170,17 @@ const account = [
       gap: 20px;
     }
 
-    .relay-tiles {
+    .relay-tiles,
+    .relay-resources > .sc-tiles {
       grid-template-columns: minmax(0, 1fr);
     }
   }
 
   @container sc (min-width: 1040px) {
+    .relay-resources > .sc-tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .relay-tiles {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }

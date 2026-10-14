@@ -1,5 +1,5 @@
 /*
- * Deployz illustration system v2: "blueprint precision".
+ * Deployz illustration system (DESIGN.md v3.1, section 7): "blueprint precision".
  * Product-grade scenes: a stage with a fading dot grid, layered cards with soft depth,
  * monospace technical tokens, cobalt deploy beams, and live states that pulse.
  * Rules and parts: src/components/site/scene/README.md.
@@ -568,8 +568,7 @@
       align-items: center;
     }
 
-    .sc-flow > .sc-beam,
-    .sc-lanes > .sc-beam {
+    .sc-flow > .sc-beam {
       align-self: stretch;
       min-height: 32px;
     }
@@ -642,7 +641,7 @@
     }
   }
 
-  @container sc (max-width: 279px) {
+  @container sc (max-width: 339px) {
     .sc-lanes {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -653,6 +652,10 @@
   }
 
   @container sc (min-width: 960px) {
+    .sc-lanes > .sc-beam {
+      min-height: 32px;
+    }
+
     .sc-lanes {
       grid-template-columns: minmax(0, 1fr);
       row-gap: 64px;

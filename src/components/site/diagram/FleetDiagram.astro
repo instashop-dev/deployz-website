@@ -104,7 +104,7 @@ const accounts = [
     margin-left: var(--fl-indent);
   }
 
-  .fleet-row:first-of-type {
+  .fleet-light + .fleet-row {
     margin-top: 0;
   }
 
@@ -131,7 +131,7 @@ const accounts = [
     border-bottom-left-radius: 10px;
   }
 
-  .fleet-row:first-of-type::before {
+  .fleet-light + .fleet-row::before {
     top: -16px;
     height: calc(50% + 16px);
   }
@@ -156,6 +156,16 @@ const accounts = [
 
   .fleet-waiting .sc-card::before {
     display: none;
+  }
+
+  /* Trunk segment from this branch point down to the next row's elbow. */
+  .fleet-row:not(:last-child) .sc-card::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--fl-x) - var(--fl-indent) - 0.75px);
+    top: 50%;
+    bottom: calc(-1 * var(--fl-gap));
+    border-left: 1.5px solid var(--fl-line);
   }
 
   /* Travelling light on the straight part of the trunk (release card to the last branch). */
@@ -188,7 +198,7 @@ const accounts = [
   }
 
   @container sc (max-width: 419px) {
-    .fleet-sc {
+    .fleet-rows {
       --fl-x: 12px;
       --fl-indent: 30px;
     }

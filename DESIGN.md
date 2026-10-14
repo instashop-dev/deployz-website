@@ -1,6 +1,6 @@
-# Deployz Design System (v3.0)
+# Deployz Design System (v3.1)
 
-This file records the implemented marketing design system. The canonical specification is `DEPLOYZ_FINAL_DESIGN_SYSTEM.md` v3.0 (14 October 2026). This file replaces the earlier "monochrome depth" system (terminal hero, dot grids, glows, elevation scale, mono labels, scroll reveals). Do not bring those back.
+This file records the implemented marketing design system. The canonical specification is `DEPLOYZ_FINAL_DESIGN_SYSTEM.md` v3.0 (14 October 2026). This file replaces the earlier "monochrome depth" system (terminal hero, dot grids, glows, elevation scale, mono labels, scroll reveals). Do not bring those back on page surfaces. v3.1 (15 October 2026) adds the illustration scene system in section 7, which uses a fading dot grid, card depth, and mono tokens inside illustration stages only.
 
 > **North star:** powerful through clarity, appealing through precision, minimal without becoming empty.
 
@@ -16,7 +16,7 @@ This file records the implemented marketing design system. The canonical specifi
 ## 2. Logo
 
 - Source: `public/deployz-icon-master.svg` (black mark). Favicons, `site.webmanifest`, and `safari-pinned-tab.svg` are unchanged.
-- `src/components/site/Logo.astro` renders the mark plus the lowercase `deployz` wordmark text with a 9px gap. Header size 28px, footer 26px, diagram badge 18px.
+- `src/components/site/Logo.astro` renders the mark plus the lowercase `deployz` wordmark text with a 9px gap. Header size 28px, footer 26px. Illustrations use the mark alone at 16px in an icon tile.
 - The repository has no inverse (white) logo asset. Do not place the logo on a dark surface, and do not use `filter: invert()`.
 - Never: blue logo, background tile, glow, rotation, skew, shadow, or a logo-shaped frame.
 
@@ -75,7 +75,7 @@ One family: Inter Variable from `@fontsource-variable/inter` (local). System mon
 | Container | `container-site`: 1120px content, gutters 20px (<640), 24px (640–1023), 32px (≥1024) |
 | Section rhythm | `section-y`: 64px, 80px (≥640), 104px (≥1024) |
 | Header height | 60px mobile, 64px desktop (`--header-height`) |
-| Radius | 8px controls, 12px genuine frames (`rounded-xl`), nothing larger |
+| Radius | 8px controls, 12px genuine frames (`rounded-xl`). Illustrations only: 14px boundaries, 16px stages. |
 | Shadow | Floating menus: `shadow-menu` (`0 10px 30px rgb(17 17 17 / .08)`). Illustration cards: `--sc-shadow` and `--sc-shadow-brand` in `scene.css` only. |
 
 Four composition families, varied across a page (no more than two adjacent sections in one family):

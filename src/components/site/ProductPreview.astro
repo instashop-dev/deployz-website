@@ -36,7 +36,7 @@ const tabs = [
 ];
 ---
 
-<div data-tabs class="preview sc">
+<div data-tabs class="sc">
   <div role="tablist" aria-label="Product preview" class="preview-tabs">
     {tabs.map((tab, index) => (
       <button
@@ -127,8 +127,8 @@ const tabs = [
               ))}
             </ul>
             <div class="frame-actions">
-              <span class="fake-btn fake-btn-primary">Deploy update</span>
-              <span class="fake-btn">Roll back</span>
+              <span class="sc-btn sc-btn-dark">Deploy update</span>
+              <span class="sc-btn">Rollback</span>
             </div>
           </div>
         )}
@@ -346,22 +346,6 @@ const tabs = [
     margin-top: 20px;
   }
 
-  .fake-btn {
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-    padding-inline: 14px;
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .fake-btn-primary {
-    border-color: var(--primary);
-    background: var(--primary);
-    color: var(--primary-foreground);
-  }
 </style>
 
 <script is:inline>

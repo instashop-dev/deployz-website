@@ -10,6 +10,7 @@ import { Cloud } from 'lucide-react';
 const awsLines = [
   { label: 'Compute', sub: 'ECS Fargate' },
   { label: 'Database', sub: 'RDS' },
+  { label: 'Cache', sub: 'ElastiCache' },
   { label: 'Networking', sub: 'NAT gateway, load balancer' },
   { label: 'Storage', sub: 'S3' },
 ];
@@ -19,7 +20,7 @@ const awsLines = [
   <p class="sr-only">
     Deployz bills you, the SaaS vendor, monthly: a $49 base subscription plus $19 for each active
     customer environment, for example $106 with three environments. AWS bills the AWS account owner,
-    your customer, for compute, database, networking, and storage usage.
+    your customer, for compute, database, cache, networking, and storage usage.
   </p>
 
   <div class="sc-stage" aria-hidden="true">
@@ -44,13 +45,15 @@ const awsLines = [
                 <span class="billing-label">Base subscription</span>
                 <span class="billing-value">$49</span>
               </li>
-              <li>
-                <span class="billing-label">
-                  Active customer environments
-                  <span class="sc-mono">3 × $19</span>
-                </span>
-                <span class="billing-value">$57</span>
-              </li>
+              {['Customer A', 'Customer B', 'Customer C'].map((customer) => (
+                <li>
+                  <span class="billing-label">
+                    Active customer environment
+                    <span class="sc-mono">{customer}</span>
+                  </span>
+                  <span class="billing-value">$19</span>
+                </li>
+              ))}
             </ul>
             <div class="billing-total">
               <span class="billing-total-label">Total</span>
@@ -284,22 +287,8 @@ const awsLines = [
     border-top: 1.5px dashed var(--border-strong);
   }
 
-  .billing-rows + .billing-total {
-    margin-top: 16px;
-  }
-
-  @supports (margin-top: auto) {
-    .billing-body {
-      justify-content: flex-start;
-    }
-
-    .billing-rows {
-      margin-bottom: 16px;
-    }
-
-    .billing-rows + .billing-total {
-      margin-top: auto;
-    }
+  .billing-rows {
+    margin-bottom: 16px;
   }
 
   .billing-total-label {
