@@ -1,64 +1,57 @@
 ---
 /*
  * Signature hero diagram: GitHub -> Deployz -> customer-owned AWS account.
- * One HTML composition with two layouts: vertical below 900px, horizontal above.
- * Every label comes from existing site copy. Connectors are decorative (aria-hidden).
+ * Built from the shared diagram system (src/styles/diagrams.css): vertical in narrow
+ * containers, horizontal in wide ones. Connectors are decorative; the sr-only caption
+ * states the flow.
  */
+import { Cloud, GitBranch } from 'lucide-react';
+import Connector from '@/components/site/diagram/Connector.astro';
+
 const resources = ['Database (optional)', 'Redis-compatible cache (optional)', 'S3 file storage'];
 ---
 
-<figure class="diagram mx-auto w-full max-w-[1080px]">
-  <div role="list" aria-label="GitHub to Deployz to your customer's AWS account" class="diagram-grid">
-    <!-- 1. Vendor -->
-    <div role="listitem" class="node node-vendor">
-      <p class="node-role">GitHub</p>
-      <p class="node-title">Connect your code</p>
-      <p class="node-text">Your repository stays where it is.</p>
-      <ul class="node-rows" aria-label="Your side">
-        <li><span>Repository access</span><span class="node-tag">Read-only</span></li>
+<figure class="dg hero-dg mx-auto w-full max-w-[1080px]" aria-labelledby="hero-dg-caption">
+  <figcaption id="hero-dg-caption" class="sr-only">
+    Deployz reads your GitHub repository, prepares a release, and deploys and updates it in your
+    customer's AWS account, where the application and its resources run.
+  </figcaption>
+  <div role="list" class="dg-flow">
+    <div role="listitem" class="dg-node">
+      <p class="dg-role"><GitBranch aria-hidden="true" strokeWidth={1.75} /> GitHub</p>
+      <p class="dg-title">Connect your code</p>
+      <p class="dg-text">Your repository stays where it is.</p>
+      <ul class="dg-rows">
+        <li><span>Repository access</span><span class="dg-chip-meta">Read-only</span></li>
         <li><span>You select each release</span></li>
       </ul>
     </div>
 
-    <div class="connector" aria-hidden="true">
-      <span class="connector-label">Reads your repository</span>
-      <svg class="connector-h" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M0 6H99" /></svg>
-      <svg class="connector-head-h" viewBox="0 0 8 12"><path d="M1 1.5L6.5 6 1 10.5" /></svg>
-      <svg class="connector-v" viewBox="0 0 12 100" preserveAspectRatio="none"><path d="M6 0V99" /></svg>
-      <svg class="connector-head-v" viewBox="0 0 12 8"><path d="M1.5 1L6 6.5 10.5 1" /></svg>
-    </div>
+    <Connector label="Reads your repository" />
 
-    <!-- 2. Deployz -->
-    <div role="listitem" class="node node-deployz">
-      <p class="node-role node-role-brand">
-        <img src="/deployz-icon-master.svg" alt="" width="18" height="18" class="size-[18px]" />
+    <div role="listitem" class="dg-node dg-node-brand">
+      <p class="dg-role">
+        <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
         Deployz
       </p>
-      <p class="node-title">Configure &amp; deploy</p>
-      <p class="node-text">Checks what your app needs, then deploys it.</p>
-      <ul class="node-rows node-rows-brand" aria-label="Deployz side">
+      <p class="dg-title">Configure &amp; deploy</p>
+      <p class="dg-text">Checks what your app needs, then deploys it.</p>
+      <ul class="dg-rows">
         <li><span>Readiness report</span></li>
         <li><span>Releases, updates, and status</span></li>
       </ul>
     </div>
 
-    <div class="connector connector-brand" aria-hidden="true">
-      <span class="connector-label">Deploys and updates</span>
-      <svg class="connector-h" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M0 6H99" /></svg>
-      <svg class="connector-head-h" viewBox="0 0 8 12"><path d="M1 1.5L6.5 6 1 10.5" /></svg>
-      <svg class="connector-v" viewBox="0 0 12 100" preserveAspectRatio="none"><path d="M6 0V99" /></svg>
-      <svg class="connector-head-v" viewBox="0 0 12 8"><path d="M1.5 1L6 6.5 10.5 1" /></svg>
-    </div>
+    <Connector label="Deploys and updates" variant="brand" />
 
-    <!-- 3. Customer-owned AWS account boundary -->
-    <div role="listitem" class="boundary">
-      <p class="node-role">Customer AWS</p>
-      <p class="node-title">Run in their cloud</p>
-      <p class="node-text">They own the infrastructure and the data.</p>
-      <div class="boundary-inner">
-        <p class="app-node">Application container</p>
-        <ul class="resource-list" aria-label="Resources in their AWS account">
-          {resources.map((resource) => <li><span class="resource-node">{resource}</span></li>)}
+    <div role="listitem" class="dg-boundary">
+      <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> Customer AWS</p>
+      <p class="dg-title">Run in their cloud</p>
+      <p class="dg-text">They own the infrastructure and the data.</p>
+      <div class="mt-4">
+        <p class="dg-chip dg-chip-strong">Application container</p>
+        <ul class="dg-tree" aria-label="Resources in their AWS account">
+          {resources.map((resource) => <li><span class="dg-chip">{resource}</span></li>)}
         </ul>
       </div>
     </div>
@@ -66,290 +59,15 @@ const resources = ['Database (optional)', 'Redis-compatible cache (optional)', '
 </figure>
 
 <style>
-  .diagram {
-    --stroke: var(--border-strong);
-    --node-pad: 20px;
+  .hero-dg .dg-flow {
+    --dg-cols: minmax(0, 1fr) 88px minmax(0, 1.06fr) 112px minmax(0, 1.14fr);
   }
 
-  .diagram-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: stretch;
-    max-width: 440px;
-    margin-inline: auto;
-    text-align: left;
-  }
-
-  /* ---- Nodes ---- */
-  .node,
-  .boundary {
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--background);
-    padding: var(--node-pad);
-  }
-
-  .node-deployz {
-    background: var(--brand-subtle);
-    border-color: var(--brand-border);
-  }
-
-  .boundary {
-    background: var(--surface-subtle);
-    border-color: var(--border-strong);
-  }
-
-  .node-role {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    line-height: 1.5;
-    font-weight: 600;
-    color: var(--muted-foreground);
-  }
-
-  .node-role-brand {
-    color: var(--brand-hover);
-  }
-
-  .node-title {
-    margin-top: 6px;
-    font-size: 16px;
-    line-height: 1.35;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--foreground);
-  }
-
-  .node-text {
-    margin-top: 4px;
-    font-size: 14px;
-    line-height: 1.45;
-    color: var(--muted-foreground);
-  }
-
-  .node-rows {
-    margin-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .node-rows-brand {
-    border-color: var(--brand-border);
-  }
-
-  .node-rows li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding-top: 10px;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: 500;
-    color: var(--foreground);
-  }
-
-  .node-tag {
-    flex-shrink: 0;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted-foreground);
-  }
-
-  .boundary-inner {
-    margin-top: 16px;
-  }
-
-  .app-node {
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    background: var(--background);
-    padding: 12px 14px;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: 600;
-    color: var(--foreground);
-  }
-
-  /* Resources hang from the application container as a thin tree. */
-  .resource-list {
-    display: grid;
-    gap: 8px;
-    margin-left: 18px;
-    padding-top: 8px;
-  }
-
-  .resource-list li {
-    position: relative;
-    padding-left: 22px;
-  }
-
-  .resource-list li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -8px;
-    bottom: 50%;
-    width: 14px;
-    border-left: 1.5px solid var(--stroke);
-    border-bottom: 1.5px solid var(--stroke);
-    border-bottom-left-radius: 6px;
-  }
-
-  .resource-list li:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    bottom: -8px;
-    border-left: 1.5px solid var(--stroke);
-  }
-
-  .resource-node {
-    display: block;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--background);
-    padding: 8px 12px;
-    font-size: 14px;
-    line-height: 1.35;
-    font-weight: 500;
-    color: var(--muted-foreground);
-  }
-
-  /* ---- Connectors ---- */
-  .connector {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 64px;
-    color: var(--stroke);
-  }
-
-  .connector-brand {
-    color: var(--brand);
-  }
-
-  .connector svg {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .connector svg path {
-    vector-effect: non-scaling-stroke;
-  }
-
-  .connector-h,
-  .connector-head-h {
-    display: none;
-  }
-
-  .connector-v {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: 12px;
-    height: calc(100% - 2px);
-    transform: translateX(-50%);
-  }
-
-  .connector-head-v {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 12px;
-    height: 8px;
-    transform: translateX(-50%);
-  }
-
-  .connector-label {
-    position: absolute;
-    left: calc(50% + 14px);
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-    line-height: 1.3;
-    font-weight: 500;
-    color: var(--muted-foreground);
-    max-width: calc(50% - 14px);
-  }
-
-  .connector-brand .connector-label {
-    color: var(--brand-hover);
-  }
-
-  @media (min-width: 560px) {
-    .diagram-grid {
-      max-width: 520px;
-    }
-  }
-
-  /* ---- Wide: horizontal architecture ---- */
-  @media (min-width: 900px) {
-    .diagram-grid {
-      max-width: none;
-      grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1.08fr) 96px minmax(0, 1.16fr);
-      align-items: center;
-    }
-
-    .connector {
-      height: auto;
-      align-self: stretch;
-    }
-
-    .connector-v,
-    .connector-head-v {
-      display: none;
-    }
-
-    .connector-h {
-      display: block;
-      position: absolute;
-      left: 0;
-      right: 2px;
-      top: 50%;
-      width: calc(100% - 2px);
-      height: 12px;
-      transform: translateY(-50%);
-    }
-
-    .connector-head-h {
-      display: block;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      width: 8px;
-      height: 12px;
-      transform: translateY(-50%);
-    }
-
-    .connector-label {
-      left: 50%;
-      top: auto;
-      bottom: calc(50% + 10px);
-      transform: translateX(-50%);
-      text-align: center;
-      white-space: normal;
-      width: 100%;
-      max-width: none;
-      padding-inline: 4px;
-    }
-
-    .boundary {
-      --node-pad: 24px;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .diagram-grid {
-      grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1.04fr) 124px minmax(0, 1.16fr);
+  /* The two vendor-side nodes share one height, so the flow reads as one line. */
+  @container dg (min-width: 760px) {
+    .hero-dg .dg-node {
+      align-self: center;
+      min-height: 212px;
     }
   }
 </style>

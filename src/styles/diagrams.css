@@ -1,0 +1,427 @@
+/*
+ * Deployz diagram system. One visual grammar for every explanatory diagram (DESIGN.md section 7).
+ *
+ * Structure
+ *   .dg            figure root; an inline-size container named "dg"
+ *   .dg-flow       nodes and connectors; vertical by default, horizontal when the
+ *                  container is at least 760px wide. Set --dg-cols for the horizontal tracks.
+ * Surfaces
+ *   .dg-node       white card, 12px radius
+ *   .dg-node-brand the one Deployz-controlled node (blue tint, never solid blue)
+ *   .dg-boundary   an AWS account or other ownership boundary (subtle surface, strong border)
+ *   .dg-chip       a resource or a small item inside a node (8px radius)
+ * Text
+ *   .dg-role (12px label, optional 16px icon), .dg-title (16px), .dg-text (14px), .dg-rows
+ * Connectors
+ *   Connector.astro renders .dg-link; variants .dg-link-brand (the single blue connector)
+ *   and .dg-link-blocked (a connection that does not exist). Connectors are aria-hidden;
+ *   each figure states the relationships in real text (a caption or an sr-only summary).
+ *
+ * Mobile is the vertical composition, never a scaled drawing.
+ */
+
+@layer components {
+  .dg {
+    --dg-stroke: var(--border-strong);
+    --dg-pad: 20px;
+    container: dg / inline-size;
+    min-width: 0;
+  }
+
+  /* ---------- Surfaces ---------- */
+
+  .dg-node,
+  .dg-boundary {
+    position: relative;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--background);
+    padding: var(--dg-pad);
+  }
+
+  .dg-node-brand {
+    border-color: var(--brand-border);
+    background: var(--brand-subtle);
+  }
+
+  .dg-boundary {
+    border-color: var(--border-strong);
+    background: var(--surface-subtle);
+  }
+
+  .dg-chip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 12px;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--background);
+    padding: 9px 12px;
+    font-size: 14px;
+    line-height: 1.35;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .dg-chip-strong {
+    border-color: var(--border-strong);
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .dg-chip-brand {
+    border-color: var(--brand-border);
+    color: var(--foreground);
+  }
+
+  .dg-chip-meta {
+    min-width: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .dg-stack {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  /* ---------- Text ---------- */
+
+  .dg-role {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 600;
+    color: var(--muted-foreground);
+  }
+
+  .dg-role svg,
+  .dg-role img {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .dg-node-brand .dg-role {
+    color: var(--brand-hover);
+  }
+
+  .dg-title {
+    margin-top: 6px;
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+  }
+
+  .dg-text {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+
+  .dg-rows {
+    margin-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .dg-node-brand .dg-rows {
+    border-color: var(--brand-border);
+  }
+
+  .dg-rows > li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .dg-caption {
+    margin-top: 24px;
+    max-width: 780px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  /* Resources that hang from a parent chip as a thin tree. */
+  .dg-tree {
+    display: grid;
+    gap: 8px;
+    margin-left: 18px;
+    padding-top: 8px;
+  }
+
+  .dg-tree > li {
+    position: relative;
+    padding-left: 22px;
+  }
+
+  .dg-tree > li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -8px;
+    bottom: 50%;
+    width: 14px;
+    border-left: 1.5px solid var(--dg-stroke);
+    border-bottom: 1.5px solid var(--dg-stroke);
+    border-bottom-left-radius: 6px;
+  }
+
+  .dg-tree > li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    bottom: -8px;
+    border-left: 1.5px solid var(--dg-stroke);
+  }
+
+  /* ---------- Flow layout ---------- */
+
+  .dg-flow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 520px;
+    margin-inline: auto;
+  }
+
+  /* ---------- Connectors (vertical by default) ---------- */
+
+  .dg-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 64px;
+    color: var(--dg-stroke);
+  }
+
+  .dg-link-brand {
+    color: var(--brand);
+  }
+
+  .dg-link-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 2px;
+    border-left: 1.5px solid currentColor;
+    transform: translateX(-0.75px);
+  }
+
+  .dg-link-blocked .dg-link-line {
+    bottom: 0;
+    border-left-style: dashed;
+  }
+
+  .dg-link-head {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    transform: translateX(-50%) rotate(90deg);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .dg-link-stop {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--dg-stroke);
+    border-radius: 9999px;
+    background: var(--background);
+    color: var(--muted-foreground);
+    transform: translate(-50%, -50%);
+  }
+
+  .dg-link-stop svg {
+    width: 10px;
+    height: 10px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .dg-link-label {
+    position: relative;
+    margin-left: calc(50% + 16px);
+    padding-block: 8px;
+    font-size: 12px;
+    line-height: 1.35;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .dg-link-brand .dg-link-label {
+    color: var(--brand-hover);
+  }
+
+  .dg-link-sub {
+    display: block;
+    margin-top: 2px;
+    font-weight: 400;
+    color: var(--muted-foreground);
+  }
+
+  /* Reverse: the arrow points up (vertical) or left (horizontal). */
+  .dg-link-reverse .dg-link-line {
+    top: 2px;
+    bottom: 0;
+  }
+
+  .dg-link-reverse .dg-link-head {
+    top: 0;
+    bottom: auto;
+    transform: translateX(-50%) rotate(-90deg);
+  }
+
+  /* Parallel connectors between the same two nodes (for example, out and back). */
+  .dg-lanes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+
+  .dg-lanes > .dg-link {
+    min-height: 88px;
+  }
+
+  .dg-lanes > .dg-link .dg-link-line,
+  .dg-lanes > .dg-link .dg-link-head,
+  .dg-lanes > .dg-link .dg-link-stop {
+    left: 24px;
+  }
+
+  .dg-lanes > .dg-link .dg-link-label {
+    margin-left: 44px;
+  }
+
+  /* Very narrow (zoomed) containers: the lanes stack. */
+  @container dg (max-width: 359px) {
+    .dg-lanes {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* ---------- Wide: horizontal flow ---------- */
+
+  @container dg (min-width: 760px) {
+    .dg-flow {
+      max-width: none;
+      grid-template-columns: var(--dg-cols, minmax(0, 1fr) 96px minmax(0, 1fr) 96px minmax(0, 1fr));
+      align-items: center;
+    }
+
+    .dg-flow > .dg-link,
+    .dg-lanes > .dg-link {
+      align-self: stretch;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .dg-flow > .dg-link .dg-link-line,
+    .dg-lanes > .dg-link .dg-link-line {
+      left: 0;
+      right: 2px;
+      top: 50%;
+      bottom: auto;
+      border-left: 0;
+      border-top: 1.5px solid currentColor;
+      transform: translateY(-0.75px);
+    }
+
+    .dg-flow > .dg-link-blocked .dg-link-line,
+    .dg-lanes > .dg-link-blocked .dg-link-line {
+      right: 0;
+      border-top-style: dashed;
+    }
+
+    .dg-flow > .dg-link .dg-link-head,
+    .dg-lanes > .dg-link .dg-link-head {
+      left: auto;
+      right: 0;
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
+    }
+
+    .dg-flow > .dg-link-reverse .dg-link-line,
+    .dg-lanes > .dg-link-reverse .dg-link-line {
+      left: 2px;
+      right: 0;
+    }
+
+    .dg-flow > .dg-link-reverse .dg-link-head,
+    .dg-lanes > .dg-link-reverse .dg-link-head {
+      left: 0;
+      right: auto;
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    .dg-flow > .dg-link .dg-link-label,
+    .dg-lanes > .dg-link .dg-link-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(50% + 8px);
+      margin: 0;
+      padding: 0 4px;
+      text-align: center;
+    }
+
+    .dg-flow > .dg-link-blocked .dg-link-label,
+    .dg-lanes > .dg-link-blocked .dg-link-label {
+      bottom: auto;
+      top: calc(50% + 16px);
+    }
+
+    .dg-lanes {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 56px;
+      align-content: center;
+      align-self: stretch;
+    }
+
+    .dg-lanes > .dg-link {
+      min-height: 24px;
+    }
+
+    .dg-lanes > .dg-link .dg-link-stop {
+      left: 50%;
+    }
+
+    .dg-node,
+    .dg-boundary {
+      --dg-pad: 24px;
+    }
+  }
+}
