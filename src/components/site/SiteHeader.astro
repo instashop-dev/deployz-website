@@ -1,11 +1,12 @@
 ---
+import { LOGIN_URL, SIGNUP_URL } from '@/lib/site';
 import Logo from './Logo.astro';
 
 const navLinks = [
   { href: '/how-it-works', label: 'How It Works' },
-  { href: '/security', label: 'Security' },
+  { href: '/use-cases', label: 'Use Cases' },
   { href: '/pricing', label: 'Pricing' },
-  { href: '/docs', label: 'Docs' },
+  { href: '/security', label: 'Security' },
 ];
 
 const pathname = Astro.url.pathname;
@@ -36,11 +37,11 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
           </li>
         ))}
       </ul>
-      <a class="nav-link nav-signin" href="https://app.deployz.dev/sign-in">Sign in</a>
-      <a class="btn btn-primary nav-menu-cta min-[370px]:hidden" href="/get-started">Check my application</a>
+      <a class="nav-link nav-signin" href={LOGIN_URL}>Log In</a>
+      <a class="btn btn-primary nav-menu-cta min-[370px]:hidden" href={SIGNUP_URL} data-cta="header">Get Started Free</a>
     </div>
 
-    <a class="btn btn-primary hidden min-h-11 px-3.5 text-[14px] whitespace-nowrap min-[370px]:inline-flex sm:px-4" href="/get-started">Check my application</a>
+    <a class="btn btn-primary hidden min-h-11 px-3.5 text-[14px] whitespace-nowrap min-[370px]:inline-flex sm:px-4" href={SIGNUP_URL} data-cta="header">Get Started Free</a>
 
     <button
       type="button"
