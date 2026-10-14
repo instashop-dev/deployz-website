@@ -11,7 +11,7 @@ const routes = [
   { path: '/how-it-works', label: 'how-it-works' },
   { path: '/security', label: 'security' },
   { path: '/pricing', label: 'pricing' },
-  { path: '/get-started', label: 'get-started' },
+  { path: '/use-cases', label: 'use-cases' },
   { path: '/blog', label: 'blog' },
   { path: '/docs', label: 'docs' },
   { path: '/404', label: 'not-found' },
@@ -19,17 +19,16 @@ const routes = [
 type Route = (typeof routes)[number];
 type EvidenceRoute = Route | { readonly path: '/does-not-exist'; readonly label: 'unknown' };
 
-const authLinks = [
-  { name: 'Sign in', href: 'https://app.deployz.dev/sign-in' },
-  { name: 'Connect my application', href: 'https://app.deployz.dev/sign-up' },
-] as const;
+const SIGNUP_URL = 'https://app.deployz.dev/sign-up';
+const LOGIN_URL = 'https://app.deployz.dev/sign-in';
+const CTA_LABEL = 'Get Started Free';
 
 const pageTitles = [
-  { path: '/', title: "Deployz — Deploy Your SaaS in Your Customer's AWS Account" },
-  { path: '/how-it-works', title: 'How Deployz Works — Private SaaS Deployment on AWS' },
-  { path: '/security', title: 'Deployz Security and Architecture — Customer-Owned AWS Deployment' },
-  { path: '/pricing', title: 'Deployz Pricing — Simple Private Deployment Pricing' },
-  { path: '/get-started', title: 'Get Started with Deployz — Check Your Application' },
+  { path: '/', title: 'Deployz — Deploy Your SaaS Into Customer AWS' },
+  { path: '/how-it-works', title: 'How Deployz Works — From GitHub to Customer AWS' },
+  { path: '/use-cases', title: 'Deployz Use Cases — Customer-Hosted SaaS' },
+  { path: '/pricing', title: 'Deployz Pricing — Simple Customer Deployment Pricing' },
+  { path: '/security', title: 'Deployz Security & Architecture — Customer AWS' },
 ] as const;
 
 async function recordRouteEvidence(
@@ -107,7 +106,7 @@ test.describe('public design-system contract', () => {
   });
 
   test('marks the current primary navigation link', async ({ page }) => {
-    for (const route of ['/how-it-works', '/security', '/pricing', '/docs'] as const) {
+    for (const route of ['/how-it-works', '/use-cases', '/pricing', '/security'] as const) {
       await page.goto(route);
       const navigation = page.getByRole('navigation', { name: /primary/i });
       await expect(navigation.locator(`a[href="${route}"]`)).toHaveAttribute('aria-current', 'page');
@@ -115,12 +114,10 @@ test.describe('public design-system contract', () => {
   });
 
   test('uses the product authentication destinations', async ({ page }) => {
-    await page.goto('/get-started');
-    const main = page.getByRole('main');
+    await page.goto('/');
 
-    for (const authLink of authLinks) {
-      await expect(main.getByRole('link', { name: authLink.name })).toHaveAttribute('href', authLink.href);
-    }
+    await expect(page.locator('header a', { hasText: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
+    await expect(page.locator('footer').getByRole('link', { name: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
   });
 
   test('sets the approved title, description, and canonical URL on each core page', async ({ page }) => {
@@ -133,16 +130,108 @@ test.describe('public design-system contract', () => {
     }
   });
 
-  test('sends the primary call to action to the get started page', async ({ page }) => {
-    for (const { path } of pageTitles.filter((entry) => entry.path !== '/get-started')) {
+  test('sends every Get Started Free call to action to the sign-up page', async ({ page }) => {
+    for (const { path } of pageTitles) {
       await page.goto(path);
-      const actions = page.getByRole('link', { name: 'Check my application' });
+      const actions = page.locator(`a:text-is("${CTA_LABEL}")`);
 
-      expect(await actions.count()).toBeGreaterThan(0);
+      expect(await actions.count(), path).toBeGreaterThan(1);
       for (const action of await actions.all()) {
-        await expect(action).toHaveAttribute('href', '/get-started');
+        await expect(action).toHaveAttribute('href', SIGNUP_URL);
       }
+      await expect(page.getByRole('link', { name: /check my application/i })).toHaveCount(0);
     }
+  });
+
+  test('keeps the approved homepage heading and signature phrase', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.locator('h1')).toHaveText("The easiest way to deploy your SaaS in your customers' AWS accounts.");
+    await expect(page.getByRole('main').getByText('The deploy button for your SaaS.')).toBeVisible();
+    await expect(page.locator('main > section')).toHaveCount(7);
+  });
+
+  test('has no editorial markers or unverified claims', async ({ page }) => {
+    for (const route of routes) {
+      await page.goto(route.path);
+      const text = await page.locator('body').innerText();
+
+      expect(text, route.path).not.toMatch(/\[(VERIFY|CONDITIONAL)\]|one-click|zero access|least privilege|works with any app|unlimited free/i);
+    }
+  });
+
+  test('switches product preview tabs with the mouse and the keyboard', async ({ page }) => {
+    await page.goto('/');
+    const tabs = page.getByRole('tab');
+    await expect(tabs).toHaveCount(3);
+    await expect(page.getByRole('tabpanel')).toHaveCount(1);
+    await expect(page.getByRole('tabpanel')).toContainText('See what passed');
+
+    await page.getByRole('tab', { name: 'Manage' }).click();
+    await expect(page.getByRole('tab', { name: 'Manage' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByRole('tabpanel')).toContainText('release updates');
+
+    await page.getByRole('tab', { name: 'Manage' }).focus();
+    await page.keyboard.press('ArrowLeft');
+    await expect(page.getByRole('tab', { name: 'Deploy' })).toBeFocused();
+    await expect(page.getByRole('tabpanel')).toContainText('deployment progress');
+    await page.keyboard.press('Home');
+    await expect(page.getByRole('tab', { name: 'Configure' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  test('opens and closes FAQ answers', async ({ page }) => {
+    await page.goto('/');
+    const question = page.locator('details').filter({ hasText: 'Does my customer need an AWS account?' });
+
+    await expect(question).not.toHaveAttribute('open', '');
+    await question.locator('summary').click();
+    await expect(question).toHaveAttribute('open', '');
+    await expect(question).toContainText('They do not need a Deployz account.');
+    await question.locator('summary').click();
+    await expect(question).not.toHaveAttribute('open', '');
+  });
+
+  test('estimates the monthly Deployz charge', async ({ page }) => {
+    await page.goto('/pricing');
+    const slider = page.getByLabel('Billable customer environments');
+    const total = page.locator('[data-estimator-total]');
+
+    await expect(slider).toHaveValue('3');
+    await expect(total).toHaveText('$106');
+    for (const [value, expected] of [['0', '$0'], ['1', '$68'], ['10', '$239'], ['30', '$619']] as const) {
+      await slider.fill(value);
+      await expect(total).toHaveText(expected);
+    }
+    await slider.fill('3');
+    await slider.focus();
+    await page.keyboard.press('End');
+    await expect(total).toHaveText('$619');
+  });
+
+  test('opens the mobile menu with the same destinations', async ({ page }) => {
+    const viewport = page.viewportSize();
+    test.skip(!viewport || viewport.width >= 1024, 'The menu button shows below 1024px.');
+    await page.goto('/');
+    const button = page.getByRole('button', { name: 'Menu' });
+
+    await button.click();
+    await expect(button).toHaveAttribute('aria-expanded', 'true');
+    for (const name of ['How It Works', 'Use Cases', 'Pricing', 'Security', 'Log In']) {
+      await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
+    }
+    await page.keyboard.press('Escape');
+    await expect(button).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('ships redirects, security headers, and robots rules', async () => {
+    const [redirects, headers, robots] = await Promise.all(
+      ['dist/_redirects', 'dist/_headers', 'dist/robots.txt'].map((file) => readFile(file, 'utf8')),
+    );
+
+    expect(redirects).toContain(`/get-started ${SIGNUP_URL} 301`);
+    expect(headers).toMatch(/Content-Security-Policy:.*frame-ancestors 'none'/);
+    expect(headers).toContain('X-Content-Type-Options: nosniff');
+    expect(robots).toContain('Sitemap: https://deployz.dev/sitemap-index.xml');
   });
 
   test('has no placeholder links or internal product-stage words', async ({ page }) => {
@@ -185,7 +274,7 @@ test.describe('public design-system contract', () => {
 
   test('shows a keyboard focus indicator on an auth action', async ({ page }) => {
     await page.goto('/');
-    const primaryAction = page.getByRole('navigation', { name: /primary/i }).getByRole('link', { name: 'Check my application' });
+    const primaryAction = page.getByRole('navigation', { name: /primary/i }).getByRole('link', { name: CTA_LABEL }).last();
 
     for (let index = 0; index < 12; index += 1) {
       await page.keyboard.press('Tab');
@@ -316,7 +405,7 @@ test.describe('public design-system contract', () => {
       'dist/how-it-works/index.html',
       'dist/security/index.html',
       'dist/pricing/index.html',
-      'dist/get-started/index.html',
+      'dist/use-cases/index.html',
       'dist/blog/index.html',
       'dist/docs/index.html',
       'dist/404.html',
