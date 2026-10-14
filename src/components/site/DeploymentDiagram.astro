@@ -1,71 +1,130 @@
 ---
 /*
- * Signature hero diagram: GitHub -> Deployz -> customer-owned AWS account.
- * Built from the shared diagram system (src/styles/diagrams.css): vertical in narrow
- * containers, horizontal in wide ones. Connectors are decorative; the sr-only caption
- * states the flow.
+ * Signature hero scene: GitHub repository -> Deployz readiness and release -> the app
+ * running live in the customer's AWS account. Scene system: src/styles/scene.css.
+ * The drawing is aria-hidden; the sr-only caption describes it.
  */
-import { Cloud, GitBranch } from 'lucide-react';
-import Connector from '@/components/site/diagram/Connector.astro';
+import { Box, Cloud, Database, HardDrive, Layers } from 'lucide-react';
+import Beam from '@/components/site/scene/Beam.astro';
+import GithubMark from '@/components/site/scene/GithubMark.astro';
+import Mark from '@/components/site/scene/Mark.astro';
 
-const resources = ['Database (optional)', 'Redis-compatible cache (optional)', 'S3 file storage'];
+const checks = [
+  { label: 'Port', value: '3000' },
+  { label: 'Health check', value: '/health' },
+  { label: 'PostgreSQL', value: '16' },
+  { label: 'File storage', value: 'S3' },
+];
+
+const tiles = [
+  { icon: Box, title: 'Container', meta: 'ECS Fargate' },
+  { icon: Database, title: 'Database', meta: 'PostgreSQL' },
+  { icon: Layers, title: 'Cache', meta: 'Valkey' },
+  { icon: HardDrive, title: 'Storage', meta: 'S3' },
+];
 ---
 
-<figure class="dg hero-dg mx-auto w-full max-w-[1080px]" aria-labelledby="hero-dg-caption">
-  <figcaption id="hero-dg-caption" class="sr-only">
-    Deployz reads your GitHub repository, prepares a release, and deploys and updates it in your
-    customer's AWS account, where the application and its resources run.
+<figure class="sc hero-sc mx-auto w-full max-w-[1120px]">
+  <figcaption class="sr-only">
+    Deployz reads your GitHub repository with read-only access and checks what your app needs. When
+    the readiness checks pass, it deploys a release of your app into your customer's AWS account, where
+    the container, database, cache, and file storage run.
   </figcaption>
-  <div role="list" class="dg-flow">
-    <div role="listitem" class="dg-node">
-      <p class="dg-role"><GitBranch aria-hidden="true" strokeWidth={1.75} /> GitHub</p>
-      <p class="dg-title">Connect your code</p>
-      <ul class="dg-rows">
-        <li><span>Repository access</span><span class="dg-chip-meta">Read-only</span></li>
-        <li><span>You select each release</span></li>
-      </ul>
-    </div>
 
-    <Connector label="Reads your repository" />
+  <div class="sc-stage" aria-hidden="true">
+    <div class="sc-flow">
+      <!-- 1. GitHub -->
+      <div class="sc-card">
+        <div class="sc-head">
+          <span class="sc-icon sc-icon-dark"><GithubMark /></span>
+          <p class="sc-head-title">GitHub<small class="sc-mono">your-org/your-app</small></p>
+        </div>
+        <div class="sc-body">
+          <ul class="sc-kv">
+            <li><span>Access</span><span>read-only</span></li>
+            <li><span>Branch</span><span>main</span></li>
+            <li><span>Commit</span><span>a1f9c3e</span></li>
+          </ul>
+          <ul class="sc-checks mt-3 border-t border-border pt-3">
+            <li><Mark /><span>Dockerfile found</span></li>
+          </ul>
+        </div>
+      </div>
 
-    <div role="listitem" class="dg-node dg-node-brand">
-      <p class="dg-role">
-        <img src="/deployz-icon-master.svg" alt="" width="16" height="16" />
-        Deployz
-      </p>
-      <p class="dg-title">Configure &amp; deploy</p>
-      <ul class="dg-rows">
-        <li><span>Readiness report</span></li>
-        <li><span>Releases, updates, and status</span></li>
-      </ul>
-    </div>
+      <Beam label="reads repo" variant="neutral" />
 
-    <Connector label="Deploys and updates" variant="brand" />
+      <!-- 2. Deployz -->
+      <div class="sc-card sc-card-brand">
+        <div class="sc-head">
+          <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+          <p class="sc-head-title">Deployz<small>Readiness report</small></p>
+          <span class="sc-badge sc-badge-brand">Ready</span>
+        </div>
+        <div class="sc-body">
+          <div class="flex items-baseline justify-between gap-3">
+            <span class="text-[13px] font-medium">12 of 12 checks passed</span>
+          </div>
+          <div class="sc-progress mt-2"><span style="width: 100%"></span></div>
+          <ul class="sc-checks mt-3">
+            {checks.map((check) => (
+              <li><Mark /><span>{check.label}</span><span class="sc-mono">{check.value}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="sc-foot">
+          <span class="sc-label">Release</span>
+          <span class="sc-mono text-foreground">v1.4.0</span>
+        </div>
+      </div>
 
-    <div role="listitem" class="dg-boundary">
-      <p class="dg-role"><Cloud aria-hidden="true" strokeWidth={1.75} /> Customer AWS</p>
-      <p class="dg-title">Run in their cloud</p>
-      <p class="dg-text">They own the account and the data.</p>
-      <div class="mt-4">
-        <p class="dg-chip dg-chip-strong">Application container</p>
-        <ul class="dg-tree" aria-label="Resources in their AWS account">
-          {resources.map((resource) => <li><span class="dg-chip">{resource}</span></li>)}
+      <Beam label="deploy v1.4.0" variant="brand" delay={1.3} />
+
+      <!-- 3. Customer AWS -->
+      <div class="sc-boundary hero-aws">
+        <span class="sc-boundary-tag"><Cloud strokeWidth={1.75} /> Customer AWS <span class="sc-mono">us-east-1</span></span>
+        <div class="sc-card hero-app">
+          <div class="sc-head">
+            <span class="sc-icon"><Box strokeWidth={1.75} /></span>
+            <p class="sc-head-title">Your app<small class="sc-mono">v1.4.0 · HTTPS</small></p>
+            <span class="sc-badge sc-badge-live"><span class="sc-dot sc-dot-pulse"></span>Live</span>
+          </div>
+        </div>
+        <ul class="sc-tiles mt-2.5">
+          {tiles.map((tile) => (
+            <li class="sc-tile">
+              <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
+              <span class="sc-tile-text">{tile.title}<span class="sc-mono">{tile.meta}</span></span>
+            </li>
+          ))}
         </ul>
+        <p class="mt-3 text-[12px] leading-snug text-muted-foreground">Their account. Their data.</p>
       </div>
     </div>
   </div>
 </figure>
 
 <style>
-  .hero-dg .dg-flow {
-    --dg-cols: minmax(0, 1fr) 88px minmax(0, 1.06fr) 112px minmax(0, 1.14fr);
+  .hero-sc .sc-flow {
+    --sc-cols: minmax(0, 0.92fr) 136px minmax(0, 1.04fr) 152px minmax(0, 1.18fr);
   }
 
-  /* The two vendor-side nodes share one height, so the flow reads as one line. */
-  @container dg (min-width: 760px) {
-    .hero-dg .dg-node {
-      align-self: center;
-      min-height: 212px;
+  .hero-app .sc-head {
+    border-bottom: 0;
+  }
+
+  @container sc (min-width: 960px) {
+    .hero-sc .sc-card-brand {
+      transform: translateY(-6px);
+    }
+  }
+
+  @container sc (min-width: 960px) and (max-width: 1039px) {
+    .hero-sc .sc-flow {
+      --sc-cols: minmax(0, 0.95fr) 116px minmax(0, 1.06fr) 128px minmax(0, 1.1fr);
+    }
+
+    .hero-sc .sc-tiles {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
