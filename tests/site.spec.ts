@@ -147,7 +147,7 @@ test.describe('public design-system contract', () => {
     await page.goto('/');
 
     await expect(page.locator('h1')).toHaveText("Deploy your SaaS in your customers' AWS accounts.");
-    await expect(page.locator('main > section')).toHaveCount(7);
+    await expect(page.locator('main > section')).toHaveCount(8);
   });
 
   test('has no editorial markers or unverified claims', async ({ page }) => {
@@ -216,7 +216,7 @@ test.describe('public design-system contract', () => {
 
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
-    for (const name of ['How It Works', 'Use Cases', 'Pricing', 'Security', 'Log In']) {
+    for (const name of ['How It Works', 'Use Cases', 'Pricing', 'Security', 'Docs', 'Log In']) {
       await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
     }
     await page.keyboard.press('Escape');

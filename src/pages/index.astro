@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, Building2, RefreshCw, ServerCog } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import CtaSection from '@/components/site/CtaSection.astro';
 import DeploymentDiagram from '@/components/site/DeploymentDiagram.astro';
 import FaqList from '@/components/site/FaqList.astro';
@@ -11,17 +11,14 @@ import Base from '../layouts/Base.astro';
 
 const benefits = [
   {
-    icon: Building2,
     title: 'Say yes to customer-hosted deals',
     text: 'Offer customer-hosted installs without a custom project for each deal.',
   },
   {
-    icon: ServerCog,
     title: 'Skip the infrastructure work',
     text: 'Deployz sets up the network, containers, database, cache, storage, and HTTPS.',
   },
   {
-    icon: RefreshCw,
     title: 'Ship updates to every customer',
     text: 'Build a release once. Choose when each customer gets it.',
   },
@@ -32,6 +29,24 @@ const steps = [
   { title: 'Configure and build a release', text: 'Fill in settings, fix any blockers, and build a versioned release.' },
   { title: 'Your customer connects AWS', text: 'They open your installation link and approve access in their AWS console.' },
   { title: 'Deploy and manage updates', text: 'Deployz deploys the release. You choose when each customer updates.' },
+];
+
+const owners = [
+  {
+    owner: 'Your customer',
+    title: 'Owns the AWS account',
+    text: 'Approves the connector, pays AWS directly, and administers the account. The database, cache, and files stay there.',
+  },
+  {
+    owner: 'You',
+    title: 'Own the application',
+    text: 'Your code, configuration, and integrations. You decide when each customer gets a new release.',
+  },
+  {
+    owner: 'Deployz',
+    title: 'Runs the deployments',
+    text: 'Sets up the supported infrastructure, deploys releases, and handles updates, rollbacks, and status.',
+  },
 ];
 
 const supported = [
@@ -54,8 +69,9 @@ const questions = [
       'Yes. Your customer approves the connection in their own AWS account, and AWS bills them for the resources. They do not need a Deployz account.',
   },
   {
-    question: 'What does it cost?',
-    answer: `Evaluation is free, with no card: analysis, release builds, and one test deployment per application in your own AWS account. After you subscribe, Deployz costs $${BASE_PRICE} a month plus $${ENVIRONMENT_PRICE} a month for each billable customer environment. AWS costs are separate.`,
+    question: 'What happens if Deployz is unavailable?',
+    answer:
+      "The application keeps running in the customer's account, because its requests do not pass through the Deployz management service. New installations and updates pause. Traffic to the default deployz.dev URL depends on the Deployz proxy; with a custom domain, traffic goes directly to the customer's load balancer.",
   },
 ];
 ---
@@ -65,15 +81,19 @@ const questions = [
   description="Deploy your SaaS in your customers' AWS accounts. Connect GitHub, build a release, send an installation link, and manage updates from Deployz."
 >
   <!-- H1. Hero -->
-  <section aria-labelledby="hero-title" class="pt-16 pb-16 sm:pt-24 sm:pb-20 lg:pt-28 lg:pb-24">
+  <section aria-labelledby="hero-title" class="pt-14 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24">
     <div class="container-site">
       <div class="mx-auto max-w-[870px] text-center">
-        <h1 id="hero-title" class="text-display">Deploy your SaaS in your customers' AWS accounts.</h1>
-        <p class="text-lead mx-auto mt-6 max-w-[680px] text-muted-foreground">
-          Connect GitHub. Deployz checks what your app needs, sets up the AWS infrastructure in each
-          customer's account, deploys your releases, and manages updates.
+        <p class="text-[14px] font-medium text-muted-foreground">For B2B SaaS teams</p>
+        <h1 id="hero-title" class="text-display mt-3">Deploy your SaaS in your customers' AWS accounts.</h1>
+        <p class="text-lead mx-auto mt-6 max-w-[640px] text-muted-foreground">
+          Connect your GitHub repo. Deployz checks what your app needs, sets up AWS infrastructure in each
+          customer's account, and deploys the releases you choose.
         </p>
-        <a class="btn btn-primary btn-lg mt-8" href={SIGNUP_URL} data-cta="home-hero">{CTA_LABEL}</a>
+        <div class="mt-8 flex flex-col items-stretch justify-center gap-3 min-[420px]:flex-row min-[420px]:items-center">
+          <a class="btn btn-primary btn-lg" href={SIGNUP_URL} data-cta="home-hero">{CTA_LABEL}</a>
+          <a class="btn btn-secondary btn-lg" href="/how-it-works/">See how it works</a>
+        </div>
         <p class="mt-4 text-[14px] text-muted-foreground">Free evaluation · No credit card required</p>
       </div>
       <div class="mt-12 sm:mt-14 lg:mt-16">
@@ -87,9 +107,8 @@ const questions = [
     <SectionHeading id="benefits-title" title="Customer-hosted deployments without a DevOps project." />
     <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-14 lg:gap-12">
       {benefits.map((item) => (
-        <li>
-          <item.icon className="size-5 text-foreground" strokeWidth={1.75} aria-hidden="true" />
-          <h3 class="mt-4 text-[18px] leading-snug font-semibold tracking-[-0.01em]">{item.title}</h3>
+        <li class="border-t border-foreground pt-5">
+          <h3 class="text-[18px] leading-snug font-semibold tracking-[-0.01em]">{item.title}</h3>
           <p class="mt-2 text-muted-foreground">{item.text}</p>
         </li>
       ))}
@@ -124,20 +143,35 @@ const questions = [
     </div>
   </Section>
 
-  <!-- H5. Ownership and compatibility -->
-  <Section divider labelledby="security-title">
-    <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <div>
-        <h2 id="security-title" class="text-h2 max-w-[520px]">Your app runs in your customer's AWS account.</h2>
-        <p class="mt-5 max-w-[520px] text-muted-foreground">
-          The app and its data run in the customer's account. Deployz deploys through a connector the
-          customer approves, and it does not receive database, cache, or file data.
+  <!-- H5. Ownership -->
+  <Section divider labelledby="ownership-title">
+    <SectionHeading id="ownership-title" title="Your customer owns the account. You own the app. Deployz runs the deployments." />
+    <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-14 lg:gap-12">
+      {owners.map((item, index) => (
+        <li class:list={['border-t pt-5', index === 2 ? 'border-brand' : 'border-foreground']}>
+          <p class="text-[14px] text-subtle">{item.owner}</p>
+          <h3 class="mt-1 text-[18px] leading-snug font-semibold tracking-[-0.01em]">{item.title}</h3>
+          <p class="mt-2 text-muted-foreground">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-10 max-w-[720px] text-muted-foreground">
+      Deployz works through a connector that the customer launches in their AWS console. It does not receive
+      database data, cache contents, S3 data, or application logs.
+    </p>
+    <a class="link-arrow mt-4" href="/security/">Security and architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
+  </Section>
+
+  <!-- H6. Fit and pricing -->
+  <Section divider labelledby="fit-title">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+      <div class="min-w-0">
+        <h2 id="fit-title" class="text-h2 max-w-[560px]">Will Deployz work with my app?</h2>
+        <p class="mt-5 max-w-[560px] text-muted-foreground">
+          Deployz supports one application architecture on AWS. Some apps need code changes first, and the
+          free readiness report lists the blockers it finds.
         </p>
-        <a class="link-arrow mt-6" href="/security/">Security and architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
-      </div>
-      <div>
-        <h3 class="text-[16px] font-semibold">Supported today</h3>
-        <ul class="mt-4 border-b border-border">
+        <ul class="mt-6 border-b border-border">
           {supported.map((item) => (
             <li class="flex items-start gap-3 border-t border-border py-3">
               <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0 text-foreground" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7" /></svg>
@@ -147,10 +181,23 @@ const questions = [
         </ul>
         <a class="link-arrow mt-6" href="/how-it-works/#compatibility">Full compatibility list <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
+      <div class="min-w-0 self-start rounded-xl border border-border-strong p-6 sm:p-8">
+        <h3 class="text-[16px] font-semibold">Pricing</h3>
+        <p class="mt-5 flex flex-wrap items-baseline gap-x-2">
+          <span class="text-[48px] leading-none font-semibold tracking-[-0.04em] tabular-nums">$0</span>
+          <span class="text-muted-foreground">to evaluate, no card</span>
+        </p>
+        <p class="mt-5 border-t border-border pt-5">
+          Then <span class="font-semibold tabular-nums">${BASE_PRICE}</span> / month +
+          <span class="font-semibold tabular-nums">${ENVIRONMENT_PRICE}</span> / billable customer environment / month.
+        </p>
+        <p class="mt-2 text-[15px] text-muted-foreground">AWS bills your customer directly for the infrastructure.</p>
+        <a class="link-arrow mt-4" href="/pricing/">See pricing details <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
     </div>
   </Section>
 
-  <!-- H6. FAQ -->
+  <!-- H7. FAQ -->
   <Section divider labelledby="faq-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <h2 id="faq-title" class="text-h2 max-w-[440px]">Questions</h2>
@@ -158,7 +205,7 @@ const questions = [
     </div>
   </Section>
 
-  <!-- H7. Final CTA -->
+  <!-- H8. Final CTA -->
   <CtaSection title="See what your app needs to deploy." cta="home-closing">
     Connect GitHub for a free readiness report.
   </CtaSection>

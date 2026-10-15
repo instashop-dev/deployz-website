@@ -93,8 +93,8 @@ All marketing components are static Astro in `src/components/site/`.
 
 | Component | File | Notes |
 | --- | --- | --- |
-| Site header | `SiteHeader.astro` | Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
-| Site footer | `SiteFooter.astro` | Logo plus two open link groups and copyright. |
+| Site header | `SiteHeader.astro` | Links: How It Works, Use Cases, Pricing, Security, Docs. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
+| Site footer | `SiteFooter.astro` | Logo plus two open link groups (Product; Resources: Documentation, Blog, Log In) and copyright. |
 | Logo | `Logo.astro` | Approved mark plus wordmark text. |
 | Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`, `divider`. |
 | Section heading | `SectionHeading.astro` | Optional eyebrow, h2, optional lead; left or centered. |
@@ -142,9 +142,9 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 
 | Page | Composition |
 | --- | --- |
-| `/` | Seven sections: centered hero + diagram; three benefits with Lucide icons (quiet grid); 4-step process rail; product preview tabs; ownership summary + supported list (split); FAQ (split); closing CTA. |
+| `/` | Eight sections: centered hero (audience line, primary + secondary action) + diagram; three benefits (quiet grid, top hairlines, no icons); 4-step process rail; product preview tabs; ownership (quiet grid: customer, you, Deployz; the Deployz column has the brand hairline); fit + pricing (split: supported list, bounded pricing summary); FAQ (split, includes Deployz availability); closing CTA. |
 | `/how-it-works` | Left-aligned header; journey diagram (steps 1–4 at a glance); 1 connect GitHub (split); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid); compatibility (split, supported / not supported); closing CTA. |
-| `/use-cases` | Left-aligned header with the fleet diagram aside; one section with three customer-request rows (split, quote heading, hairline between rows); who Deployz is for; closing CTA. |
+| `/use-cases` | Left-aligned header with the fleet diagram aside; one section with three customer-request rows (split, quote heading, hairline between rows); who Deployz is for (split: good fit / not a fit lists); closing CTA. |
 | `/pricing` | Left-aligned header; one bounded plan frame (price, free evaluation, "When you pay" definition list) + included list; cost estimator for an active subscription (range input, inline script); who-bills-whom diagram; billing FAQ; closing CTA. |
 | `/security` | Left-aligned header; what runs where (connector diagram); AWS access + connector permissions + responsibilities (split, then definition list); what Deployz receives, secrets, code and AI, routing; lifecycle disclosures + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
