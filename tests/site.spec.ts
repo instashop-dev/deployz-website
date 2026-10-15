@@ -12,7 +12,6 @@ const routes = [
   { path: '/security', label: 'security' },
   { path: '/pricing', label: 'pricing' },
   { path: '/who-its-for', label: 'who-its-for' },
-  { path: '/features', label: 'features' },
   { path: '/byoc-deployments', label: 'byoc-deployments' },
   { path: '/deploy-saas-to-customer-aws', label: 'deploy-saas-to-customer-aws' },
   { path: '/blog', label: 'blog' },
@@ -30,7 +29,6 @@ const pageTitles = [
   { path: '/', title: 'Deployz — Deploy Your SaaS Into Customer AWS' },
   { path: '/how-it-works', title: 'How Deployz Works — From GitHub to Customer AWS' },
   { path: '/who-its-for', title: 'Who Deployz Is For — SaaS Teams, Indie Developers, and AI Builders' },
-  { path: '/features', title: 'Deployz Features — AI Analysis, Guardrails, and Customer AWS Deployments' },
   { path: '/byoc-deployments', title: 'BYOC Deployments for SaaS on AWS — Deployz' },
   { path: '/deploy-saas-to-customer-aws', title: "Deploy Your SaaS Into a Customer's AWS Account — Deployz" },
   { path: '/pricing', title: 'Deployz Pricing — $49/month + $19 per Customer Environment' },
@@ -112,7 +110,7 @@ test.describe('public design-system contract', () => {
   });
 
   test('marks the current primary navigation link', async ({ page }) => {
-    for (const route of ['/how-it-works/', '/features/', '/who-its-for/', '/pricing/', '/security/'] as const) {
+    for (const route of ['/how-it-works/', '/who-its-for/', '/pricing/', '/security/'] as const) {
       await page.goto(route);
       const navigation = page.getByRole('navigation', { name: /primary/i });
       await expect(navigation.locator(`a[href="${route}"]`)).toHaveAttribute('aria-current', 'page');
@@ -226,7 +224,7 @@ test.describe('public design-system contract', () => {
 
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
-    for (const name of ['How It Works', 'Features', "Who It's For", 'Pricing', 'Security', 'Docs', 'Log In']) {
+    for (const name of ['How It Works', "Who It's For", 'Pricing', 'Security', 'Docs', 'Log In']) {
       await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
     }
     await page.keyboard.press('Escape');
@@ -241,6 +239,8 @@ test.describe('public design-system contract', () => {
     expect(redirects).toContain(`/get-started ${SIGNUP_URL} 301`);
     expect(redirects).toContain('/use-cases /who-its-for/ 301');
     expect(redirects).toContain('/use-cases/ /who-its-for/ 301');
+    expect(redirects).toContain('/features /how-it-works/ 301');
+    expect(redirects).toContain('/features/ /how-it-works/ 301');
     expect(headers).toMatch(/Content-Security-Policy:.*frame-ancestors 'none'/);
     expect(headers).toContain('X-Content-Type-Options: nosniff');
     // Cloudflare Web Analytics injects its beacon at the edge; the CSP must allow it.
@@ -421,7 +421,6 @@ test.describe('public design-system contract', () => {
       'dist/security/index.html',
       'dist/pricing/index.html',
       'dist/who-its-for/index.html',
-      'dist/features/index.html',
       'dist/byoc-deployments/index.html',
       'dist/deploy-saas-to-customer-aws/index.html',
       'dist/blog/index.html',
