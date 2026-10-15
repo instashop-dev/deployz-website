@@ -51,9 +51,24 @@ const owners = [
 
 const questions = [
   {
-    question: 'Does AI decide what gets deployed?',
+    question: 'Who owns the code, infrastructure, and data?',
     answer:
-      "No. AI helps read your repository when Deployz's own checks leave a question open, and the report labels those values as inferred by AI. The infrastructure comes from Deployz's rule-based compiler, which can create only supported AWS resources. AI does not guarantee that your app is correct or secure.",
+      'You own your code and data. Your customer owns the infrastructure deployed in their AWS account. Deployz handles deployment and management without taking ownership of your application or customer resources.',
+  },
+  {
+    question: 'Is there any lock-in?',
+    answer:
+      'No proprietary runtime or Kubernetes setup required. Deployz uses standard AWS services, so your application and infrastructure can keep running on them. You can stop using Deployz without rebuilding your application, although managing future deployments becomes your responsibility. The default deployz.dev URL and the Deployz image registry are the parts that still depend on Deployz.',
+  },
+  {
+    question: 'Who pays for the underlying infrastructure?',
+    answer:
+      'AWS infrastructure costs are billed directly to the owner of the customer AWS account. Deployz charges separately for its deployment and management services. No infrastructure markup.',
+  },
+  {
+    question: 'Does my customer need an AWS account?',
+    answer:
+      'Yes. Your customer approves the connection in their own AWS account, and AWS bills them for the resources. They do not need a Deployz account.',
   },
   {
     question: 'Do I need DevOps or AWS expertise?',
@@ -61,9 +76,24 @@ const questions = [
       'No dedicated DevOps team is needed. Deployz finds what your app needs and sets up the supported AWS infrastructure. You still review the configuration and fix issues in your own code.',
   },
   {
-    question: 'Does my customer need an AWS account?',
+    question: 'Is DevOps support available?',
     answer:
-      'Yes. Your customer approves the connection in their own AWS account, and AWS bills them for the resources. They do not need a Deployz account.',
+      'Deployz is designed to eliminate routine DevOps work. It automates infrastructure provisioning, deployments, configuration, and lifecycle management. For issues that need human assistance, our team is available to help with Deployz-related problems.',
+  },
+  {
+    question: 'Is Deployz SOC 2 or ISO 27001 compliant?',
+    answer:
+      'Deployz runs on infrastructure provided by AWS, which holds SOC 2 reports and ISO 27001 certification. Deployz is preparing for its own independent SOC 2 audit. Deployz itself is not currently SOC 2 or ISO 27001 certified.',
+  },
+  {
+    question: 'Which clouds and Kubernetes distributions do you support?',
+    answer:
+      'Deployz currently supports AWS, using managed services such as ECS, RDS, S3, and other AWS resources. No Kubernetes cluster is required. Support for additional cloud providers may be introduced in the future.',
+  },
+  {
+    question: 'How long does it take to go live?',
+    answer:
+      "Most supported applications can be configured in minutes. Deployz analyzes your repository, identifies infrastructure requirements, and automates deployment into your customer's AWS account. Actual deployment time depends on the application and AWS resources being provisioned.",
   },
   {
     question: 'What happens if Deployz is unavailable?',
