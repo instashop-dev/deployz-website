@@ -1,101 +1,58 @@
 ---
 /*
- * "Build in-house vs. use Deployz" scene for the pricing page value section.
- * Two stacks of work: on the left, your team builds three layers of deployment tooling
- * under the product; on the right, one Deployz layer replaces them. The right card keeps
- * a note on what stays with you, so the scene does not imply zero operational work.
+ * "Build it yourself vs. use Deployz" scene for the pricing page value section.
+ * The same list of work appears twice. Built in-house, your team owns every row. With
+ * Deployz, your team keeps the product and Deployz takes the deployment rows.
  * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only text describes it.
  */
-import { AppWindow, Link, RotateCcw, Server } from 'lucide-react';
-
-const inHouse = [
-  { icon: Server, title: 'Infrastructure tooling', sub: 'network, containers, data' },
-  { icon: Link, title: 'Customer installation flows', sub: 'access, setup, checks' },
-  { icon: RotateCcw, title: 'Update and rollback tooling', sub: 'every customer, every release' },
+const work = [
+  'Your product',
+  'AWS infrastructure templates',
+  'Customer installer and AWS access',
+  'Release builds',
+  'Updates and rollbacks',
+  'Status for every customer',
 ];
 
-const roadmap = ['Features', 'Integrations', 'Customer requests'];
-
-const handled = ['Provisioning', 'Installation links', 'Releases', 'Updates', 'Rollbacks'];
+const columns = [
+  { title: 'Build it yourself', owners: work.map(() => 'team'), total: `Your team owns ${work.length} of ${work.length}` },
+  { title: 'With Deployz', owners: work.map((_, index) => (index === 0 ? 'team' : 'deployz')), total: `Your team owns 1 of ${work.length}`, brand: true },
+];
 ---
 
 <figure class="sc bvb-sc">
   <p class="sr-only">
-    Comparison. Build in-house: your team builds and maintains infrastructure tooling, customer installation
-    flows, and update and rollback tooling next to your product. Outcome: your product plus deployment
-    tooling. Use Deployz: Deployz handles provisioning, installation links, releases, updates, and rollbacks.
-    You still own your code, configuration, and release decisions. Outcome: more time for your product.
+    Comparison of the same six pieces of work. Build it yourself: your team owns all six — your product, AWS
+    infrastructure templates, the customer installer and AWS access, release builds, updates and rollbacks,
+    and status for every customer. With Deployz: your team owns your product, and Deployz handles the other
+    five.
   </p>
 
   <div class="sc-stage sc-stage-plain" aria-hidden="true">
     <div class="bvb-grid">
-      <!-- Build in-house -->
-      <div class="sc-card bvb-col">
-        <div class="sc-head">
-          <span class="sc-icon"><Server strokeWidth={1.75} /></span>
-          <p class="sc-head-title">Build in-house<small>Your team builds and maintains</small></p>
-          <span class="sc-badge">Your team</span>
-        </div>
-        <div class="sc-body bvb-body">
-          <div class="bvb-layer bvb-product">
-            <span class="sc-icon sc-icon-sm"><AppWindow strokeWidth={1.75} /></span>
-            <span class="bvb-layer-text">Your product</span>
+      {columns.map((column) => (
+        <div class:list={['sc-card', column.brand && 'sc-card-brand']}>
+          <div class="sc-head">
+            {column.brand
+              ? <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+              : <span class="sc-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 2.5l3 3-7.5 7.5H3v-3z" /></svg></span>}
+            <p class="sc-head-title">{column.title}</p>
           </div>
-          <span class="bvb-plus">+</span>
-          <ul class="bvb-stack">
-            {inHouse.map((item) => (
-              <li class="bvb-layer bvb-layer-work">
-                <span class="sc-icon sc-icon-sm"><item.icon strokeWidth={1.75} /></span>
-                <span class="bvb-layer-text">
-                  {item.title}
-                  <span class="sc-mono">{item.sub}</span>
-                </span>
+          <ul class="sc-body bvb-rows">
+            {work.map((item, index) => (
+              <li class="bvb-row">
+                <span class:list={['bvb-item', index === 0 && 'bvb-item-product']}>{item}</span>
+                {column.owners[index] === 'team'
+                  ? <span class="sc-badge">Your team</span>
+                  : <span class="sc-badge sc-badge-brand">Deployz</span>}
               </li>
             ))}
           </ul>
-        </div>
-        <div class="sc-foot">
-          <span class="sc-label">Outcome</span>
-          <span class="bvb-outcome">Your product + deployment tooling</span>
-        </div>
-      </div>
-
-      <!-- Use Deployz -->
-      <div class="sc-card sc-card-brand bvb-col">
-        <div class="sc-head">
-          <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
-          <p class="sc-head-title">Use Deployz<small>Deployz handles the deployment work</small></p>
-        </div>
-        <div class="sc-body bvb-body">
-          <div class="bvb-layer bvb-product bvb-product-wide">
-            <div class="bvb-deployz-head">
-              <span class="sc-icon sc-icon-sm"><AppWindow strokeWidth={1.75} /></span>
-              <span class="bvb-layer-text">
-                Your product
-                <span class="sc-mono">code, configuration, release decisions</span>
-              </span>
-              <span class="sc-badge">Your team</span>
-            </div>
-            <ul class="bvb-chips bvb-chips-neutral">
-              {roadmap.map((item) => <li>{item}</li>)}
-            </ul>
-          </div>
-          <span class="bvb-plus">+</span>
-          <div class="bvb-layer bvb-deployz">
-            <div class="bvb-deployz-head">
-              <span class="bvb-layer-text">Deployz handles</span>
-              <span class="sc-badge sc-badge-brand">Deployz</span>
-            </div>
-            <ul class="bvb-chips">
-              {handled.map((item) => <li>{item}</li>)}
-            </ul>
+          <div class="sc-foot">
+            <span class:list={['bvb-total', column.brand && 'bvb-total-brand']}>{column.total}</span>
           </div>
         </div>
-        <div class="sc-foot">
-          <span class="sc-label">Outcome</span>
-          <span class="bvb-outcome bvb-outcome-brand">More time for your product</span>
-        </div>
-      </div>
+      ))}
     </div>
   </div>
 </figure>
@@ -104,140 +61,57 @@ const handled = ['Provisioning', 'Installation links', 'Releases', 'Updates', 'R
   .bvb-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
-    max-width: 520px;
+    gap: 20px;
+    max-width: 480px;
     margin-inline: auto;
   }
 
-  @container sc (min-width: 760px) {
-    .bvb-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      max-width: none;
-    }
-
-    .sc-stage {
-      padding: 40px 32px;
-    }
-  }
-
-  /* Both cards stretch to the same height; the footer stays at the bottom. */
-  .bvb-col {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .bvb-col .sc-head {
-    flex-wrap: wrap;
-  }
-
-  .bvb-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .bvb-stack {
+  .bvb-rows {
     display: grid;
-    gap: 6px;
   }
 
-  /* A layer: one row of work, with an owner badge on the right. */
-  .bvb-layer {
+  .bvb-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-width: 0;
-    padding: 10px;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    background: var(--background);
-    box-shadow: 0 1px 2px rgb(17 17 17 / 0.04);
-  }
-
-  .bvb-layer-work {
-    border-style: dashed;
-    border-color: var(--border-strong);
-    background: var(--surface-subtle);
-    box-shadow: none;
-  }
-
-  .bvb-layer-text {
-    min-width: 0;
-    flex: 1;
-    font-size: 13px;
-    line-height: 1.3;
-    font-weight: 600;
-    color: var(--foreground);
-  }
-
-  .bvb-layer-text .sc-mono {
-    display: block;
-    margin-top: 2px;
-  }
-
-  /* With Deployz, the product layer gets the room. */
-  .bvb-product-wide {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-  }
-
-  .bvb-plus {
-    align-self: center;
-    font-size: 14px;
-    line-height: 1;
-    font-weight: 600;
-    color: var(--text-subtle);
-  }
-
-  .bvb-deployz {
-    display: block;
-    border-color: var(--brand-border);
-    background: var(--brand-subtle);
-  }
-
-  .bvb-deployz-head,
-  .bvb-product-wide > .bvb-deployz-head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .bvb-chips {
-    display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
+    justify-content: space-between;
+    gap: 4px 12px;
+    min-height: 40px;
+    padding-block: 6px;
+    border-top: 1px solid var(--border);
   }
 
-  .bvb-chips > li {
-    padding: 3px 8px;
-    border: 1px solid var(--brand-border);
-    border-radius: 6px;
-    background: var(--background);
-    font-size: 12px;
+  .bvb-row:first-child {
+    border-top: 0;
+  }
+
+  .bvb-item {
+    min-width: 0;
+    font-size: 13px;
     line-height: 1.4;
-    font-weight: 500;
-    color: var(--brand-hover);
-  }
-
-  .bvb-chips-neutral > li {
-    border-color: var(--border);
-    background: var(--surface-subtle);
     color: var(--muted-foreground);
   }
 
-  .bvb-outcome {
-    font-size: 13px;
-    line-height: 1.35;
+  .bvb-item-product {
     font-weight: 600;
     color: var(--foreground);
   }
 
-  .bvb-outcome-brand {
+  .bvb-total {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .bvb-total-brand {
     color: var(--brand-hover);
+  }
+
+  @container sc (min-width: 720px) {
+    .bvb-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+      max-width: 880px;
+    }
   }
 </style>

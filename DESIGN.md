@@ -66,7 +66,7 @@ One family: Inter Variable from `@fontsource-variable/inter` (local). System mon
 
 - Headings use `text-wrap: balance`; paragraphs use `text-wrap: pretty` (set in the base layer). No cosmetic `<br>`.
 - Measures: hero h1 870px, hero lead 650px, section h2 780px, prose 720px, FAQ 760px.
-- No all-caps labels and no pill tags on headings. Eyebrows are optional and sparse.
+- No all-caps labels and no pill tags on headings. Eyebrows are optional and sparse. Exceptions: the home audience badge and the How It Works step labels are blue pills (`bg-brand-subtle`, `border-brand-border`, `text-brand-hover`).
 
 ## 5. Layout
 
@@ -94,11 +94,11 @@ All marketing components are static Astro in `src/components/site/`.
 | Component | File | Notes |
 | --- | --- | --- |
 | Site header | `SiteHeader.astro` | Links: How It Works, Who It's For, Pricing, Security, Docs. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
-| Site footer | `SiteFooter.astro` | Logo plus three open link groups (Product; Solutions: the two landing pages; Resources: Documentation, Blog, Log In) and copyright. |
+| Site footer | `SiteFooter.astro` | Logo plus two open link groups (Product; Resources: Documentation, Blog, Log In) and copyright. The two landing pages are reachable from the sitemap, not the footer. |
 | Logo | `Logo.astro` | Approved mark plus wordmark text. |
 | Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`, `divider`. |
 | Section heading | `SectionHeading.astro` | Optional eyebrow, h2, optional lead; left or centered. |
-| Page header | `PageHeader.astro` | Inner-page h1, lead, actions slot, optional `aside` visual slot. |
+| Page header | `PageHeader.astro` | Inner-page h1, lead, actions slot, optional `aside` visual slot, optional full-width `visual` slot below the text. |
 | FAQ list | `FaqList.astro` | Native `<details>`, 56px rows, plus/minus icon, hairlines. |
 | Deployment diagram | `DeploymentDiagram.astro` | Signature hero diagram (see section 7). |
 | Scene system | `scene/*.astro`, `diagram/*.astro` | Illustration parts and the page scenes (see section 7). |
@@ -136,7 +136,8 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | Readiness report and release (steps 1–2) → installation link page (step 3) → live deployment with the install steps (step 4). |
 | AI and guardrails | `diagram/GuardrailsDiagram.astro` | `/` | Analysis (rule-based checks, one AI-inferred value with the real "Inferred by AI analysis" hint) → your review (detected values, needs input) → Deployz guardrails (schema, supported resources, preflight, size profile) producing CloudFormation. |
 | Fleet | `diagram/FleetDiagram.astro` | `/who-its-for` header | One release branching into three customer AWS accounts, each with its own status. |
-| Build vs. Deployz | `diagram/BuildVsBuyDiagram.astro` | `/pricing` | Build in-house (your product plus three layers of deployment tooling) next to Use Deployz (your product plus one Deployz layer). The product layer keeps "code, configuration, release decisions" with your team. |
+| Build vs. Deployz | `diagram/BuildVsBuyDiagram.astro` | `/pricing` | The same six pieces of work twice. Build it yourself: "Your team" owns all six. With Deployz: your team owns the product; Deployz owns the five deployment rows. |
+| Infrastructure | `diagram/InfraDiagram.astro` | `/how-it-works` | Customer AWS account: edge (ACM, ALB), dedicated VPC (web service, workers, RDS, ElastiCache), account level (S3, Secrets Manager). |
 | Architecture | `diagram/RelayDiagram.astro` | `/security` | Customer account with VPC resources and the connector; outbound HTTPS to Deployz; no inbound path. |
 
 ## 8. Page compositions
@@ -144,12 +145,12 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | Page | Composition |
 | --- | --- |
 | `/` | Nine sections: centered hero (audience line "For B2B SaaS Teams", H1 "Deploy into customer AWS", primary + secondary action) + diagram; three benefits (quiet grid); 4-step process rail; AI and guardrails (heading + guardrails diagram); product preview tabs; ownership (quiet grid); fit (split: text, supported list; no pricing preview); FAQ (split); closing CTA. |
-| `/how-it-works` | Left-aligned header; journey diagram (steps 1–4 at a glance); 1 connect GitHub (split); AI and guardrails (split, definition list; anchor `#ai-guardrails`); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid of four, then what Deployz creates in customer AWS as a split definition list); compatibility (split, supported / not supported); closing CTA. `/features` redirects here. |
+| `/how-it-works` | Left-aligned header with the journey diagram below the text (PageHeader `visual` slot); step 1 connect GitHub and analyze your repo (split: text and the AI-and-guardrails definition list; anchor `#ai-guardrails`); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid of four); what Deployz creates in customer AWS (heading, infrastructure diagram, two-column definition list); compatibility (split); closing CTA. Step labels are blue pills. `/features` redirects here. |
 | `/who-its-for` | Left-aligned header with the fleet diagram aside; four personas (2×2 quiet grid: audience, headline, text, two checks); what you can build (split, definition list); good fit / not a fit (split); closing CTA. `/use-cases` redirects here. |
 | `/byoc-deployments` | Landing page. Header with CTA; hosted SaaS vs. BYOC vs. self-hosted (quiet grid of definition lists, BYOC column with the brand hairline); what a BYOC platform needs (split); limits; closing CTA. |
 | `/deploy-saas-to-customer-aws` | Landing page. Header with CTA; three ways teams do it (quiet grid); you / your customer / Deployz (split); FAQ (split); closing CTA. |
-| `/pricing` | Left-aligned header; one bounded plan frame (price, free evaluation, CTA) + included list in three groups (prepare, deploy, manage) with a provisioning-vs-AWS-charges note; value section (build vs. Deployz diagram, three benefits as a quiet grid, punchline); cost estimator for an active subscription (range input, inline script); billing FAQ; closing CTA. |
-| `/security` | Left-aligned header; what runs where (connector diagram); AWS access + connector permissions + responsibilities (split, then definition list); what Deployz receives, secrets, code and AI, routing; built on audited infrastructure (split: provider SOC 2 coverage, planned Deployz examination, security FAQ); lifecycle disclosures + team; closing CTA. |
+| `/pricing` | Left-aligned header; one bounded plan frame (price and CTA beside the free evaluation) with the included list below in two columns; cost estimator for an active subscription (range input, inline script); value section (build vs. Deployz diagram, three benefits, punchline); billing FAQ; closing CTA. |
+| `/security` | Left-aligned header with the connector diagram below the text (PageHeader `visual` slot); AWS access + connector permissions + responsibilities; what Deployz receives with short notes on secrets, code and AI, routing; built on audited infrastructure (split: provider SOC 2 coverage, two FAQs); after deployment FAQ + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
 | `/blog` | Editorial list with dates and hairlines. |
 | `/404` | Short centered message. |
