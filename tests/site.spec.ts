@@ -11,7 +11,7 @@ const routes = [
   { path: '/how-it-works', label: 'how-it-works' },
   { path: '/security', label: 'security' },
   { path: '/pricing', label: 'pricing' },
-  { path: '/who-its-for', label: 'who-its-for' },
+  { path: '/case-studies', label: 'case-studies' },
   { path: '/byoc-deployments', label: 'byoc-deployments' },
   { path: '/deploy-saas-to-customer-aws', label: 'deploy-saas-to-customer-aws' },
   { path: '/privacy', label: 'privacy' },
@@ -32,7 +32,7 @@ const CTA_LABEL = 'Get Started Free';
 const pageTitles = [
   { path: '/', title: 'Deployz — Deploy Your SaaS Into Customer AWS' },
   { path: '/how-it-works', title: 'How Deployz Works — From GitHub to Customer AWS' },
-  { path: '/who-its-for', title: 'Who Deployz Is For — SaaS Teams, Indie Developers, and AI Builders' },
+  { path: '/case-studies', title: 'Deployz Case Studies — Deploying Into Customer AWS' },
   { path: '/byoc-deployments', title: 'BYOC Deployments for SaaS on AWS — Deployz' },
   { path: '/deploy-saas-to-customer-aws', title: "Deploy Your SaaS Into a Customer's AWS Account — Deployz" },
   { path: '/pricing', title: 'Deployz Pricing — $49/month + $19 per Customer Environment' },
@@ -114,7 +114,7 @@ test.describe('public design-system contract', () => {
   });
 
   test('marks the current primary navigation link', async ({ page }) => {
-    for (const route of ['/how-it-works/', '/who-its-for/', '/pricing/'] as const) {
+    for (const route of ['/how-it-works/', '/pricing/'] as const) {
       await page.goto(route);
       const navigation = page.getByRole('navigation', { name: /primary/i });
       await expect(navigation.locator(`a[href="${route}"]`)).toHaveAttribute('aria-current', 'page');
@@ -126,9 +126,11 @@ test.describe('public design-system contract', () => {
 
     await expect(page.locator('header a', { hasText: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
     await expect(page.locator('footer').getByRole('link', { name: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
-    // Security is a footer-only link.
-    await expect(page.getByRole('navigation', { name: /primary/i }).locator('a[href="/security/"]')).toHaveCount(0);
-    await expect(page.locator('footer a[href="/security/"]')).toHaveCount(1);
+    // Security and Case Studies are footer-only links.
+    for (const href of ['/security/', '/case-studies/']) {
+      await expect(page.getByRole('navigation', { name: /primary/i }).locator(`a[href="${href}"]`)).toHaveCount(0);
+      await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);
+    }
     for (const href of ['/privacy/', '/terms/', '/gdpr/', '/dpa/']) {
       await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);
     }
@@ -234,7 +236,7 @@ test.describe('public design-system contract', () => {
 
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
-    for (const name of ['How It Works', "Who It's For", 'Pricing', 'Docs', 'Log In']) {
+    for (const name of ['How It Works', 'Pricing', 'Docs', 'Log In']) {
       await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
     }
     await page.keyboard.press('Escape');
@@ -247,8 +249,10 @@ test.describe('public design-system contract', () => {
     );
 
     expect(redirects).toContain(`/get-started ${SIGNUP_URL} 301`);
-    expect(redirects).toContain('/use-cases /who-its-for/ 301');
-    expect(redirects).toContain('/use-cases/ /who-its-for/ 301');
+    expect(redirects).toContain('/use-cases /case-studies/ 301');
+    expect(redirects).toContain('/use-cases/ /case-studies/ 301');
+    expect(redirects).toContain('/who-its-for /case-studies/ 301');
+    expect(redirects).toContain('/who-its-for/ /case-studies/ 301');
     expect(redirects).toContain('/features /how-it-works/ 301');
     expect(redirects).toContain('/features/ /how-it-works/ 301');
     expect(headers).toMatch(/Content-Security-Policy:.*frame-ancestors 'none'/);
@@ -430,7 +434,7 @@ test.describe('public design-system contract', () => {
       'dist/how-it-works/index.html',
       'dist/security/index.html',
       'dist/pricing/index.html',
-      'dist/who-its-for/index.html',
+      'dist/case-studies/index.html',
       'dist/byoc-deployments/index.html',
       'dist/deploy-saas-to-customer-aws/index.html',
       'dist/privacy/index.html',
