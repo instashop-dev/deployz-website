@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from 'lucide-react';
 import CtaSection from '@/components/site/CtaSection.astro';
 import FaqList from '@/components/site/FaqList.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
@@ -129,7 +130,7 @@ const lifecycle = [
   </Section>
 
   <!-- S3. Data -->
-  <Section divider labelledby="data-title">
+  <Section labelledby="data-title">
     <SectionHeading id="data-title" title="What Deployz receives" />
 
     <div class="mt-10 grid border-t border-border-strong md:grid-cols-2 lg:mt-12">
@@ -159,10 +160,15 @@ const lifecycle = [
         </div>
       ))}
     </div>
+    <div class="mt-8 flex flex-wrap gap-x-8">
+      <a class="link-arrow" href="/privacy/">Privacy Policy <ArrowRight className="size-4" aria-hidden="true" /></a>
+      <a class="link-arrow" href="/gdpr/">GDPR &amp; Data Protection <ArrowRight className="size-4" aria-hidden="true" /></a>
+      <a class="link-arrow" href="/dpa/">Data Processing Addendum <ArrowRight className="size-4" aria-hidden="true" /></a>
+    </div>
   </Section>
 
   <!-- S4. Audited infrastructure -->
-  <Section divider id="assurance" labelledby="assurance-title">
+  <Section id="assurance" labelledby="assurance-title">
     <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <h2 id="assurance-title" class="text-h2 max-w-[440px] wrap-break-word">Built on audited infrastructure</h2>
       <div class="min-w-0">
@@ -177,7 +183,7 @@ const lifecycle = [
   </Section>
 
   <!-- S5. After deployment -->
-  <Section divider labelledby="lifecycle-title">
+  <Section labelledby="lifecycle-title">
     <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <h2 id="lifecycle-title" class="text-h2 max-w-[440px]">After deployment</h2>
       <FaqList items={lifecycle} class="max-w-[760px]" />

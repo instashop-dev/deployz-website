@@ -1,0 +1,13 @@
+---
+import LegalPage from '@/components/site/LegalPage.astro';
+import { Content, frontmatter } from '../legal/privacy.md';
+---
+
+<LegalPage
+  title={frontmatter.title}
+  updated={frontmatter.updated}
+  description="How Deployz collects, uses, and protects information, including repository data, AI-assisted analysis, and your privacy rights."
+  current="/privacy/"
+>
+  <Content />
+</LegalPage>

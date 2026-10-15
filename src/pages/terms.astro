@@ -1,0 +1,13 @@
+---
+import LegalPage from '@/components/site/LegalPage.astro';
+import { Content, frontmatter } from '../legal/terms.md';
+---
+
+<LegalPage
+  title={frontmatter.title}
+  updated={frontmatter.updated}
+  description="The terms that govern your use of Deployz, including AWS costs, AI-assisted analysis, fees, acceptable use, and liability."
+  current="/terms/"
+>
+  <Content />
+</LegalPage>

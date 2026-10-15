@@ -85,7 +85,7 @@ Four composition families, varied across a page (no more than two adjacent secti
 3. **Process rail** — numbered steps on a thin connecting line; vertical on mobile.
 4. **Quiet grid** — two or three columns with a top hairline, no boxes.
 
-At most one `bg-surface-subtle` full-width section per page. Separate sections with whitespace and hairlines, not alternating backgrounds.
+At most one `bg-surface-subtle` full-width section per page. Separate sections with whitespace only: no horizontal rules between sections, below the page header, above the closing CTA, or above the footer. Hairlines stay inside content (lists, definition lists, quiet-grid tops, FAQ rows, the footer copyright line), not between sections. Do not use alternating backgrounds.
 
 ## 6. Components
 
@@ -94,15 +94,16 @@ All marketing components are static Astro in `src/components/site/`.
 | Component | File | Notes |
 | --- | --- | --- |
 | Site header | `SiteHeader.astro` | Links: How It Works, Who It's For, Pricing, Docs. Security is linked from the footer only. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
-| Site footer | `SiteFooter.astro` | Logo plus two open link groups (Product; Resources: Documentation, Blog, Log In) and copyright. The two landing pages are reachable from the sitemap, not the footer. |
+| Site footer | `SiteFooter.astro` | Logo plus three open link groups (Product; Resources: Documentation, Blog, Log In; Legal: Privacy Policy, Terms of Service, GDPR, DPA) and copyright. The two landing pages are reachable from the sitemap, not the footer. |
 | Logo | `Logo.astro` | Approved mark plus wordmark text. |
-| Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`, `divider`. |
+| Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`. No divider border: sections are separated by whitespace. |
 | Section heading | `SectionHeading.astro` | Optional eyebrow, h2, optional lead; left or centered. |
 | Page header | `PageHeader.astro` | Inner-page h1, lead, actions slot, optional `aside` visual slot, optional full-width `visual` slot below the text. |
 | FAQ list | `FaqList.astro` | Native `<details>`, 56px rows, plus/minus icon, hairlines. |
 | Deployment diagram | `DeploymentDiagram.astro` | Signature hero diagram (see section 7). |
 | Scene system | `scene/*.astro`, `diagram/*.astro` | Illustration parts and the page scenes (see section 7). |
 | Product preview | `ProductPreview.astro` | Home Configure / Deploy / Manage tabs (ARIA tabs, Arrow/Home/End keys). Each panel is a labelled, simplified illustration built from real product labels, not a screenshot. Without JavaScript all panels show. Replace with real anonymized screenshots when they exist. |
+| Legal page | `LegalPage.astro` | Shared layout for `/privacy`, `/terms`, `/gdpr`, `/dpa`. Page header (eyebrow "Legal", title, last-updated date), a sticky side list of the four documents, and a 720px article. The text comes from `src/legal/*.md` and is published as supplied. Links in the article keep a 44px target and wrap long URLs. |
 | Closing CTA | `CtaSection.astro` | Centered closing section with one **Get Started Free** button. It is the one `bg-surface-subtle` section on each page that uses it. |
 
 Control utilities (in `globals.css`):
@@ -152,6 +153,7 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | `/pricing` | Left-aligned header; one bounded plan frame (price and CTA beside the free evaluation) with the included list below in two columns; cost estimator for an active subscription (range input, inline script); value section (build vs. Deployz diagram, three benefits, punchline); billing FAQ; closing CTA. |
 | `/security` | Left-aligned header with the connector diagram below the text (PageHeader `visual` slot); AWS access + connector permissions + responsibilities; what Deployz receives with short notes on secrets, code and AI, routing; built on audited infrastructure (split: provider SOC 2 coverage, two FAQs); after deployment FAQ + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
+| `/privacy`, `/terms`, `/gdpr`, `/dpa` | Legal documents (`LegalPage.astro`). Linked from the footer Legal group; Security links Privacy, GDPR, and DPA; Docs links Privacy and DPA; Pricing links Terms next to the billing questions. |
 | `/blog` | Editorial list with dates and hairlines. |
 | `/404` | Short centered message. |
 

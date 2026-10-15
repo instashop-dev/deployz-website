@@ -100,7 +100,7 @@ const questions = [
   </section>
 
   <!-- H2. Benefits -->
-  <Section divider labelledby="benefits-title">
+  <Section labelledby="benefits-title">
     <SectionHeading id="benefits-title" title="Customer-hosted deployments without a DevOps project." />
     <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-14 lg:gap-12">
       {benefits.map((item) => (
@@ -113,7 +113,7 @@ const questions = [
   </Section>
 
   <!-- H3. How it works -->
-  <Section divider labelledby="process-title">
+  <Section labelledby="process-title">
     <SectionHeading id="process-title" title="How it works" />
     <ol class="process mt-12 grid gap-0 lg:mt-14 lg:grid-cols-4 lg:gap-8">
       {steps.map((step, index) => (
@@ -133,7 +133,7 @@ const questions = [
   </Section>
 
   <!-- H4. Product preview -->
-  <Section divider labelledby="preview-title">
+  <Section labelledby="preview-title">
     <SectionHeading id="preview-title" title="Configure, deploy, and manage in one place." />
     <div class="mt-10 lg:mt-12">
       <ProductPreview />
@@ -141,7 +141,7 @@ const questions = [
   </Section>
 
   <!-- H5. Ownership -->
-  <Section divider labelledby="ownership-title">
+  <Section labelledby="ownership-title">
     <SectionHeading id="ownership-title" title="Your customer owns the account. You own the app. Deployz runs the deployments." />
     <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-14 lg:gap-12">
       {owners.map((item, index) => (
@@ -160,7 +160,7 @@ const questions = [
   </Section>
 
   <!-- H6. FAQ -->
-  <Section divider labelledby="faq-title">
+  <Section labelledby="faq-title">
     <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <h2 id="faq-title" class="text-h2 max-w-[440px]">Questions</h2>
       <FaqList items={questions} class="max-w-[760px]" />

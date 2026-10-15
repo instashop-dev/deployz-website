@@ -2,14 +2,13 @@
 interface Props {
   id?: string;
   tone?: 'default' | 'subtle';
-  divider?: boolean;
   labelledby?: string;
   label?: string;
   class?: string;
   innerClass?: string;
 }
 
-const { id, tone = 'default', divider = false, labelledby, label, class: className, innerClass } = Astro.props;
+const { id, tone = 'default', labelledby, label, class: className, innerClass } = Astro.props;
 ---
 
 <section
@@ -19,7 +18,6 @@ const { id, tone = 'default', divider = false, labelledby, label, class: classNa
   class:list={[
     'section-y',
     tone === 'subtle' && 'bg-surface-subtle',
-    divider && 'border-t border-border',
     className,
   ]}
 >

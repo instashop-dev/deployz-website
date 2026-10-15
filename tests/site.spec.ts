@@ -14,6 +14,10 @@ const routes = [
   { path: '/who-its-for', label: 'who-its-for' },
   { path: '/byoc-deployments', label: 'byoc-deployments' },
   { path: '/deploy-saas-to-customer-aws', label: 'deploy-saas-to-customer-aws' },
+  { path: '/privacy', label: 'privacy' },
+  { path: '/terms', label: 'terms' },
+  { path: '/gdpr', label: 'gdpr' },
+  { path: '/dpa', label: 'dpa' },
   { path: '/blog', label: 'blog' },
   { path: '/docs', label: 'docs' },
   { path: '/404', label: 'not-found' },
@@ -125,6 +129,9 @@ test.describe('public design-system contract', () => {
     // Security is a footer-only link.
     await expect(page.getByRole('navigation', { name: /primary/i }).locator('a[href="/security/"]')).toHaveCount(0);
     await expect(page.locator('footer a[href="/security/"]')).toHaveCount(1);
+    for (const href of ['/privacy/', '/terms/', '/gdpr/', '/dpa/']) {
+      await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);
+    }
   });
 
   test('sets the approved title, description, and canonical URL on each core page', async ({ page }) => {
@@ -426,6 +433,10 @@ test.describe('public design-system contract', () => {
       'dist/who-its-for/index.html',
       'dist/byoc-deployments/index.html',
       'dist/deploy-saas-to-customer-aws/index.html',
+      'dist/privacy/index.html',
+      'dist/terms/index.html',
+      'dist/gdpr/index.html',
+      'dist/dpa/index.html',
       'dist/blog/index.html',
       'dist/docs/index.html',
       'dist/404.html',

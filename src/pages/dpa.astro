@@ -1,0 +1,13 @@
+---
+import LegalPage from '@/components/site/LegalPage.astro';
+import { Content, frontmatter } from '../legal/dpa.md';
+---
+
+<LegalPage
+  title={frontmatter.title}
+  updated={frontmatter.updated}
+  description="The Deployz Data Processing Addendum: processing terms, Deployz obligations, subprocessors, and international transfers."
+  current="/dpa/"
+>
+  <Content />
+</LegalPage>

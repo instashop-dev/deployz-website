@@ -10,7 +10,7 @@ interface Props {
 const { title, id = 'cta-title', cta = 'closing' } = Astro.props;
 ---
 
-<section aria-labelledby={id} class="border-t border-border bg-surface-subtle">
+<section aria-labelledby={id} class="bg-surface-subtle">
   <div class="container-site py-20 text-center sm:py-24 lg:py-28">
     <h2 id={id} class="text-h2 mx-auto max-w-[760px]">{title}</h2>
     <p class="text-lead mx-auto mt-5 max-w-[580px] text-muted-foreground"><slot /></p>
