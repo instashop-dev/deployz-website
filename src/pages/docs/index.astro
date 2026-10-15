@@ -186,6 +186,10 @@ const sec = 'mt-16 scroll-mt-24 sm:mt-20';
           <p>Analysis runs rule-based checks first. When they leave a question open, such as an unclear start command, Deployz can send a few repository files to an AI service. Values that look like secrets are redacted first, and sample environment files are reduced to key names.</p>
           <p>AI answers must match a strict schema and only fill gaps; they never replace a value the checks found. The report marks AI values as inferred by AI so that you can verify them, and lower-confidence answers stay suggestions. Deployz's own compiler creates the CloudFormation template from a fixed set of supported AWS resources. AI does not create infrastructure or change deployments.</p>
         </div>
+        <div class="mt-4 flex flex-wrap gap-x-8">
+          <a class="link-arrow" href="/privacy/">Privacy Policy <ArrowRight className="size-4" aria-hidden="true" /></a>
+          <a class="link-arrow" href="/dpa/">Data Processing Addendum <ArrowRight className="size-4" aria-hidden="true" /></a>
+        </div>
       </section>
 
       <section id="lifecycle" class={sec}>

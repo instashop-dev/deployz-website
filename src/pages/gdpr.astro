@@ -1,0 +1,13 @@
+---
+import LegalPage from '@/components/site/LegalPage.astro';
+import { Content, frontmatter } from '../legal/gdpr.md';
+---
+
+<LegalPage
+  title={frontmatter.title}
+  updated={frontmatter.updated}
+  description="How Deployz approaches GDPR: data protection roles, customer-controlled AWS infrastructure, individual rights, and international transfers."
+  current="/gdpr/"
+>
+  <Content />
+</LegalPage>

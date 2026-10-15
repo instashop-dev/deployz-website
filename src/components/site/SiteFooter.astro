@@ -20,10 +20,19 @@ const footerGroups = [
       { href: LOGIN_URL, label: 'Log In' },
     ],
   },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/privacy/', label: 'Privacy Policy' },
+      { href: '/terms/', label: 'Terms of Service' },
+      { href: '/gdpr/', label: 'GDPR' },
+      { href: '/dpa/', label: 'DPA' },
+    ],
+  },
 ];
 ---
 
-<footer class="border-t border-border">
+<footer>
   <div class="container-site pt-16 pb-10 lg:pt-20 lg:pb-12">
     <div class="grid gap-12 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
       <div>
@@ -32,7 +41,7 @@ const footerGroups = [
         </a>
         <p class="mt-3 text-[15px] text-muted-foreground">Deploy your SaaS in your customers' AWS accounts.</p>
       </div>
-      <nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-16 gap-y-10">
+      <nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-3 lg:gap-x-16">
         {footerGroups.map((group) => (
           <div>
             <p class="text-[14px] font-semibold text-foreground">{group.title}</p>

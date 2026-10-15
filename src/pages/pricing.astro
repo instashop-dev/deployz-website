@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from 'lucide-react';
 import BuildVsBuyDiagram from '@/components/site/diagram/BuildVsBuyDiagram.astro';
 import CtaSection from '@/components/site/CtaSection.astro';
 import FaqList from '@/components/site/FaqList.astro';
@@ -123,7 +124,7 @@ const questions = [
   </Section>
 
   <!-- P3. Cost estimator -->
-  <Section divider labelledby="estimate-title">
+  <Section labelledby="estimate-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
         <h2 id="estimate-title" class="text-h2">Estimate your monthly cost.</h2>
@@ -164,7 +165,7 @@ const questions = [
   </Section>
 
   <!-- P4. Value -->
-  <Section divider labelledby="value-title">
+  <Section labelledby="value-title">
     <h2 id="value-title" class="text-h2 max-w-[780px]">Build your product. Skip the deployment platform.</h2>
     <p class="text-lead mt-5 max-w-[650px] text-muted-foreground">
       Private deployments shouldn’t require a dedicated DevOps hire or months of infrastructure work.
@@ -184,9 +185,12 @@ const questions = [
   </Section>
 
   <!-- P5. Billing questions -->
-  <Section divider labelledby="billing-title">
+  <Section labelledby="billing-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-      <h2 id="billing-title" class="text-h2 max-w-[440px]">Billing questions</h2>
+      <div>
+        <h2 id="billing-title" class="text-h2 max-w-[440px]">Billing questions</h2>
+        <a class="link-arrow mt-6" href="/terms/">Terms of Service <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
       <FaqList items={questions} class="max-w-[760px]" />
     </div>
   </Section>
