@@ -45,6 +45,40 @@ const doesNotReceive = [
   'Application CloudWatch logs',
 ];
 
+const providers = [
+  {
+    provider: 'AWS',
+    text: 'The Deployz API, its database, release builds, the image registry, and secret encryption run on AWS services in scope of the AWS SOC 2 Type II report.',
+  },
+  {
+    provider: 'Cloudflare',
+    text: 'DNS and the proxy for default deployz.dev URLs run on Cloudflare services in scope of its SOC 2 Type II report.',
+  },
+];
+
+const securityQuestions = [
+  {
+    question: 'Is Deployz SOC 2 certified?',
+    answer:
+      'No. Deployz has not completed its own SOC 2 audit. A Deployz SOC 2 Type II examination is planned. Until then, the available SOC 2 reports are those of AWS and Cloudflare for the services Deployz uses.',
+  },
+  {
+    question: 'What do the provider SOC 2 reports cover?',
+    answer:
+      "Each report covers that provider's own controls for the listed services. It does not cover how Deployz builds or operates its product. You can request the reports from AWS and Cloudflare.",
+  },
+  {
+    question: 'Does AI have access to customer AWS accounts?',
+    answer:
+      "No. AI helps analyze your repository. All changes in a customer account go through the customer's connector, using infrastructure that Deployz's rule-based compiler creates.",
+  },
+  {
+    question: 'Can my customer review the access before they connect?',
+    answer:
+      'Yes. The installation page lists every IAM action the connector requests. The customer launches the connector in their own AWS console and can delete it at any time.',
+  },
+];
+
 const lifecycle = [
   {
     question: 'Updates and rollbacks',
@@ -76,7 +110,7 @@ const lifecycle = [
 
 <Base
   title="Deployz Security & Architecture — Customer AWS"
-  description="Where Deployz-managed apps run, what the connector can do in customer AWS, what data Deployz receives, and what happens on update and removal."
+  description="Where Deployz-managed apps run, what the connector can do in customer AWS, what data Deployz receives, provider SOC 2 coverage, and what happens on update and removal."
 >
   <!-- S1. Hero -->
   <PageHeader eyebrow="Security & Architecture" title="Your app runs in your customer's AWS account.">
@@ -168,9 +202,9 @@ const lifecycle = [
         <h3 class="text-[16px] font-semibold">Code and AI</h3>
         <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">
           Repository access is read-only. Deployz builds container images in its own AWS account and stores
-          them in a Deployz registry; the customer account pulls them. During analysis, Deployz can send
-          limited repository excerpts to an AI service after it redacts values that look like secrets. The AI
-          does not change deployments.
+          them in a Deployz registry; the customer account pulls them. When rule-based checks leave a question
+          open, Deployz can send limited repository excerpts to an AI service after it redacts values that look
+          like secrets. AI does not create infrastructure or change deployments.
         </p>
       </div>
       <div>
@@ -184,7 +218,34 @@ const lifecycle = [
     </div>
   </Section>
 
-  <!-- S5. Updates, removal, and continuity -->
+  <!-- S5. Audited infrastructure -->
+  <Section divider id="assurance" labelledby="assurance-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <div>
+        <h2 id="assurance-title" class="text-h2 max-w-[440px] wrap-break-word">Built on audited infrastructure</h2>
+        <p class="mt-5 max-w-[440px] text-muted-foreground">
+          Deployz runs its core service on AWS and Cloudflare services that their SOC 2 Type II reports cover.
+          Deployz has not completed its own SOC 2 audit. A Deployz SOC 2 Type II examination is planned.
+        </p>
+      </div>
+      <div class="min-w-0">
+        <dl class="border-b border-border">
+          {providers.map((row) => (
+            <div class="grid gap-1 border-t border-border py-4 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-x-8">
+              <dt class="font-semibold">{row.provider}</dt>
+              <dd class="text-muted-foreground">{row.text}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="mt-4 text-[15px] text-muted-foreground">
+          Your app itself runs in your customer's own AWS account, under their AWS agreements and controls.
+        </p>
+        <FaqList items={securityQuestions} class="mt-10" />
+      </div>
+    </div>
+  </Section>
+
+  <!-- S6. Updates, removal, and continuity -->
   <Section divider labelledby="lifecycle-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <div>
@@ -199,7 +260,7 @@ const lifecycle = [
     </p>
   </Section>
 
-  <!-- S6. Final CTA -->
+  <!-- S7. Final CTA -->
   <CtaSection title="Check what your app needs before you promise a customer." cta="security-closing">
     Connect GitHub for a free readiness report.
   </CtaSection>

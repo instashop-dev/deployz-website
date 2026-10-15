@@ -1,0 +1,124 @@
+---
+import { ArrowRight } from 'lucide-react';
+import CtaSection from '@/components/site/CtaSection.astro';
+import FaqList from '@/components/site/FaqList.astro';
+import PageHeader from '@/components/site/PageHeader.astro';
+import Section from '@/components/site/Section.astro';
+import SectionHeading from '@/components/site/SectionHeading.astro';
+import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
+import Base from '../layouts/Base.astro';
+
+const options = [
+  {
+    title: 'Send templates or scripts',
+    text: "The customer's engineers run your Terraform or CloudFormation. Each update is a new handoff, and you see little of what runs.",
+  },
+  {
+    title: 'Build your own platform',
+    text: 'Cross-account roles, an installer, a release pipeline, and status tracking. Your team builds it, then maintains it for every customer.',
+  },
+  {
+    title: 'Use Deployz',
+    text: 'The customer approves a connector in their AWS console. Deployz deploys your releases there, and you manage updates from one place.',
+    brand: true,
+  },
+];
+
+const roles = [
+  {
+    who: 'You bring',
+    items: ['Your app in a GitHub repository', 'A Dockerfile that builds one Linux x86-64 image', 'An HTTP health check'],
+  },
+  {
+    who: 'Your customer brings',
+    items: ['An AWS account', 'Someone who can launch a CloudFormation stack', 'Payment for their AWS resources'],
+  },
+  {
+    who: 'Deployz handles',
+    items: ['The network, containers, database, cache, storage, and HTTPS', 'Release deployment, updates, and rollbacks', 'Status for every customer environment'],
+  },
+];
+
+const questions = [
+  {
+    question: 'How does my customer give Deployz access?',
+    answer:
+      'They open your installation link, review the resources and IAM actions, and launch the Deployz connector as a CloudFormation stack in their AWS console. Deployz never asks for AWS access keys.',
+  },
+  {
+    question: 'Does my customer need a Deployz account?',
+    answer: 'No. Only you need a Deployz account. Your customer needs an AWS account.',
+  },
+  {
+    question: 'Who pays for AWS?',
+    answer: 'AWS bills the account owner, which is your customer. Deployz fees are separate.',
+  },
+  {
+    question: 'Can the customer remove access?',
+    answer:
+      'Yes. The customer deletes the connector stack in their AWS console. Remove the deployment and its retained data first, because after that Deployz cannot change the application.',
+  },
+];
+---
+
+<Base
+  title="Deploy Your SaaS Into a Customer's AWS Account — Deployz"
+  description="How to deploy your SaaS into a customer's AWS account: compare templates, a home-built platform, and Deployz, and see what you, your customer, and Deployz each do."
+>
+  <!-- D1. Hero -->
+  <PageHeader eyebrow="Deploy SaaS to customer AWS" title="Deploy your SaaS into a customer's AWS account.">
+    Your customer wants your app in their own AWS. Here are the usual ways to do it, and how Deployz
+    handles the deployment for you.
+    <a slot="actions" class="btn btn-primary btn-lg" href={SIGNUP_URL} data-cta="customer-aws-hero">{CTA_LABEL}</a>
+  </PageHeader>
+
+  <!-- D2. Options -->
+  <Section labelledby="options-title">
+    <SectionHeading id="options-title" title="Three ways teams do it" />
+    <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-14 lg:gap-12">
+      {options.map((item) => (
+        <li class:list={['border-t pt-5', item.brand ? 'border-brand' : 'border-foreground']}>
+          <h3 class="text-[18px] leading-snug font-semibold tracking-[-0.01em]">{item.title}</h3>
+          <p class="mt-2 text-muted-foreground">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <!-- D3. Who does what -->
+  <Section divider labelledby="roles-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <div>
+        <h2 id="roles-title" class="text-h2 max-w-[440px]">What it takes with Deployz</h2>
+        <a class="link-arrow mt-6" href="/how-it-works/">See each step <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
+      <dl class="border-b border-border">
+        {roles.map((row) => (
+          <div class="grid gap-2 border-t border-border py-5 sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-x-8">
+            <dt class="font-semibold">{row.who}</dt>
+            <dd>
+              <ul class="grid list-disc gap-1.5 pl-5 text-muted-foreground marker:text-subtle">
+                {row.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </Section>
+
+  <!-- D4. Questions -->
+  <Section divider labelledby="faq-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <div>
+        <h2 id="faq-title" class="text-h2 max-w-[440px]">Questions</h2>
+        <a class="link-arrow mt-6" href="/security/">Security and architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
+      <FaqList items={questions} class="max-w-[760px]" />
+    </div>
+  </Section>
+
+  <CtaSection title="Deploy into your first customer's AWS." cta="customer-aws-closing">
+    Connect GitHub and see what your app needs.
+  </CtaSection>
+</Base>

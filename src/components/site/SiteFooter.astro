@@ -7,9 +7,17 @@ const footerGroups = [
     title: 'Product',
     links: [
       { href: '/how-it-works/', label: 'How It Works' },
-      { href: '/use-cases/', label: 'Use Cases' },
+      { href: '/features/', label: 'Features' },
+      { href: '/who-its-for/', label: "Who It's For" },
       { href: '/pricing/', label: 'Pricing' },
       { href: '/security/', label: 'Security' },
+    ],
+  },
+  {
+    title: 'Solutions',
+    links: [
+      { href: '/byoc-deployments/', label: 'BYOC deployments' },
+      { href: '/deploy-saas-to-customer-aws/', label: 'Deploy SaaS to customer AWS' },
     ],
   },
   {
@@ -32,7 +40,7 @@ const footerGroups = [
         </a>
         <p class="mt-3 text-[15px] text-muted-foreground">Deploy your SaaS in your customers' AWS accounts.</p>
       </div>
-      <nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-16 gap-y-10">
+      <nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-3 lg:gap-x-16">
         {footerGroups.map((group) => (
           <div>
             <p class="text-[14px] font-semibold text-foreground">{group.title}</p>

@@ -1,0 +1,137 @@
+---
+/*
+ * AI and guardrails scene: deterministic checks and AI analysis read the repository, the
+ * vendor reviews what Deployz detected, then Deployz's rule-based compiler turns the reviewed
+ * configuration into CloudFormation for supported AWS resources only. AI output never becomes
+ * infrastructure directly. Scene system: src/styles/scene.css.
+ */
+import { ScanSearch, UserCheck } from 'lucide-react';
+import Beam from '@/components/site/scene/Beam.astro';
+import Mark from '@/components/site/scene/Mark.astro';
+
+const detected = [
+  { label: 'Dockerfile', value: 'found', state: 'done' },
+  { label: 'Port', value: '3000', state: 'done' },
+  { label: 'Database', value: 'PostgreSQL', state: 'done' },
+  { label: 'Start command', value: 'npm start', state: 'brand' },
+] as const;
+
+const review = [
+  { label: 'What Deployz detected', state: 'done' },
+  { label: 'Needs input: OPENAI_API_KEY', state: 'warn' },
+  { label: 'Overrides, if needed', state: 'idle' },
+] as const;
+
+const guardrails = [
+  'Schema-checked configuration',
+  'Supported AWS resources only',
+  'Rule-based preflight checks',
+  'Fixed size profile',
+];
+---
+
+<figure class="sc guard-sc mx-auto w-full max-w-[1120px]">
+  <figcaption class="sr-only">
+    Deployz analysis runs deterministic checks on your repository first. AI helps only with questions
+    the checks leave open, and Deployz labels those values as inferred by AI. You review what Deployz
+    detected and enter the values it needs. Deployz then compiles the reviewed configuration into
+    CloudFormation with its own rule-based compiler, which can create only supported AWS resources.
+  </figcaption>
+
+  <div class="sc-stage" aria-hidden="true">
+    <div class="sc-flow">
+      <!-- 1. Understand -->
+      <div class="sc-card">
+        <div class="sc-head">
+          <span class="sc-icon"><ScanSearch strokeWidth={1.75} /></span>
+          <p class="sc-head-title">Analysis<small>Checks first, then AI</small></p>
+        </div>
+        <div class="sc-body">
+          <ul class="sc-checks">
+            {detected.map((row) => (
+              <li><Mark state={row.state} /><span>{row.label}</span><span class="sc-mono">{row.value}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="sc-foot">
+          <span class="guard-hint">Inferred by AI analysis — verify before relying on it</span>
+        </div>
+      </div>
+
+      <Beam label="you review" variant="neutral" />
+
+      <!-- 2. Review -->
+      <div class="sc-card">
+        <div class="sc-head">
+          <span class="sc-icon"><UserCheck strokeWidth={1.75} /></span>
+          <p class="sc-head-title">Your review<small>Configuration</small></p>
+        </div>
+        <div class="sc-body">
+          <ul class="sc-checks">
+            {review.map((row) => (
+              <li><Mark state={row.state} /><span>{row.label}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="sc-foot">
+          <span class="sc-label">Release</span>
+          <span class="sc-mono text-foreground">v1.4.0</span>
+        </div>
+      </div>
+
+      <Beam label="compile" variant="brand" delay={1.3} />
+
+      <!-- 3. Guardrails -->
+      <div class="sc-card sc-card-brand">
+        <div class="sc-head">
+          <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+          <p class="sc-head-title">Deployz<small>Guardrails</small></p>
+        </div>
+        <div class="sc-body">
+          <ul class="sc-checks">
+            {guardrails.map((label) => (
+              <li><Mark /><span>{label}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="sc-foot">
+          <span class="sc-label">Output</span>
+          <span class="sc-mono text-foreground">CloudFormation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .guard-sc .sc-flow {
+    --sc-cols: minmax(0, 1fr) 132px minmax(0, 1fr) 132px minmax(0, 1fr);
+  }
+
+  .guard-hint {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted-foreground);
+  }
+
+  @container sc (min-width: 960px) {
+    .guard-sc .sc-flow {
+      align-items: stretch;
+    }
+
+    .guard-sc .sc-flow > .sc-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .guard-sc .sc-flow > .sc-card > .sc-body {
+      flex: 1;
+    }
+  }
+
+  @container sc (min-width: 960px) and (max-width: 1039px) {
+    .guard-sc .sc-flow {
+      --sc-cols: minmax(0, 1fr) 112px minmax(0, 1fr) 112px minmax(0, 1fr);
+    }
+  }
+</style>

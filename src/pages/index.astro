@@ -3,10 +3,11 @@ import { ArrowRight } from 'lucide-react';
 import CtaSection from '@/components/site/CtaSection.astro';
 import DeploymentDiagram from '@/components/site/DeploymentDiagram.astro';
 import FaqList from '@/components/site/FaqList.astro';
+import GuardrailsDiagram from '@/components/site/diagram/GuardrailsDiagram.astro';
 import ProductPreview from '@/components/site/ProductPreview.astro';
 import Section from '@/components/site/Section.astro';
 import SectionHeading from '@/components/site/SectionHeading.astro';
-import { BASE_PRICE, CTA_LABEL, ENVIRONMENT_PRICE, SIGNUP_URL } from '@/lib/site';
+import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
 import Base from '../layouts/Base.astro';
 
 const benefits = [
@@ -59,6 +60,11 @@ const supported = [
 
 const questions = [
   {
+    question: 'Does AI decide what gets deployed?',
+    answer:
+      "No. AI helps read your repository when Deployz's own checks leave a question open, and the report labels those values as inferred by AI. The infrastructure comes from Deployz's rule-based compiler, which can create only supported AWS resources. AI does not guarantee that your app is correct or secure.",
+  },
+  {
     question: 'Do I need DevOps or AWS expertise?',
     answer:
       'No dedicated DevOps team is needed. Deployz finds what your app needs and sets up the supported AWS infrastructure. You still review the configuration and fix issues in your own code.',
@@ -77,18 +83,18 @@ const questions = [
 ---
 
 <Base
-  title="Deployz — Deploy Your SaaS in Customer AWS Accounts"
-  description="Deploy your SaaS in your customers' AWS accounts. Connect GitHub, build a release, send an installation link, and manage updates from Deployz."
+  title="Deployz — Deploy Your SaaS Into Customer AWS"
+  description="Deploy your SaaS into your customers' AWS accounts. Connect GitHub, review what Deployz detects, send an installation link, and manage updates."
 >
   <!-- H1. Hero -->
   <section aria-labelledby="hero-title" class="pt-14 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24">
     <div class="container-site">
       <div class="mx-auto max-w-[870px] text-center">
-        <p class="text-[14px] font-medium text-muted-foreground">For B2B SaaS teams</p>
-        <h1 id="hero-title" class="text-display mt-3">Deploy your SaaS in your customers' AWS accounts.</h1>
+        <p class="text-[14px] font-medium text-muted-foreground">For B2B SaaS Teams</p>
+        <h1 id="hero-title" class="text-display mt-3">Deploy into customer AWS</h1>
         <p class="text-lead mx-auto mt-6 max-w-[640px] text-muted-foreground">
-          Connect your GitHub repo. Deployz checks what your app needs, sets up AWS infrastructure in each
-          customer's account, and deploys the releases you choose.
+          Run your SaaS in each customer's own AWS account. Connect GitHub, and Deployz checks what your app
+          needs, sets up the infrastructure, and deploys the releases you choose.
         </p>
         <div class="mt-8 flex flex-col items-stretch justify-center gap-3 min-[420px]:flex-row min-[420px]:items-center">
           <a class="btn btn-primary btn-lg" href={SIGNUP_URL} data-cta="home-hero">{CTA_LABEL}</a>
@@ -135,7 +141,19 @@ const questions = [
     </div>
   </Section>
 
-  <!-- H4. Product preview -->
+  <!-- H4. AI and guardrails -->
+  <Section divider labelledby="ai-title">
+    <SectionHeading id="ai-title" title="AI for understanding. Guardrails for deploying.">
+      AI helps Deployz read your app. Rule-based checks and a fixed set of supported AWS resources decide
+      what gets deployed. You review the configuration before you build a release.
+    </SectionHeading>
+    <div class="mt-10 lg:mt-12">
+      <GuardrailsDiagram />
+    </div>
+    <a class="link-arrow mt-6" href="/features/#ai-guardrails">How AI and guardrails work together <ArrowRight className="size-4" aria-hidden="true" /></a>
+  </Section>
+
+  <!-- H5. Product preview -->
   <Section divider labelledby="preview-title">
     <SectionHeading id="preview-title" title="Configure, deploy, and manage in one place." />
     <div class="mt-10 lg:mt-12">
@@ -143,7 +161,7 @@ const questions = [
     </div>
   </Section>
 
-  <!-- H5. Ownership -->
+  <!-- H6. Ownership -->
   <Section divider labelledby="ownership-title">
     <SectionHeading id="ownership-title" title="Your customer owns the account. You own the app. Deployz runs the deployments." />
     <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-14 lg:gap-12">
@@ -162,50 +180,37 @@ const questions = [
     <a class="link-arrow mt-4" href="/security/">Security and architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
   </Section>
 
-  <!-- H6. Fit and pricing -->
+  <!-- H7. Fit -->
   <Section divider labelledby="fit-title">
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-      <div class="min-w-0">
-        <h2 id="fit-title" class="text-h2 max-w-[560px]">Will Deployz work with my app?</h2>
-        <p class="mt-5 max-w-[560px] text-muted-foreground">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div>
+        <h2 id="fit-title" class="text-h2 max-w-[480px]">Will Deployz work with my app?</h2>
+        <p class="mt-5 max-w-[480px] text-muted-foreground">
           Deployz supports one application architecture on AWS. Some apps need code changes first, and the
           free readiness report lists the blockers it finds.
         </p>
-        <ul class="mt-6 border-b border-border">
-          {supported.map((item) => (
-            <li class="flex items-start gap-3 border-t border-border py-3">
-              <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0 text-foreground" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7" /></svg>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
         <a class="link-arrow mt-6" href="/how-it-works/#compatibility">Full compatibility list <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
-      <div class="min-w-0 self-start rounded-xl border border-border-strong p-6 sm:p-8">
-        <h3 class="text-[16px] font-semibold">Pricing</h3>
-        <p class="mt-5 flex flex-wrap items-baseline gap-x-2">
-          <span class="text-[48px] leading-none font-semibold tracking-[-0.04em] tabular-nums">$0</span>
-          <span class="text-muted-foreground">to evaluate, no card</span>
-        </p>
-        <p class="mt-5 border-t border-border pt-5">
-          Then <span class="font-semibold tabular-nums">${BASE_PRICE}</span> / month +
-          <span class="font-semibold tabular-nums">${ENVIRONMENT_PRICE}</span> / billable customer environment / month.
-        </p>
-        <p class="mt-2 text-[15px] text-muted-foreground">AWS bills your customer directly for the infrastructure.</p>
-        <a class="link-arrow mt-4" href="/pricing/">See pricing details <ArrowRight className="size-4" aria-hidden="true" /></a>
-      </div>
+      <ul class="min-w-0 self-start border-b border-border">
+        {supported.map((item) => (
+          <li class="flex items-start gap-3 border-t border-border py-3">
+            <svg aria-hidden="true" viewBox="0 0 16 16" class="mt-[5px] size-4 shrink-0 text-foreground" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7" /></svg>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   </Section>
 
-  <!-- H7. FAQ -->
+  <!-- H8. FAQ -->
   <Section divider labelledby="faq-title">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <h2 id="faq-title" class="text-h2 max-w-[440px]">Questions</h2>
       <FaqList items={questions} class="max-w-[760px]" />
     </div>
   </Section>
 
-  <!-- H8. Final CTA -->
+  <!-- H9. Final CTA -->
   <CtaSection title="See what your app needs to deploy." cta="home-closing">
     Connect GitHub for a free readiness report.
   </CtaSection>

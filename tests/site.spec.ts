@@ -11,7 +11,10 @@ const routes = [
   { path: '/how-it-works', label: 'how-it-works' },
   { path: '/security', label: 'security' },
   { path: '/pricing', label: 'pricing' },
-  { path: '/use-cases', label: 'use-cases' },
+  { path: '/who-its-for', label: 'who-its-for' },
+  { path: '/features', label: 'features' },
+  { path: '/byoc-deployments', label: 'byoc-deployments' },
+  { path: '/deploy-saas-to-customer-aws', label: 'deploy-saas-to-customer-aws' },
   { path: '/blog', label: 'blog' },
   { path: '/docs', label: 'docs' },
   { path: '/404', label: 'not-found' },
@@ -24,9 +27,12 @@ const LOGIN_URL = 'https://app.deployz.dev/sign-in';
 const CTA_LABEL = 'Get Started Free';
 
 const pageTitles = [
-  { path: '/', title: 'Deployz — Deploy Your SaaS in Customer AWS Accounts' },
+  { path: '/', title: 'Deployz — Deploy Your SaaS Into Customer AWS' },
   { path: '/how-it-works', title: 'How Deployz Works — From GitHub to Customer AWS' },
-  { path: '/use-cases', title: 'Deployz Use Cases — Customer-Hosted SaaS' },
+  { path: '/who-its-for', title: 'Who Deployz Is For — SaaS Teams, Indie Developers, and AI Builders' },
+  { path: '/features', title: 'Deployz Features — AI Analysis, Guardrails, and Customer AWS Deployments' },
+  { path: '/byoc-deployments', title: 'BYOC Deployments for SaaS on AWS — Deployz' },
+  { path: '/deploy-saas-to-customer-aws', title: "Deploy Your SaaS Into a Customer's AWS Account — Deployz" },
   { path: '/pricing', title: 'Deployz Pricing — $49/month + $19 per Customer Environment' },
   { path: '/security', title: 'Deployz Security & Architecture — Customer AWS' },
 ] as const;
@@ -106,7 +112,7 @@ test.describe('public design-system contract', () => {
   });
 
   test('marks the current primary navigation link', async ({ page }) => {
-    for (const route of ['/how-it-works/', '/use-cases/', '/pricing/', '/security/'] as const) {
+    for (const route of ['/how-it-works/', '/features/', '/who-its-for/', '/pricing/', '/security/'] as const) {
       await page.goto(route);
       const navigation = page.getByRole('navigation', { name: /primary/i });
       await expect(navigation.locator(`a[href="${route}"]`)).toHaveAttribute('aria-current', 'page');
@@ -146,8 +152,10 @@ test.describe('public design-system contract', () => {
   test('keeps the approved homepage heading and section count', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.locator('h1')).toHaveText("Deploy your SaaS in your customers' AWS accounts.");
-    await expect(page.locator('main > section')).toHaveCount(8);
+    await expect(page.locator('h1')).toHaveText('Deploy into customer AWS');
+    await expect(page.locator('main > section')).toHaveCount(9);
+    // No pricing preview on the homepage.
+    await expect(page.locator('main')).not.toContainText('$49');
   });
 
   test('has no editorial markers or unverified claims', async ({ page }) => {
@@ -156,6 +164,8 @@ test.describe('public design-system contract', () => {
       const text = await page.locator('body').innerText();
 
       expect(text, route.path).not.toMatch(/\[(VERIFY|CONDITIONAL)\]|one-click|zero access|least privilege|works with any app|unlimited free/i);
+      // Never claim a completed Deployz SOC 2 audit.
+      expect(text, route.path).not.toMatch(/Deployz is SOC 2|SOC 2 (certified|compliant)\b(?!\?)|Deployz (is|has been) audited/i);
     }
   });
 
@@ -216,7 +226,7 @@ test.describe('public design-system contract', () => {
 
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
-    for (const name of ['How It Works', 'Use Cases', 'Pricing', 'Security', 'Docs', 'Log In']) {
+    for (const name of ['How It Works', 'Features', "Who It's For", 'Pricing', 'Security', 'Docs', 'Log In']) {
       await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
     }
     await page.keyboard.press('Escape');
@@ -229,6 +239,8 @@ test.describe('public design-system contract', () => {
     );
 
     expect(redirects).toContain(`/get-started ${SIGNUP_URL} 301`);
+    expect(redirects).toContain('/use-cases /who-its-for/ 301');
+    expect(redirects).toContain('/use-cases/ /who-its-for/ 301');
     expect(headers).toMatch(/Content-Security-Policy:.*frame-ancestors 'none'/);
     expect(headers).toContain('X-Content-Type-Options: nosniff');
     // Cloudflare Web Analytics injects its beacon at the edge; the CSP must allow it.
@@ -408,7 +420,10 @@ test.describe('public design-system contract', () => {
       'dist/how-it-works/index.html',
       'dist/security/index.html',
       'dist/pricing/index.html',
-      'dist/use-cases/index.html',
+      'dist/who-its-for/index.html',
+      'dist/features/index.html',
+      'dist/byoc-deployments/index.html',
+      'dist/deploy-saas-to-customer-aws/index.html',
       'dist/blog/index.html',
       'dist/docs/index.html',
       'dist/404.html',
