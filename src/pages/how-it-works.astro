@@ -29,10 +29,49 @@ const connection = [
   { title: 'Deployz deploys the release', text: "The app and its resources are created in the customer's account." },
 ];
 
+const guardrails = [
+  {
+    term: 'Checks first',
+    desc: 'Rule-based detectors read your Dockerfile, package files, and configuration: runtime, port, health check, environment variables, database, cache, storage, and workers.',
+  },
+  {
+    term: 'AI for open questions',
+    desc: 'When the checks leave a question open, such as an unclear start command, AI reads a few relevant files. Values that look like secrets are redacted first.',
+  },
+  {
+    term: 'Strict limits on AI',
+    desc: 'AI answers must match a strict schema and only fill gaps. They never replace a value the checks found, and lower-confidence answers stay suggestions.',
+  },
+  {
+    term: 'Clear labels',
+    desc: 'Each detected value shows its source. AI values are marked “Inferred by AI analysis — verify before relying on it.”',
+  },
+  {
+    term: 'Your review',
+    desc: 'You check what Deployz detected, enter the values it needs, and override anything before you build a release.',
+  },
+  {
+    term: 'Rule-based deployment',
+    desc: "Deployz's own compiler turns the configuration into CloudFormation. It can create only supported AWS resources, in a fixed size profile. Preflight checks use no AI.",
+  },
+];
+
+const infrastructure = [
+  { need: 'Web or API service', aws: 'Amazon ECS on Fargate, behind an Application Load Balancer' },
+  { need: 'Background workers', aws: 'Separate ECS services from the same image' },
+  { need: 'Database', aws: 'Amazon RDS for PostgreSQL 16 or MySQL 8.0' },
+  { need: 'Cache', aws: 'Amazon ElastiCache (Valkey, Redis-compatible)' },
+  { need: 'File storage', aws: 'Amazon S3 bucket' },
+  { need: 'Secrets', aws: 'AWS Secrets Manager in the customer account' },
+  { need: 'Network', aws: 'A new, dedicated VPC' },
+  { need: 'HTTPS', aws: 'AWS Certificate Manager, for the default URL or a custom domain' },
+];
+
 const lifecycle = [
   { title: 'Releases', text: 'Each customer runs the release you select.' },
   { title: 'Status', text: 'See the progress and health of every customer environment.' },
   { title: 'Updates and rollbacks', text: 'You start each update. If the new version fails its health check, the previous one keeps running. A rollback does not reverse database migrations.' },
+  { title: 'Removal', text: 'Remove a deployment, then delete its retained data as a separate step.' },
 ];
 
 const goodFit = [
@@ -60,7 +99,7 @@ const notSupported = [
 
 <Base
   title="How Deployz Works — From GitHub to Customer AWS"
-  description="Connect GitHub, build a release, have your customer connect AWS, then deploy and manage updates. See each step and what Deployz supports."
+  description="Connect GitHub, review what AI-assisted analysis finds, build a release, and deploy into customer AWS with rule-based guardrails. See each step and what Deployz supports."
 >
   <!-- W1. Hero -->
   <PageHeader eyebrow="How it works" title="From GitHub to your customer's AWS in four steps.">
@@ -85,7 +124,6 @@ const notSupported = [
           checks run first. AI helps only with questions they leave open, and the report labels those values
           for you to verify.
         </p>
-        <a class="link-arrow mt-6" href="/features/#ai-guardrails">How AI and guardrails work <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <div class="min-w-0">
         <h3 class="text-[16px] font-semibold">What the analysis checks</h3>
@@ -96,7 +134,28 @@ const notSupported = [
     </div>
   </Section>
 
-  <!-- W4. Step 2 -->
+  <!-- W4. AI and guardrails -->
+  <Section divider id="ai-guardrails" labelledby="ai-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <div>
+        <h2 id="ai-title" class="text-h2 max-w-[440px]">AI for understanding. Guardrails for deploying.</h2>
+        <p class="mt-5 max-w-[440px] text-muted-foreground">
+          AI helps Deployz understand your app. It does not write your infrastructure, and it does not guarantee
+          that your app is correct or secure.
+        </p>
+      </div>
+      <dl class="border-b border-border">
+        {guardrails.map((row) => (
+          <div class="grid gap-1 border-t border-border py-5 sm:grid-cols-[200px_minmax(0,1fr)] sm:gap-x-8">
+            <dt class="font-semibold">{row.term}</dt>
+            <dd class="text-muted-foreground">{row.desc}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </Section>
+
+  <!-- W5. Step 2 -->
   <Section divider labelledby="review-title">
     <div class="max-w-[780px]">
       <p class="text-eyebrow mb-3 text-muted-foreground">Step 2</p>
@@ -121,7 +180,7 @@ const notSupported = [
     </p>
   </Section>
 
-  <!-- W5. Step 3 -->
+  <!-- W6. Step 3 -->
   <Section divider labelledby="install-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
@@ -147,7 +206,7 @@ const notSupported = [
     </div>
   </Section>
 
-  <!-- W6. Step 4 -->
+  <!-- W7. Step 4 -->
   <Section divider labelledby="manage-title">
     <div class="max-w-[780px]">
       <p class="text-eyebrow mb-3 text-muted-foreground">Step 4</p>
@@ -157,7 +216,7 @@ const notSupported = [
         release and marks the environment ready when its health check passes.
       </p>
     </div>
-    <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
+    <ul class="mt-10 grid gap-10 md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-10">
       {lifecycle.map((item) => (
         <li class="border-t border-foreground pt-5">
           <h3 class="text-[18px] font-semibold tracking-[-0.01em]">{item.title}</h3>
@@ -165,9 +224,21 @@ const notSupported = [
         </li>
       ))}
     </ul>
+
+    <div class="mt-16 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <h3 class="text-h3 max-w-[440px]">What Deployz creates in customer AWS</h3>
+      <dl class="border-b border-border">
+        {infrastructure.map((row) => (
+          <div class="grid gap-1 border-t border-border py-4 sm:grid-cols-[200px_minmax(0,1fr)] sm:gap-x-8">
+            <dt class="font-semibold">{row.need}</dt>
+            <dd class="text-muted-foreground">{row.aws}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   </Section>
 
-  <!-- W7. Compatibility -->
+  <!-- W8. Compatibility -->
   <Section divider id="compatibility" labelledby="fit-title">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <div>

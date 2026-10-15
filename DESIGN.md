@@ -93,7 +93,7 @@ All marketing components are static Astro in `src/components/site/`.
 
 | Component | File | Notes |
 | --- | --- | --- |
-| Site header | `SiteHeader.astro` | Links: How It Works, Features, Who It's For, Pricing, Security, Docs. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
+| Site header | `SiteHeader.astro` | Links: How It Works, Who It's For, Pricing, Security, Docs. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
 | Site footer | `SiteFooter.astro` | Logo plus three open link groups (Product; Solutions: the two landing pages; Resources: Documentation, Blog, Log In) and copyright. |
 | Logo | `Logo.astro` | Approved mark plus wordmark text. |
 | Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`, `divider`. |
@@ -144,9 +144,8 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | Page | Composition |
 | --- | --- |
 | `/` | Nine sections: centered hero (audience line "For B2B SaaS Teams", H1 "Deploy into customer AWS", primary + secondary action) + diagram; three benefits (quiet grid); 4-step process rail; AI and guardrails (heading + guardrails diagram); product preview tabs; ownership (quiet grid); fit (split: text, supported list; no pricing preview); FAQ (split); closing CTA. |
-| `/how-it-works` | Left-aligned header; journey diagram (steps 1–4 at a glance); 1 connect GitHub (split); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid); compatibility (split, supported / not supported); closing CTA. |
+| `/how-it-works` | Left-aligned header; journey diagram (steps 1–4 at a glance); 1 connect GitHub (split); AI and guardrails (split, definition list; anchor `#ai-guardrails`); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid of four, then what Deployz creates in customer AWS as a split definition list); compatibility (split, supported / not supported); closing CTA. `/features` redirects here. |
 | `/who-its-for` | Left-aligned header with the fleet diagram aside; four personas (2×2 quiet grid: audience, headline, text, two checks); what you can build (split, definition list); good fit / not a fit (split); closing CTA. `/use-cases` redirects here. |
-| `/features` | Left-aligned header with CTA; AI and guardrails (split, definition list); prepare / install / operate (quiet grid); what Deployz creates in customer AWS (split, definition list); closing CTA. |
 | `/byoc-deployments` | Landing page. Header with CTA; hosted SaaS vs. BYOC vs. self-hosted (quiet grid of definition lists, BYOC column with the brand hairline); what a BYOC platform needs (split); limits; closing CTA. |
 | `/deploy-saas-to-customer-aws` | Landing page. Header with CTA; three ways teams do it (quiet grid); you / your customer / Deployz (split); FAQ (split); closing CTA. |
 | `/pricing` | Left-aligned header; one bounded plan frame (price, free evaluation, CTA) + included list in three groups (prepare, deploy, manage) with a provisioning-vs-AWS-charges note; value section (build vs. Deployz diagram, three benefits as a quiet grid, punchline); cost estimator for an active subscription (range input, inline script); billing FAQ; closing CTA. |
