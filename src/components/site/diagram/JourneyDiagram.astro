@@ -34,10 +34,12 @@ const installSteps = [
           <div class="sc-head">
             <span class="sc-icon sc-icon-dark"><GithubMark /></span>
             <p class="sc-head-title">your-org/your-app<small class="sc-mono">main</small></p>
-            <span class="sc-badge sc-badge-warn">Needs input</span>
           </div>
           <div class="sc-body">
-            <span class="text-[13px] font-medium">11 of 12 checks passed</span>
+            <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
+              <span class="text-[13px] font-medium">11 of 12 checks passed</span>
+              <span class="sc-badge sc-badge-warn">Needs input</span>
+            </div>
             <div class="sc-progress mt-2"><span style="width: 92%"></span></div>
             <ul class="sc-checks mt-3">
               <li><Mark /><span>Dockerfile</span><span class="sc-mono">found</span></li>
@@ -104,8 +106,9 @@ const installSteps = [
 </figure>
 
 <style>
+  /* Equal columns: the three steps are peers of one size. */
   .journey-sc .sc-flow {
-    --sc-cols: minmax(0, 1.2fr) 148px minmax(0, 1fr) 136px minmax(0, 0.95fr);
+    --sc-cols: minmax(0, 1fr) 112px minmax(0, 1fr) 112px minmax(0, 1fr);
     --journey-tag: 32px; /* 22px tag + 10px gap */
   }
 
@@ -188,7 +191,7 @@ const installSteps = [
   /* Just above the horizontal breakpoint: slimmer beams, chips may wrap to two lines. */
   @container sc (min-width: 960px) and (max-width: 1119px) {
     .journey-sc .sc-flow {
-      --sc-cols: minmax(0, 1.55fr) 104px minmax(0, 1fr) 104px minmax(0, 1.1fr);
+      --sc-cols: minmax(0, 1fr) 104px minmax(0, 1fr) 104px minmax(0, 1fr);
     }
 
     .journey-sc :global(.sc-stage) {

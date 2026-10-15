@@ -46,7 +46,7 @@ const account = [
               ))}
             </ul>
           </div>
-          <ul class="sc-tiles mt-3">
+          <ul class="sc-tiles relay-tiles relay-account-tiles mt-3">
             {account.map((tile) => (
               <li class="sc-tile">
                 <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
@@ -82,7 +82,7 @@ const account = [
       </div>
 
       <!-- Deployz -->
-      <div class="sc-card sc-card-brand">
+      <div class="sc-card sc-card-brand relay-service">
         <div class="sc-head">
           <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
           <p class="sc-head-title">Deployz<small>Management service</small></p>
@@ -108,7 +108,7 @@ const account = [
 
 <style>
   .relay-flow {
-    --sc-cols: minmax(0, 1fr) 176px minmax(0, 270px);
+    --sc-cols: minmax(0, 1fr) 150px minmax(0, 210px);
     max-width: 480px;
   }
 
@@ -122,8 +122,14 @@ const account = [
     padding-top: 26px;
   }
 
+  /* All five resource tiles share one grid: the same columns inside and outside the VPC. */
   .relay-tiles {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Match the VPC inset (padding and border) so the tile columns line up. */
+  .relay-account-tiles {
+    padding-inline: 13.5px;
   }
 
   .relay-log {
@@ -152,9 +158,9 @@ const account = [
     color: var(--brand);
   }
 
-  @container sc (min-width: 520px) {
+  @container sc (min-width: 400px) {
     .relay-tiles {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -169,24 +175,24 @@ const account = [
       gap: 20px;
     }
 
-    .relay-tiles,
-    .relay-resources > .sc-tiles {
-      grid-template-columns: minmax(0, 1fr);
+    /* The connector and the management service are peer cards of one size. */
+    .relay-node,
+    .relay-service {
+      display: flex;
+      min-height: 224px;
+      flex-direction: column;
+    }
+
+    .relay-node > .sc-body,
+    .relay-service > .sc-body {
+      flex: 1;
     }
   }
 
-  @container sc (min-width: 1040px) {
-    .relay-resources > .sc-tiles {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
+  /* Just above the horizontal breakpoint the resources column is too narrow for two tiles. */
+  @container sc (min-width: 960px) and (max-width: 1039px) {
     .relay-tiles {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .relay-tiles .sc-tile {
-      flex-direction: column;
-      align-items: flex-start;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

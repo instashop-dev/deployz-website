@@ -53,6 +53,7 @@ const tabs = [
     ))}
   </div>
 
+  <div class="preview-panels">
   {tabs.map((tab, index) => (
     <div
       role="tabpanel"
@@ -138,6 +139,7 @@ const tabs = [
       <p class="mt-1 text-[14px] text-muted-foreground">Simplified illustration, not a screenshot.</p>
     </div>
   ))}
+  </div>
 </div>
 
 <style>
@@ -187,8 +189,33 @@ const tabs = [
     border-radius: 12px;
   }
 
+  /*
+   * With JavaScript, the panels share one grid cell, so the frame keeps the height of the
+   * tallest panel and the page does not jump when the tab changes.
+   */
+  :global(html.js) .preview-panels {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :global(html.js) .preview-panel {
+    display: flex;
+    grid-area: 1 / 1;
+    flex-direction: column;
+  }
+
   :global(html.js) .preview-panel[data-hidden] {
-    display: none;
+    visibility: hidden;
+  }
+
+  :global(html.js) .preview-stage {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  :global(html.js) .frame {
+    flex: 1;
   }
 
   .preview-stage {
