@@ -110,7 +110,7 @@ test.describe('public design-system contract', () => {
   });
 
   test('marks the current primary navigation link', async ({ page }) => {
-    for (const route of ['/how-it-works/', '/who-its-for/', '/pricing/', '/security/'] as const) {
+    for (const route of ['/how-it-works/', '/who-its-for/', '/pricing/'] as const) {
       await page.goto(route);
       const navigation = page.getByRole('navigation', { name: /primary/i });
       await expect(navigation.locator(`a[href="${route}"]`)).toHaveAttribute('aria-current', 'page');
@@ -122,6 +122,9 @@ test.describe('public design-system contract', () => {
 
     await expect(page.locator('header a', { hasText: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
     await expect(page.locator('footer').getByRole('link', { name: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
+    // Security is a footer-only link.
+    await expect(page.getByRole('navigation', { name: /primary/i }).locator('a[href="/security/"]')).toHaveCount(0);
+    await expect(page.locator('footer a[href="/security/"]')).toHaveCount(1);
   });
 
   test('sets the approved title, description, and canonical URL on each core page', async ({ page }) => {
@@ -224,7 +227,7 @@ test.describe('public design-system contract', () => {
 
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
-    for (const name of ['How It Works', "Who It's For", 'Pricing', 'Security', 'Docs', 'Log In']) {
+    for (const name of ['How It Works', "Who It's For", 'Pricing', 'Docs', 'Log In']) {
       await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
     }
     await page.keyboard.press('Escape');
