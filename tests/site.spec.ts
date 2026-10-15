@@ -154,7 +154,7 @@ test.describe('public design-system contract', () => {
     await page.goto('/');
 
     await expect(page.locator('h1')).toHaveText('Deploy into customer AWS');
-    await expect(page.locator('main > section')).toHaveCount(9);
+    await expect(page.locator('main > section')).toHaveCount(8);
     // No pricing preview on the homepage.
     await expect(page.locator('main')).not.toContainText('$49');
   });

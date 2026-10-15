@@ -1,5 +1,6 @@
 ---
 import { ArrowRight } from 'lucide-react';
+import GuardrailsDiagram from '@/components/site/diagram/GuardrailsDiagram.astro';
 import InfraDiagram from '@/components/site/diagram/InfraDiagram.astro';
 import JourneyDiagram from '@/components/site/diagram/JourneyDiagram.astro';
 import CtaSection from '@/components/site/CtaSection.astro';
@@ -127,8 +128,10 @@ const notSupported = [
         ))}
       </dl>
     </div>
+    <div class="mt-12 lg:mt-14">
+      <GuardrailsDiagram />
+    </div>
   </Section>
-
 
   <!-- W3. Step 2 -->
   <Section divider labelledby="review-title">
