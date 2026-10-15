@@ -45,7 +45,9 @@ const tiles = [
             <li><span>Branch</span><span>main</span></li>
             <li><span>Commit</span><span>a1f9c3e</span></li>
           </ul>
-          <ul class="sc-checks mt-3 border-t border-border pt-3">
+        </div>
+        <div class="sc-foot">
+          <ul class="sc-checks">
             <li><Mark /><span>Dockerfile found</span></li>
           </ul>
         </div>
@@ -97,34 +99,70 @@ const tiles = [
             </li>
           ))}
         </ul>
-        <p class="mt-3 text-[12px] leading-snug text-muted-foreground">Their account. Their data.</p>
+        <p class="hero-note">Their account. Their data.</p>
       </div>
     </div>
   </div>
 </figure>
 
 <style>
+  /* Equal columns and equal heights: the three parts read as one row of peers. */
   .hero-sc .sc-flow {
-    --sc-cols: minmax(0, 0.92fr) 136px minmax(0, 1.04fr) 152px minmax(0, 1.18fr);
+    --sc-cols: minmax(0, 1fr) 144px minmax(0, 1fr) 144px minmax(0, 1fr);
   }
 
   .hero-app .sc-head {
     border-bottom: 0;
   }
 
+  .hero-note {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted-foreground);
+  }
+
   @container sc (min-width: 960px) {
-    .hero-sc .sc-card-brand {
-      transform: translateY(-6px);
+    .hero-sc .sc-flow {
+      align-items: stretch;
+    }
+
+    .hero-sc .sc-flow > .sc-card,
+    .hero-sc .hero-aws {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-sc .sc-flow > .sc-card > .sc-body {
+      flex: 1;
+    }
+
+    /* The footers and the boundary note sit on one baseline. */
+    .hero-sc .hero-note {
+      margin-top: auto;
+      padding-top: 12px;
+    }
+
+    /* Narrow tiles: icon above the text, so every tile has the same shape. */
+    .hero-sc .sc-tile {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
     }
   }
 
   @container sc (min-width: 960px) and (max-width: 1039px) {
     .hero-sc .sc-flow {
-      --sc-cols: minmax(0, 0.95fr) 116px minmax(0, 1.06fr) 128px minmax(0, 1.1fr);
+      --sc-cols: minmax(0, 1fr) 120px minmax(0, 1fr) 120px minmax(0, 1fr);
+    }
+
+    /* A smaller inset keeps two tile columns wide enough for the service names. */
+    .hero-sc .hero-aws {
+      padding-inline: 10px;
     }
 
     .hero-sc .sc-tiles {
-      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
     }
   }
 </style>
