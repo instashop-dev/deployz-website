@@ -81,8 +81,11 @@ const notSupported = [
         <p class="text-eyebrow mb-3 text-muted-foreground">Step 1</p>
         <h2 id="connect-title" class="text-h2">Connect GitHub</h2>
         <p class="mt-5 max-w-[520px] text-muted-foreground">
-          Deployz reads your repository with read-only access and reports what your app needs.
+          Deployz reads your repository with read-only access and reports what your app needs. Rule-based
+          checks run first. AI helps only with questions they leave open, and the report labels those values
+          for you to verify.
         </p>
+        <a class="link-arrow mt-6" href="/features/#ai-guardrails">How AI and guardrails work <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <div class="min-w-0">
         <h3 class="text-[16px] font-semibold">What the analysis checks</h3>
@@ -99,8 +102,8 @@ const notSupported = [
       <p class="text-eyebrow mb-3 text-muted-foreground">Step 2</p>
       <h2 id="review-title" class="text-h2">Configure and build a release</h2>
       <p class="text-lead mt-5 text-muted-foreground">
-        Fill in what the readiness report asks for, fix any blockers, then build a versioned release from a
-        commit.
+        Review what Deployz detected, fill in what the report asks for, and fix any blockers. Then build a
+        versioned release from a commit.
       </p>
     </div>
     <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
@@ -150,8 +153,8 @@ const notSupported = [
       <p class="text-eyebrow mb-3 text-muted-foreground">Step 4</p>
       <h2 id="manage-title" class="text-h2">Deploy and manage updates</h2>
       <p class="text-lead mt-5 text-muted-foreground">
-        Deployz creates the infrastructure, deploys the release, and marks the environment ready when its
-        health check passes.
+        Deployz's rule-based compiler creates the supported AWS infrastructure. Deployz then deploys the
+        release and marks the environment ready when its health check passes.
       </p>
     </div>
     <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">

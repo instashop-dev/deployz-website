@@ -180,10 +180,11 @@ const sec = 'mt-16 scroll-mt-24 sm:mt-20';
           <p>Values that you, the software provider, set for every customer are stored encrypted in Deployz.</p>
         </div>
 
-        <h3 class="mt-10 text-[18px] font-semibold tracking-[-0.01em]">Code and builds</h3>
+        <h3 class="mt-10 text-[18px] font-semibold tracking-[-0.01em]">Code, builds, and AI</h3>
         <div class="mt-4 grid gap-4 text-muted-foreground">
           <p>Deployz builds release images in its own AWS account from your repository. It stores them in a Deployz container registry. The customer account pulls the image.</p>
-          <p>To answer open questions during analysis, Deployz can send limited repository excerpts to an AI service after it redacts values that look like secrets. The AI does not change deployments.</p>
+          <p>Analysis runs rule-based checks first. When they leave a question open, such as an unclear start command, Deployz can send a few repository files to an AI service. Values that look like secrets are redacted first, and sample environment files are reduced to key names.</p>
+          <p>AI answers must match a strict schema and only fill gaps; they never replace a value the checks found. The report marks AI values as inferred by AI so that you can verify them, and lower-confidence answers stay suggestions. Deployz's own compiler creates the CloudFormation template from a fixed set of supported AWS resources. AI does not create infrastructure or change deployments.</p>
         </div>
       </section>
 

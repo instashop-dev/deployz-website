@@ -1,0 +1,155 @@
+---
+import { ArrowRight } from 'lucide-react';
+import CtaSection from '@/components/site/CtaSection.astro';
+import PageHeader from '@/components/site/PageHeader.astro';
+import Section from '@/components/site/Section.astro';
+import SectionHeading from '@/components/site/SectionHeading.astro';
+import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
+import Base from '../layouts/Base.astro';
+
+const guardrails = [
+  {
+    term: 'Checks first',
+    desc: 'Rule-based detectors read your Dockerfile, package files, and configuration: runtime, port, health check, environment variables, database, cache, storage, and workers.',
+  },
+  {
+    term: 'AI for open questions',
+    desc: 'When the checks leave a question open, such as an unclear start command, AI reads a few relevant files. Values that look like secrets are redacted first.',
+  },
+  {
+    term: 'Strict limits on AI',
+    desc: 'AI answers must match a strict schema and only fill gaps. They never replace a value the checks found, and lower-confidence answers stay suggestions.',
+  },
+  {
+    term: 'Clear labels',
+    desc: 'Each detected value shows its source. AI values are marked “Inferred by AI analysis — verify before relying on it.”',
+  },
+  {
+    term: 'Your review',
+    desc: 'You check what Deployz detected, enter the values it needs, and override anything before you build a release.',
+  },
+  {
+    term: 'Rule-based deployment',
+    desc: "Deployz's own compiler turns the configuration into CloudFormation. It can create only supported AWS resources, in a fixed size profile. Preflight checks use no AI.",
+  },
+];
+
+const groups = [
+  {
+    title: 'Prepare',
+    items: [
+      { title: 'Readiness report', text: 'Passed checks, values that need input, and blockers.' },
+      { title: 'Fix instructions', text: 'For a blocker, Deployz writes instructions for your own coding tool. It never changes your repository.' },
+      { title: 'Versioned releases', text: 'Build a release image from a commit.' },
+      { title: 'Free test deployment', text: 'One per application, in your own AWS account.' },
+    ],
+  },
+  {
+    title: 'Install',
+    items: [
+      { title: 'Installation links', text: 'Your customer needs no Deployz account. You can revoke a link.' },
+      { title: 'Preview before install', text: 'The customer sees the resources, an AWS cost estimate, and every IAM action requested.' },
+      { title: 'Customer-launched connector', text: 'A CloudFormation stack in their account. It connects out; Deployz has no inbound path.' },
+      { title: 'HTTPS', text: 'A default URL, or your custom domain.' },
+    ],
+  },
+  {
+    title: 'Operate',
+    items: [
+      { title: 'Per-customer releases', text: 'You choose when each customer updates. Nothing updates automatically.' },
+      { title: 'Status and health', text: 'Progress and health for every customer environment.' },
+      { title: 'Updates and rollbacks', text: 'If a new version fails its health check, the previous one keeps running.' },
+      { title: 'Removal', text: 'Remove a deployment, then delete retained data as a separate step.' },
+    ],
+  },
+];
+
+const infrastructure = [
+  { need: 'Web or API service', aws: 'Amazon ECS on Fargate, behind an Application Load Balancer' },
+  { need: 'Background workers', aws: 'Separate ECS services from the same image' },
+  { need: 'Database', aws: 'Amazon RDS for PostgreSQL 16 or MySQL 8.0' },
+  { need: 'Cache', aws: 'Amazon ElastiCache (Valkey, Redis-compatible)' },
+  { need: 'File storage', aws: 'Amazon S3 bucket' },
+  { need: 'Secrets', aws: 'AWS Secrets Manager in the customer account' },
+  { need: 'Network', aws: 'A new, dedicated VPC' },
+  { need: 'HTTPS', aws: 'AWS Certificate Manager, for the default URL or a custom domain' },
+];
+---
+
+<Base
+  title="Deployz Features — AI Analysis, Guardrails, and Customer AWS Deployments"
+  description="AI-assisted app analysis, rule-based deployment guardrails, installation links, versioned releases, updates, and rollbacks for SaaS deployed into customer AWS accounts."
+>
+  <!-- F1. Hero -->
+  <PageHeader eyebrow="Features" title="The deployment platform you don't have to build.">
+    Deployz analyzes your app, builds releases, sets up supported AWS infrastructure in each customer's
+    account, and manages updates.
+    <a slot="actions" class="btn btn-primary btn-lg" href={SIGNUP_URL} data-cta="features-hero">{CTA_LABEL}</a>
+  </PageHeader>
+
+  <!-- F2. AI and guardrails -->
+  <Section id="ai-guardrails" labelledby="ai-title" class="scroll-mt-16">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <div>
+        <h2 id="ai-title" class="text-h2 max-w-[440px]">AI for understanding. Guardrails for deploying.</h2>
+        <p class="mt-5 max-w-[440px] text-muted-foreground">
+          AI helps Deployz understand your app. It does not write your infrastructure, and it does not guarantee
+          that your app is correct or secure.
+        </p>
+      </div>
+      <dl class="border-b border-border">
+        {guardrails.map((row) => (
+          <div class="grid gap-1 border-t border-border py-5 sm:grid-cols-[200px_minmax(0,1fr)] sm:gap-x-8">
+            <dt class="font-semibold">{row.term}</dt>
+            <dd class="text-muted-foreground">{row.desc}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </Section>
+
+  <!-- F3. Capabilities -->
+  <Section divider labelledby="capabilities-title">
+    <SectionHeading id="capabilities-title" title="Prepare, install, and operate." />
+    <div class="mt-12 grid gap-12 md:grid-cols-3 md:gap-8 lg:mt-14 lg:gap-12">
+      {groups.map((group) => (
+        <div class="border-t border-foreground pt-5">
+          <h3 class="text-[18px] font-semibold tracking-[-0.01em]">{group.title}</h3>
+          <ul class="mt-4 grid gap-5">
+            {group.items.map((item) => (
+              <li>
+                <p class="font-medium">{item.title}</p>
+                <p class="mt-1 text-[15px] text-muted-foreground">{item.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <!-- F4. Supported infrastructure -->
+  <Section divider labelledby="infra-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <div>
+        <h2 id="infra-title" class="text-h2 max-w-[440px]">What Deployz creates in customer AWS</h2>
+        <p class="mt-5 max-w-[440px] text-muted-foreground">
+          Only what your app needs, from one supported architecture.
+        </p>
+        <a class="link-arrow mt-6" href="/how-it-works/#compatibility">Full compatibility list <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
+      <dl class="border-b border-border">
+        {infrastructure.map((row) => (
+          <div class="grid gap-1 border-t border-border py-4 sm:grid-cols-[200px_minmax(0,1fr)] sm:gap-x-8">
+            <dt class="font-semibold">{row.need}</dt>
+            <dd class="text-muted-foreground">{row.aws}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </Section>
+
+  <CtaSection title="See what Deployz finds in your app." cta="features-closing">
+    Connect GitHub for a free readiness report.
+  </CtaSection>
+</Base>
