@@ -93,7 +93,7 @@ All marketing components are static Astro in `src/components/site/`.
 
 | Component | File | Notes |
 | --- | --- | --- |
-| Site header | `SiteHeader.astro` | Links: How It Works, Who It's For, Pricing, Security, Docs. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
+| Site header | `SiteHeader.astro` | Links: How It Works, Who It's For, Pricing, Docs. Security is linked from the footer only. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
 | Site footer | `SiteFooter.astro` | Logo plus two open link groups (Product; Resources: Documentation, Blog, Log In) and copyright. The two landing pages are reachable from the sitemap, not the footer. |
 | Logo | `Logo.astro` | Approved mark plus wordmark text. |
 | Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`, `divider`. |
