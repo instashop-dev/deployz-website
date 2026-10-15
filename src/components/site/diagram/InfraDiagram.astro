@@ -1,0 +1,135 @@
+---
+/*
+ * Infrastructure scene for How It Works: the AWS resources Deployz creates in the customer's
+ * account. HTTPS and the load balancer at the edge, the app services and data stores inside a
+ * new dedicated VPC, and S3 and Secrets Manager at the account level.
+ * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only caption describes it.
+ */
+import { Box, Cloud, Cpu, Database, Globe, HardDrive, KeyRound, Layers, Lock, Network } from 'lucide-react';
+
+const edge = [
+  { icon: Lock, title: 'HTTPS', meta: 'ACM' },
+  { icon: Globe, title: 'Load balancer', meta: 'ALB' },
+];
+
+const vpc = [
+  { icon: Box, title: 'Web service', meta: 'ECS Fargate' },
+  { icon: Cpu, title: 'Workers', meta: 'ECS Fargate' },
+  { icon: Database, title: 'Database', meta: 'RDS' },
+  { icon: Layers, title: 'Cache', meta: 'ElastiCache' },
+];
+
+const account = [
+  { icon: HardDrive, title: 'Files', meta: 'S3' },
+  { icon: KeyRound, title: 'Secrets', meta: 'Secrets Manager' },
+];
+---
+
+<figure class="sc infra-sc">
+  <figcaption class="sr-only">
+    The customer's AWS account. At the edge: an HTTPS certificate from AWS Certificate Manager and an
+    Application Load Balancer. Inside a new, dedicated VPC: the web service and optional workers on ECS
+    Fargate, an RDS database, and an ElastiCache cache. At the account level: an S3 bucket and AWS Secrets
+    Manager. Deployz creates only the parts your app needs.
+  </figcaption>
+
+  <div class="sc-stage" aria-hidden="true">
+    <div class="sc-boundary infra-account">
+      <span class="sc-boundary-tag"><Cloud strokeWidth={1.75} /> Customer AWS account <span class="sc-mono">us-east-1</span></span>
+
+      <div class="infra-grid">
+        <div class="infra-col">
+          <p class="sc-label">Edge</p>
+          <ul class="sc-tiles infra-tiles">
+            {edge.map((tile) => (
+              <li class="sc-tile">
+                <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
+                <span class="sc-tile-text">{tile.title}<span class="sc-mono">{tile.meta}</span></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="sc-boundary infra-vpc">
+          <span class="sc-boundary-tag"><Network strokeWidth={1.75} /> Dedicated VPC</span>
+          <ul class="sc-tiles">
+            {vpc.map((tile) => (
+              <li class="sc-tile">
+                <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
+                <span class="sc-tile-text">{tile.title}<span class="sc-mono">{tile.meta}</span></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="infra-col">
+          <p class="sc-label">Account</p>
+          <ul class="sc-tiles infra-tiles">
+            {account.map((tile) => (
+              <li class="sc-tile">
+                <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
+                <span class="sc-tile-text">{tile.title}<span class="sc-mono">{tile.meta}</span></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <p class="infra-note">Only what your app needs. Owned by your customer.</p>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .infra-account {
+    max-width: 480px;
+    margin-inline: auto;
+    padding: 34px 14px 14px;
+  }
+
+  .infra-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .infra-col {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+  }
+
+  .infra-vpc {
+    background: var(--background);
+  }
+
+  .infra-note {
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted-foreground);
+  }
+
+  @container sc (max-width: 339px) {
+    .sc-tiles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @container sc (min-width: 820px) {
+    .infra-account {
+      max-width: none;
+      padding: 38px 20px 18px;
+    }
+
+    .infra-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 20px;
+    }
+
+    .infra-tiles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

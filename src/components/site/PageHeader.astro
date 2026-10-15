@@ -7,12 +7,14 @@ interface Props {
 
 const { eyebrow, title, class: className } = Astro.props;
 const hasAside = Astro.slots.has('aside');
+const hasVisual = Astro.slots.has('visual');
 ---
 
 <header class:list={['border-b border-border', className]}>
   <div
     class:list={[
-      'container-site pt-14 pb-14 sm:pt-20 sm:pb-16 lg:pt-24 lg:pb-20',
+      'container-site pt-14 sm:pt-20 lg:pt-24',
+      hasVisual ? 'pb-10 sm:pb-12' : 'pb-14 sm:pb-16 lg:pb-20',
       hasAside && 'grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-center lg:gap-16',
     ]}
   >
@@ -36,4 +38,9 @@ const hasAside = Astro.slots.has('aside');
       </div>
     )}
   </div>
+  {Astro.slots.has('visual') && (
+    <div class="container-site pb-14 sm:pb-16 lg:pb-20">
+      <slot name="visual" />
+    </div>
+  )}
 </header>

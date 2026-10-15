@@ -1,5 +1,4 @@
 ---
-import { ArrowRight } from 'lucide-react';
 import CtaSection from '@/components/site/CtaSection.astro';
 import FaqList from '@/components/site/FaqList.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
@@ -9,50 +8,47 @@ import SectionHeading from '@/components/site/SectionHeading.astro';
 import Base from '../layouts/Base.astro';
 
 const permissions = [
-  'Create and manage a dedicated network (VPC), load balancer, and security groups',
+  'Create a dedicated network (VPC), load balancer, and security groups',
   'Run the application on Amazon ECS',
   'Create the database, cache, and S3 bucket your app needs',
-  'Create IAM roles that the application and AWS services use',
-  'Write and read secrets tagged for the installation in AWS Secrets Manager',
+  'Create IAM roles for the application and AWS services',
+  'Read and write secrets tagged for the installation',
 ];
 
 const limits = [
-  'Before connecting, the customer can review every IAM action the connector requests.',
-  'Most write actions are limited to resources tagged for the installation, and the connector role has a permissions boundary. The CloudFormation role that creates application resources can create IAM roles and has no permissions boundary.',
-  'The connector has no permission to read application logs.',
+  'The customer can review every requested IAM action before connecting.',
+  'Most write actions are limited to resources tagged for the installation. The connector role has a permissions boundary; the CloudFormation role that creates app resources does not.',
+  'The connector cannot read application logs.',
 ];
 
 const responsibilities = [
-  { owner: 'Deployz', text: 'Provisioning supported infrastructure, deployments, updates, rollbacks, and status.' },
-  { owner: 'The SaaS vendor', text: 'Application code and configuration, data-handling choices, and integrations.' },
+  { owner: 'Deployz', text: 'Supported infrastructure, deployments, updates, rollbacks, and status.' },
+  { owner: 'The SaaS vendor', text: 'Application code, configuration, data handling, and integrations.' },
   { owner: 'The AWS account owner', text: 'AWS account administration, billing, access, and governance.' },
 ];
 
 const receives = [
-  'Installation ID, AWS account ID, and AWS Region',
-  'Connector version, and the release and image version that runs',
-  'Deployment state, infrastructure status, health state, and timestamps',
-  'Resource identifiers',
-  'AWS error messages: stack events, stopped-task reasons, and exit codes',
-  'Health-check status code and response time (not the response body)',
+  'Installation ID, AWS account ID, and Region',
+  'Connector, release, and image versions',
+  'Deployment state, health, and timestamps',
+  'Resource IDs and AWS error messages',
+  'Health-check status code and response time',
 ];
 
-const doesNotReceive = [
-  'The application runtime and its in-memory data',
-  'Database data',
-  'Cache contents',
-  'S3 data',
-  'Application CloudWatch logs',
-];
+const doesNotReceive = ['Database data', 'Cache contents', 'S3 data', 'Application logs', 'In-memory app data'];
 
-const providers = [
+const notes = [
   {
-    provider: 'AWS',
-    text: 'The Deployz API, its database, release builds, the image registry, and secret encryption run on AWS services in scope of the AWS SOC 2 Type II report.',
+    title: 'Secrets',
+    text: "Held encrypted until the customer's account connects, then delivered to AWS Secrets Manager there. Values you set for every customer stay encrypted in Deployz.",
   },
   {
-    provider: 'Cloudflare',
-    text: 'DNS and the proxy for default deployz.dev URLs run on Cloudflare services in scope of its SOC 2 Type II report.',
+    title: 'Code and AI',
+    text: 'Repository access is read-only. Release images are built in Deployz’s AWS account. AI may read redacted repository excerpts, but it never creates infrastructure.',
+  },
+  {
+    title: 'Network routing',
+    text: "Traffic to the default deployz.dev URL passes through the Deployz proxy on Cloudflare. A custom domain goes directly to the customer's load balancer.",
   },
 ];
 
@@ -60,22 +56,11 @@ const securityQuestions = [
   {
     question: 'Is Deployz SOC 2 certified?',
     answer:
-      'No. Deployz has not completed its own SOC 2 audit. A Deployz SOC 2 Type II examination is planned. Until then, the available SOC 2 reports are those of AWS and Cloudflare for the services Deployz uses.',
-  },
-  {
-    question: 'What do the provider SOC 2 reports cover?',
-    answer:
-      "Each report covers that provider's own controls for the listed services. It does not cover how Deployz builds or operates its product. You can request the reports from AWS and Cloudflare.",
+      'No. Deployz has not completed its own SOC 2 audit. A Deployz SOC 2 Type II examination is planned. Provider reports cover only the providers’ own controls.',
   },
   {
     question: 'Does AI have access to customer AWS accounts?',
-    answer:
-      "No. AI helps analyze your repository. All changes in a customer account go through the customer's connector, using infrastructure that Deployz's rule-based compiler creates.",
-  },
-  {
-    question: 'Can my customer review the access before they connect?',
-    answer:
-      'Yes. The installation page lists every IAM action the connector requests. The customer launches the connector in their own AWS console and can delete it at any time.',
+    answer: "No. Every change in a customer account goes through the customer's connector.",
   },
 ];
 
@@ -83,27 +68,22 @@ const lifecycle = [
   {
     question: 'Updates and rollbacks',
     answer:
-      'The SaaS vendor starts each update; nothing updates automatically. If a migration or a new version fails, the previous version keeps running. A rollback does not reverse database migrations or data changes.',
+      'You start each update; nothing updates automatically. If a new version fails, the previous one keeps running. Rollbacks do not reverse database migrations.',
   },
   {
     question: 'Removal and retained data',
     answer:
-      'Removal deletes the application, cache, load balancer, and most networking. It keeps the database (with deletion protection and automated backups), its credentials, the S3 bucket, and the network parts the database uses. Retained resources continue to cause AWS charges.',
-  },
-  {
-    question: 'Deleting retained data',
-    answer:
-      'Deleting retained data is a separate step that the vendor confirms. It permanently deletes the database, the bucket, and the secrets, with no final snapshot.',
+      'Removal deletes the app and most infrastructure but keeps the database, its credentials, and the S3 bucket, which still cost AWS charges. Deleting them is a separate, confirmed step.',
   },
   {
     question: 'Removing the connector',
     answer:
-      'The customer deletes the connector stack in their AWS console, which ends Deployz access. Remove the deployment and its retained data first: after the connector is deleted, Deployz cannot change or remove the application.',
+      'The customer deletes the connector stack to end Deployz access. Remove the deployment first; afterward Deployz cannot change the app.',
   },
   {
     question: 'If Deployz is unavailable',
     answer:
-      "The application keeps running in the customer's account; its requests do not pass through the Deployz management service. New installations, updates, status refreshes, and recovery actions pause. Traffic to the default deployz.dev URL depends on the Deployz DNS proxy, and new application tasks pull the release image from the Deployz registry. A custom domain routes directly to the customer's load balancer.",
+      'The app keeps running, and installs and updates pause. New app tasks pull images from the Deployz registry. The default deployz.dev URL needs the Deployz proxy; a custom domain does not.',
   },
 ];
 ---
@@ -112,35 +92,24 @@ const lifecycle = [
   title="Deployz Security & Architecture — Customer AWS"
   description="Where Deployz-managed apps run, what the connector can do in customer AWS, what data Deployz receives, provider SOC 2 coverage, and what happens on update and removal."
 >
-  <!-- S1. Hero -->
+  <!-- S1. Hero and what runs where -->
   <PageHeader eyebrow="Security & Architecture" title="Your app runs in your customer's AWS account.">
     Deployz coordinates deployments from outside the account, through a connector the customer approves.
-    <a slot="actions" class="link-arrow" href="/docs/#aws-access">Read the technical details <ArrowRight className="size-4" aria-hidden="true" /></a>
+    The connector calls out to Deployz; Deployz never connects in.
+    <RelayDiagram slot="visual" />
   </PageHeader>
 
-  <!-- S2. What runs where -->
-  <Section labelledby="where-title">
-    <SectionHeading id="where-title" title="What runs where" />
-    <div class="mt-10 lg:mt-12">
-      <RelayDiagram />
-    </div>
-  </Section>
-
-  <!-- S3. Access and responsibilities -->
-  <Section divider id="aws-access" labelledby="access-title">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+  <!-- S2. Access and responsibilities -->
+  <Section id="aws-access" labelledby="access-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
         <h2 id="access-title" class="text-h2">Your customer approves AWS access.</h2>
-        <p class="mt-5 max-w-[520px] text-muted-foreground">
-          The connector's AWS roles govern every deployment action. Its permissions are substantial.
-        </p>
         <ul class="mt-6 grid max-w-[520px] list-disc gap-3 pl-5 text-[15px] text-muted-foreground marker:text-subtle">
           {limits.map((item) => <li>{item}</li>)}
         </ul>
-        <a class="link-arrow mt-6" href="/docs/#aws-access">AWS access details <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
       <div class="min-w-0">
-        <h3 class="text-[16px] font-semibold">In plain language, the connector can:</h3>
+        <h3 class="text-[16px] font-semibold">The connector can:</h3>
         <ul class="mt-4 border-b border-border">
           {permissions.map((item) => <li class="border-t border-border py-3 text-muted-foreground">{item}</li>)}
         </ul>
@@ -156,17 +125,12 @@ const lifecycle = [
         </div>
       ))}
     </dl>
-    <p class="mt-4 max-w-[780px] text-[15px] text-muted-foreground">
-      Responsibilities can overlap. Hosting in customer AWS does not by itself make an application compliant
-      or secure.
-    </p>
+    <p class="mt-4 text-[15px] text-muted-foreground">Hosting in customer AWS does not by itself make an app compliant or secure.</p>
   </Section>
 
-  <!-- S4. Data -->
+  <!-- S3. Data -->
   <Section divider labelledby="data-title">
-    <SectionHeading id="data-title" title="What Deployz receives">
-      Deployz processes deployment configuration, release images, and the operational metadata below.
-    </SectionHeading>
+    <SectionHeading id="data-title" title="What Deployz receives" />
 
     <div class="mt-10 grid border-t border-border-strong md:grid-cols-2 lg:mt-12">
       <div class="py-8 md:border-r md:border-border md:pr-10">
@@ -188,70 +152,34 @@ const lifecycle = [
     </div>
 
     <div class="grid gap-x-12 gap-y-8 border-t border-border pt-8 md:grid-cols-3">
-      <div>
-        <h3 class="text-[16px] font-semibold">Secrets</h3>
-        <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">
-          Secrets you enter are stored encrypted until the AWS account connects, then delivered to AWS
-          Secrets Manager in that account. Deployz deletes its active copy, or the secret itself if the
-          account does not connect within 24 hours. Encrypted backups may remain for up to 7 days. Deployz
-          does not display secret values or write them to application logs. Values the vendor sets for every customer stay encrypted in
-          Deployz.
-        </p>
-      </div>
-      <div>
-        <h3 class="text-[16px] font-semibold">Code and AI</h3>
-        <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">
-          Repository access is read-only. Deployz builds container images in its own AWS account and stores
-          them in a Deployz registry; the customer account pulls them. When rule-based checks leave a question
-          open, Deployz can send limited repository excerpts to an AI service after it redacts values that look
-          like secrets. AI does not create infrastructure or change deployments.
-        </p>
-      </div>
-      <div>
-        <h3 class="text-[16px] font-semibold">Network routing</h3>
-        <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">
-          Each deployment gets a default deployz.dev URL. Traffic to that URL, including its content, passes
-          through the Deployz DNS proxy on Cloudflare before it reaches the customer's load balancer. With a
-          custom domain, traffic goes directly to the customer's load balancer.
-        </p>
-      </div>
+      {notes.map((note) => (
+        <div>
+          <h3 class="text-[16px] font-semibold">{note.title}</h3>
+          <p class="mt-2 text-[15px] leading-[1.65] text-muted-foreground">{note.text}</p>
+        </div>
+      ))}
     </div>
   </Section>
 
-  <!-- S5. Audited infrastructure -->
+  <!-- S4. Audited infrastructure -->
   <Section divider id="assurance" labelledby="assurance-title">
     <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-      <div>
-        <h2 id="assurance-title" class="text-h2 max-w-[440px] wrap-break-word">Built on audited infrastructure</h2>
-        <p class="mt-5 max-w-[440px] text-muted-foreground">
-          Deployz runs its core service on AWS and Cloudflare services that their SOC 2 Type II reports cover.
-          Deployz has not completed its own SOC 2 audit. A Deployz SOC 2 Type II examination is planned.
-        </p>
-      </div>
+      <h2 id="assurance-title" class="text-h2 max-w-[440px] wrap-break-word">Built on audited infrastructure</h2>
       <div class="min-w-0">
-        <dl class="border-b border-border">
-          {providers.map((row) => (
-            <div class="grid gap-1 border-t border-border py-4 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-x-8">
-              <dt class="font-semibold">{row.provider}</dt>
-              <dd class="text-muted-foreground">{row.text}</dd>
-            </div>
-          ))}
-        </dl>
-        <p class="mt-4 text-[15px] text-muted-foreground">
-          Your app itself runs in your customer's own AWS account, under their AWS agreements and controls.
+        <p class="text-muted-foreground">
+          The Deployz API, database, builds, and image registry run on AWS services covered by the AWS SOC 2
+          Type II report. DNS and the default-URL proxy run on Cloudflare services covered by its SOC 2 Type II
+          report.
         </p>
-        <FaqList items={securityQuestions} class="mt-10" />
+        <FaqList items={securityQuestions} class="mt-8" />
       </div>
     </div>
   </Section>
 
-  <!-- S6. Updates, removal, and continuity -->
+  <!-- S5. After deployment -->
   <Section divider labelledby="lifecycle-title">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-      <div>
-        <h2 id="lifecycle-title" class="text-h2 max-w-[440px]">After deployment</h2>
-        <a class="link-arrow mt-6" href="/docs/#lifecycle">Updates and removal details <ArrowRight className="size-4" aria-hidden="true" /></a>
-      </div>
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <h2 id="lifecycle-title" class="text-h2 max-w-[440px]">After deployment</h2>
       <FaqList items={lifecycle} class="max-w-[760px]" />
     </div>
 
@@ -260,7 +188,7 @@ const lifecycle = [
     </p>
   </Section>
 
-  <!-- S7. Final CTA -->
+  <!-- S6. Final CTA -->
   <CtaSection title="Check what your app needs before you promise a customer." cta="security-closing">
     Connect GitHub for a free readiness report.
   </CtaSection>
