@@ -104,6 +104,7 @@ All marketing components are static Astro in `src/components/site/`.
 | Scene system | `scene/*.astro`, `diagram/*.astro` | Illustration parts and the page scenes (see section 7). |
 | Product preview | `ProductPreview.astro` | Home Configure / Deploy / Manage tabs (ARIA tabs, Arrow/Home/End keys). Each panel is a labelled, simplified illustration built from real product labels, not a screenshot. Without JavaScript all panels show. Replace with real anonymized screenshots when they exist. |
 | Legal page | `LegalPage.astro` | Shared layout for `/privacy`, `/terms`, `/gdpr`, `/dpa`. Page header (eyebrow "Legal", title, last-updated date), a sticky side list of the four documents, and a 720px article. The text comes from `src/legal/*.md` and is published as supplied. Links in the article keep a 44px target and wrap long URLs. |
+| Blog article | `src/pages/blog/[slug].astro` | Markdown posts from the `blog` content collection (`src/content.config.ts`, files in `src/content/blog/`). Page header (eyebrow = category, title, description), author and dates, a 720px article, optional related posts (up to two), and an "All articles" link. One contextual CTA in the text, no closing CTA section. Links in the article keep a 44px target. Diagrams are SVG files next to the post, with full alt text. Rules: `docs/DEPLOYZ_BLOG_MASTER_GUIDELINES.md`. |
 | Closing CTA | `CtaSection.astro` | Centered closing section with one **Get Started Free** button. It is the one `bg-surface-subtle` section on each page that uses it. |
 
 Control utilities (in `globals.css`):
@@ -158,7 +159,8 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | `/security` | Left-aligned header with the connector diagram below the text (PageHeader `visual` slot); AWS access + connector permissions + responsibilities; what Deployz receives with short notes on secrets, code and AI, routing; built on audited infrastructure (split: provider SOC 2 coverage, two FAQs); after deployment FAQ + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
 | `/privacy`, `/terms`, `/gdpr`, `/dpa` | Legal documents (`LegalPage.astro`). Linked from the footer Legal group; Security links Privacy, GDPR, and DPA; Docs links Privacy and DPA; Pricing links Terms next to the billing questions. |
-| `/blog` | Editorial list with dates and hairlines. |
+| `/blog` | Editorial list with dates and hairlines: category, title link, and description for each post, newest first, then the static "Introducing Deployz" note. |
+| `/blog/<slug>/` | Blog article (see section 6). `isPublished()` in `src/lib/blog.ts` is the one publication check for routes, the index, the sitemap, and `/blog/rss.xml`: drafts and future dates are not built. The local dev server also shows drafts, marked "Draft preview" and `noindex`. |
 | `/404` | Short centered message. |
 
 ## 9. Motion and accessibility
