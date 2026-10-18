@@ -1,0 +1,97 @@
+---
+import { ArrowRight } from 'lucide-react';
+import TeamReachDiagram from '@/components/site/diagram/TeamReachDiagram.astro';
+import CtaSection from '@/components/site/CtaSection.astro';
+import PageHeader from '@/components/site/PageHeader.astro';
+import Section from '@/components/site/Section.astro';
+import Base from '../layouts/Base.astro';
+
+const audiences = [
+  {
+    title: 'Startups',
+    text: 'Offer customer-hosted deployment while keeping your team focused on the product.',
+  },
+  {
+    title: 'Small and medium businesses',
+    text: 'Simplify how you deliver and maintain customer installations.',
+  },
+  {
+    title: 'Independent developers',
+    text: 'Bring your software to customers who need it in their own cloud.',
+  },
+  {
+    // Supported: one container image (API plus optional workers) that calls hosted model APIs. No GPUs or self-hosted models.
+    title: 'AI builders',
+    text: 'Deploy AI apps and agents that run as one supported container image into customer-owned AWS accounts. They call hosted model APIs; GPU workloads are not supported.',
+  },
+];
+---
+
+<Base
+  title="About Deployz — Customer-Hosted Deployment for Small Teams"
+  description="Deployz makes customer-hosted deployment more accessible to people building software. Why we started it, who it is for, and why we focus on AWS."
+>
+  <!-- A1. Hero -->
+  <PageHeader eyebrow="About" title="Small teams. Their own way forward.">
+    We’re making customer-hosted deployment more accessible to people building software.
+    <TeamReachDiagram slot="visual" />
+  </PageHeader>
+
+  <!-- A2. Origin -->
+  <Section labelledby="origin-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <h2 id="origin-title" class="text-h2 max-w-[460px]">It started with our own itch.</h2>
+      <div class="text-lead max-w-[640px] space-y-5 text-muted-foreground">
+        <p>We’ve spent 15 years building and deploying software products.</p>
+        <p>
+          We wanted a simpler way to run our software in a customer’s AWS account. Infrastructure, installation,
+          updates, and ongoing maintenance needed a process we could repeat without turning every customer into a
+          separate engineering project.
+        </p>
+        <p class="font-semibold text-foreground">That’s why we started Deployz.</p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- A3. Audiences -->
+  <Section labelledby="audience-title">
+    <h2 id="audience-title" class="text-h2 max-w-[780px]">Built for people building products.</h2>
+    <ul class="mt-10 grid gap-10 md:grid-cols-2 md:gap-8 lg:mt-12 lg:grid-cols-4 lg:gap-10">
+      {audiences.map((item) => (
+        <li class="border-t border-foreground pt-5">
+          <h3 class="text-[18px] leading-snug font-semibold tracking-[-0.01em]">{item.title}</h3>
+          <p class="mt-2 text-muted-foreground">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+    <a class="link-arrow mt-10" href="/use-cases/">See use cases <ArrowRight className="size-4" aria-hidden="true" /></a>
+  </Section>
+
+  <!-- A4. Focus -->
+  <Section labelledby="focus-title">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <h2 id="focus-title" class="text-h2 max-w-[460px]">Focused by choice.</h2>
+      <div class="max-w-[640px]">
+        <div class="text-lead space-y-5 text-muted-foreground">
+          <p>
+            We’re starting with AWS and a defined set of supported application architectures. That focus helps us
+            make deployment clearer and more repeatable.
+          </p>
+          <p>
+            You build the software and choose its releases. Deployz handles supported infrastructure setup,
+            deployments, and updates. Your customer owns the AWS account.
+          </p>
+          <p>
+            Not every application works unchanged. Deployz helps you understand what fits and what needs attention.
+          </p>
+        </div>
+        <a class="link-arrow mt-6" href="/how-it-works/#compatibility">What Deployz supports <ArrowRight className="size-4" aria-hidden="true" /></a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- A5. Closing CTA -->
+  <CtaSection title="More time for the product you meant to build." cta="about-closing">
+    That’s what we wanted for ourselves. It’s what we’re building for you.
+  </CtaSection>
+</Base>
