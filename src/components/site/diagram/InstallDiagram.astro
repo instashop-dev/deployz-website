@@ -1,0 +1,334 @@
+---
+/*
+ * "Your customer connects AWS" scene for How It Works step 3. Two browser windows, drawn as
+ * the customer sees them: the installation link (resources, cost estimate, IAM actions, and
+ * Launch connector), then their own AWS console, where the connector stack goes from
+ * CREATE_IN_PROGRESS to CREATE_COMPLETE inside the customer AWS account boundary.
+ * Stack name and values are illustrative. Scene system: src/styles/scene.css.
+ */
+import { Cloud, Link as LinkIcon, MousePointer2 } from 'lucide-react';
+import Beam from '@/components/site/scene/Beam.astro';
+import Mark from '@/components/site/scene/Mark.astro';
+---
+
+<figure class="sc inst-sc mx-auto w-full max-w-[1120px]">
+  <figcaption class="sr-only">
+    Your customer opens the installation link. It shows the AWS resources, an AWS cost estimate, and every IAM
+    action requested. They select Launch connector. In their own AWS console, CloudFormation creates the
+    connector stack: a Lambda function and a connector role with a permissions boundary. When the stack is
+    complete, Deployz can deploy the release in their account.
+  </figcaption>
+
+  <div class="sc-stage" aria-hidden="true">
+    <div class="sc-flow">
+      <!-- Installation link, in the customer's browser -->
+      <div class="inst-win">
+        <div class="inst-bar">
+          <span class="inst-dots"><i></i><i></i><i></i></span>
+          <span class="inst-url"><LinkIcon strokeWidth={2} />Installation link</span>
+        </div>
+        <div class="inst-page">
+          <p class="inst-title">Install your app</p>
+          <ul class="sc-kv mt-3">
+            <li><span>Resources</span><span>app, database, storage</span></li>
+            <li><span>Estimated AWS cost</span><span>per month</span></li>
+            <li><span>IAM actions</span><span>all listed</span></li>
+          </ul>
+          <span class="inst-launch">
+            <span class="sc-btn sc-btn-dark inst-btn">Launch connector</span>
+            <span class="inst-cursor"><MousePointer2 strokeWidth={1.5} /></span>
+          </span>
+        </div>
+      </div>
+
+      <Beam variant="brand" />
+
+      <!-- The customer's own AWS account -->
+      <div class="sc-boundary inst-account">
+        <span class="sc-boundary-tag"><Cloud strokeWidth={2} />Customer AWS account</span>
+        <div class="inst-win inst-win-console">
+          <div class="inst-bar">
+            <span class="inst-dots"><i></i><i></i><i></i></span>
+            <span class="inst-url">CloudFormation › Stacks</span>
+          </div>
+          <div class="inst-page">
+            <div class="inst-stack">
+              <span class="sc-mono inst-stack-name">deployz-connector</span>
+              <span class="inst-status">
+                <span class="inst-status-a"><span class="inst-spin"></span>CREATE_IN_PROGRESS</span>
+                <span class="inst-status-b"><Mark />CREATE_COMPLETE</span>
+              </span>
+            </div>
+            <ul class="inst-res">
+              <li><span>Connector</span><span class="sc-mono">Lambda</span></li>
+              <li><span>Connector role</span><span class="sc-mono">permissions boundary</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .inst-sc .sc-flow {
+    --sc-cols: minmax(0, 1fr) 96px minmax(0, 1.15fr);
+  }
+
+  /* Browser window. */
+  .inst-win {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--background);
+    box-shadow: var(--sc-shadow);
+  }
+
+  .inst-win-console {
+    box-shadow: 0 1px 2px rgb(17 17 17 / 0.05), 0 8px 20px -10px rgb(17 17 17 / 0.14);
+  }
+
+  .inst-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-subtle);
+  }
+
+  .inst-dots {
+    display: inline-flex;
+    gap: 5px;
+  }
+
+  .inst-dots > i {
+    width: 9px;
+    height: 9px;
+    border-radius: 9999px;
+    background: var(--border-strong);
+  }
+
+  .inst-url {
+    display: inline-flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    padding-inline: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--background);
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+
+  .inst-url svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  .inst-page {
+    padding: 16px;
+  }
+
+  .inst-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .inst-launch {
+    position: relative;
+    display: inline-flex;
+    margin-top: 16px;
+  }
+
+  .inst-btn {
+    min-height: 32px;
+  }
+
+  .inst-cursor {
+    position: absolute;
+    right: -10px;
+    bottom: -12px;
+    display: inline-flex;
+  }
+
+  .inst-cursor svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--background);
+    color: var(--foreground);
+  }
+
+  /* Customer account: the console sits inside the dashed boundary. */
+  .inst-account {
+    padding: 28px 14px 14px;
+  }
+
+  .inst-stack {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inst-stack-name {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  /* Two statuses in one cell; the motion swaps them. Without motion, CREATE_COMPLETE shows. */
+  .inst-status {
+    display: grid;
+  }
+
+  .inst-status > span {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .inst-status-a {
+    color: var(--brand-hover);
+    visibility: hidden;
+  }
+
+  .inst-status-b {
+    color: var(--success);
+  }
+
+  .inst-status-b :global(.sc-mark) {
+    width: 14px;
+    height: 14px;
+  }
+
+  .inst-spin {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--brand-border);
+    border-top-color: var(--brand);
+    border-radius: 9999px;
+  }
+
+  .inst-res {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .inst-res > li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2px 12px;
+    font-size: 13px;
+    color: var(--muted-foreground);
+  }
+
+  @container sc (max-width: 359px) {
+    .inst-status,
+    .inst-status > span {
+      min-width: 0;
+    }
+
+    .inst-status > span {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  /* Vertical flow: the beam meets the top border at its center, so the tag moves inside. */
+  @container sc (max-width: 959px) {
+    .inst-account {
+      padding-top: 14px;
+    }
+
+    .inst-account > .sc-boundary-tag {
+      position: static;
+      margin-bottom: 12px;
+      transform: none;
+    }
+  }
+
+  @container sc (min-width: 960px) {
+    .inst-sc .sc-flow > .inst-win,
+    .inst-sc .sc-flow > .inst-account {
+      align-self: center;
+    }
+
+    .inst-sc :global(.sc-stage) {
+      padding: 52px 44px 44px;
+    }
+  }
+
+  /* Motion, one 6s cycle: the cursor clicks Launch connector, then the stack completes. */
+  @media (prefers-reduced-motion: no-preference) {
+    .inst-cursor {
+      animation: inst-click 6s ease-in-out infinite;
+    }
+
+    .inst-btn {
+      animation: inst-press 6s ease-in-out infinite;
+    }
+
+    .inst-status-a {
+      visibility: visible;
+      animation: inst-show-a 6s steps(1, end) infinite;
+    }
+
+    .inst-status-b {
+      animation: inst-show-b 6s steps(1, end) infinite;
+    }
+
+    .inst-spin {
+      animation: inst-spin 0.9s linear infinite;
+    }
+  }
+
+  @keyframes inst-click {
+    0% { transform: translate(30px, 22px); opacity: 0; }
+    12% { transform: translate(0, 0); opacity: 1; }
+    16% { transform: scale(0.88); }
+    20% { transform: scale(1); }
+    85% { opacity: 1; }
+    100% { transform: translate(0, 0); opacity: 0; }
+  }
+
+  @keyframes inst-press {
+    0%, 14% { transform: scale(1); }
+    16% { transform: scale(0.95); }
+    20%, 100% { transform: scale(1); }
+  }
+
+  /* Before the click the stack does not exist yet, so no status shows. */
+  @keyframes inst-show-a {
+    0% { opacity: 0; }
+    18% { opacity: 1; }
+    58%, 100% { opacity: 0; }
+  }
+
+  @keyframes inst-show-b {
+    0% { opacity: 0; }
+    58%, 100% { opacity: 1; }
+  }
+
+  @keyframes inst-spin {
+    to { transform: rotate(360deg); }
+  }
+</style>

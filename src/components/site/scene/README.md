@@ -25,5 +25,5 @@ Rules:
 - Text and labels must match verified product behavior (real UI labels, real AWS services). Example values (repo name, commit, version, region) are clearly illustrative.
 - The whole stage is `aria-hidden="true"`; the figure has an `sr-only` (or visible) `figcaption` that states what the scene shows.
 - One brand card and one brand beam per scene. Green only for live or passed states.
-- Motion: only the beam light and the live pulse. Both stop under `prefers-reduced-motion`.
+- Motion: the beam light, the live pulse, and one small state loop per card. All of it stops under `prefers-reduced-motion`.
 - No images, no new libraries, no scripts.

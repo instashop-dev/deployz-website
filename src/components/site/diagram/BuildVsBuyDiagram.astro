@@ -1,55 +1,92 @@
 ---
 /*
- * "Build it yourself vs. use Deployz" scene for the pricing page value section.
- * The same list of work appears twice. Built in-house, your team owns every row. With
- * Deployz, your team keeps the product and Deployz takes the deployment rows.
+ * "Build it yourself vs. use Deployz" scene for the pricing page value section: two timeline
+ * lanes on one time axis (no units). Built in-house, the deployment platform is a staircase of
+ * projects, the product waits, and the first customer goes live at the end. With Deployz, setup
+ * is one short bar, the first customer goes live early, and the product keeps shipping.
+ * The bars draw in as the scene scrolls into view where scroll-driven animation is supported.
  * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only text describes it.
  */
-const work = [
-  'Your product',
-  'AWS infrastructure templates',
-  'Customer installer and AWS access',
-  'Release builds',
-  'Updates and rollbacks',
-  'Status for every customer',
+import Mark from '@/components/site/scene/Mark.astro';
+
+/* Bars on a 12-column time track: [start, end) in columns. */
+const build = [
+  { label: 'AWS infrastructure templates', from: 1, to: 4 },
+  { label: 'Customer installer and AWS access', from: 3, to: 6 },
+  { label: 'Release builds', from: 5, to: 8 },
+  { label: 'Updates and rollbacks', from: 7, to: 10 },
+  { label: 'Status for every customer', from: 9, to: 12 },
 ];
 
-const columns = [
-  { title: 'Build it yourself', owners: work.map(() => 'team'), total: `Your team owns ${work.length} of ${work.length}` },
-  { title: 'With Deployz', owners: work.map((_, index) => (index === 0 ? 'team' : 'deployz')), total: `Your team owns 1 of ${work.length}`, brand: true },
+const lanes = [
+  {
+    title: 'Build it yourself',
+    rows: [
+      ...build.map((row) => ({ ...row, kind: 'work' })),
+      { label: 'Your product', from: 1, to: 13, kind: 'waiting' },
+    ],
+    customers: [12],
+  },
+  {
+    title: 'With Deployz',
+    brand: true,
+    rows: [
+      { label: 'Deployz setup and first release', from: 1, to: 2, kind: 'deployz' },
+      { label: 'Your product', from: 1, to: 13, kind: 'product' },
+    ],
+    customers: [2, 4, 6, 8, 10, 12],
+  },
 ];
 ---
 
 <figure class="sc bvb-sc">
   <p class="sr-only">
-    Comparison of the same six pieces of work. Build it yourself: your team owns all six — your product, AWS
-    infrastructure templates, the customer installer and AWS access, release builds, updates and rollbacks,
-    and status for every customer. With Deployz: your team owns your product, and Deployz handles the other
-    five.
+    Two timelines on the same time axis. Build it yourself: your team builds AWS infrastructure templates, the
+    customer installer and AWS access, release builds, updates and rollbacks, and status for every customer, one
+    after another, while your product waits. The first customer goes live only at the end. With Deployz: after a
+    short setup and first release, the first customer goes live early, more customers go live over time, and your
+    product keeps shipping the whole time.
   </p>
 
   <div class="sc-stage sc-stage-plain" aria-hidden="true">
-    <div class="bvb-grid">
-      {columns.map((column) => (
-        <div class:list={['sc-card', column.brand && 'sc-card-brand']}>
-          <div class="sc-head">
-            {column.brand
-              ? <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
-              : <span class="sc-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 2.5l3 3-7.5 7.5H3v-3z" /></svg></span>}
-            <p class="sc-head-title">{column.title}</p>
+    <div class="bvb-board">
+      <div class="bvb-axis">
+        <span>Start</span>
+        <span>Time</span>
+      </div>
+
+      {lanes.map((lane) => (
+        <div class:list={['bvb-lane', lane.brand && 'bvb-lane-brand']} style={`--live: ${(lane.customers[0] - 1) / 12}`}>
+          <div class="bvb-lane-head">
+            {lane.brand
+              ? <span class="sc-icon sc-icon-sm sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="13" height="13" /></span>
+              : <span class="sc-icon sc-icon-sm"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 2.5l3 3-7.5 7.5H3v-3z" /></svg></span>}
+            <p class="bvb-lane-title">{lane.title}</p>
           </div>
-          <ul class="sc-body bvb-rows">
-            {work.map((item, index) => (
-              <li class="bvb-row">
-                <span class:list={['bvb-item', index === 0 && 'bvb-item-product']}>{item}</span>
-                {column.owners[index] === 'team'
-                  ? <span class="sc-badge">Your team</span>
-                  : <span class="sc-badge sc-badge-brand">Deployz</span>}
-              </li>
+
+          <div class="bvb-rows">
+            <span class="bvb-guide"></span>
+            {lane.rows.map((row, index) => (
+              <div class="bvb-row">
+                <span class:list={['bvb-label', row.kind === 'product' && 'bvb-label-strong']}>{row.label}</span>
+                <span class="bvb-track">
+                  <span
+                    class:list={['bvb-bar', `bvb-bar-${row.kind}`]}
+                    style={`grid-column: ${row.from} / ${row.to}; --i: ${index}`}
+                  ></span>
+                </span>
+              </div>
             ))}
-          </ul>
-          <div class="sc-foot">
-            <span class:list={['bvb-total', column.brand && 'bvb-total-brand']}>{column.total}</span>
+            <div class="bvb-row">
+              <span class="bvb-label bvb-label-strong">Customers live</span>
+              <span class="bvb-track bvb-track-live">
+                {lane.customers.map((column, index) => (
+                  <span class="bvb-customer" style={`grid-column: ${column}; --i: ${index}`}>
+                    <Mark />
+                  </span>
+                ))}
+              </span>
+            </div>
           </div>
         </div>
       ))}
@@ -58,60 +95,232 @@ const columns = [
 </figure>
 
 <style>
-  .bvb-grid {
+  .bvb-board {
+    --bvb-label: minmax(0, 1fr);
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
-    max-width: 480px;
+    gap: 16px;
+    max-width: 1000px;
     margin-inline: auto;
+  }
+
+  /* Time axis: only above the lanes when the labels sit beside the tracks. */
+  .bvb-axis {
+    display: none;
+  }
+
+  .bvb-lane {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--background);
+    box-shadow: var(--sc-shadow);
+  }
+
+  .bvb-lane-brand {
+    border-color: var(--brand-border);
+    box-shadow: var(--sc-shadow-brand);
+  }
+
+  .bvb-lane-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bvb-lane-title {
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .bvb-rows {
     display: grid;
+    position: relative;
+    padding: 6px 14px 10px;
   }
 
   .bvb-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: var(--bvb-label);
+    gap: 4px 20px;
     align-items: center;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 4px 12px;
-    min-height: 40px;
-    padding-block: 6px;
-    border-top: 1px solid var(--border);
+    padding-block: 7px;
   }
 
-  .bvb-row:first-child {
-    border-top: 0;
-  }
-
-  .bvb-item {
+  .bvb-label {
     min-width: 0;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.35;
     color: var(--muted-foreground);
   }
 
-  .bvb-item-product {
+  .bvb-label-strong {
     font-weight: 600;
     color: var(--foreground);
   }
 
-  .bvb-total {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--foreground);
+  /* The time track: 12 columns with faint column lines. */
+  .bvb-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+    height: 14px;
+    background-image: linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: calc(100% / 12) 100%;
   }
 
-  .bvb-total-brand {
-    color: var(--brand-hover);
+  .bvb-bar {
+    position: relative;
+    grid-row: 1;
+    height: 12px;
+    border-radius: 9999px;
+    transform-origin: left center;
   }
 
-  @container sc (min-width: 720px) {
-    .bvb-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 28px;
-      max-width: 880px;
+  .bvb-bar-work {
+    border: 1px solid var(--border-strong);
+    background: repeating-linear-gradient(135deg, #e4e4e7 0 4px, #f4f4f5 4px 8px);
+  }
+
+  .bvb-bar-waiting {
+    height: 8px;
+    border: 1.5px dashed var(--border-strong);
+    background: transparent;
+  }
+
+  .bvb-bar-deployz {
+    background: var(--brand);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.12);
+  }
+
+  .bvb-bar-product {
+    background: var(--foreground);
+  }
+
+  /* First customer live: a flag on the track and a guide line up through the lane. */
+  .bvb-track-live {
+    height: 22px;
+  }
+
+  /* Spans the rows, from the top of the lane to the flag. Shown when labels sit beside the tracks. */
+  .bvb-guide {
+    display: none;
+  }
+
+  .bvb-lane-brand .bvb-guide {
+    border-color: var(--brand-border);
+  }
+
+  /* A customer environment going live: a green check on the track. */
+  .bvb-customer {
+    grid-row: 1;
+    display: inline-flex;
+    justify-self: start;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+    box-shadow: 0 0 0 3px var(--background);
+  }
+
+  .bvb-customer :global(.sc-mark) {
+    width: 18px;
+    height: 18px;
+  }
+
+  .bvb-lane-brand .bvb-customer:first-child::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 1.5px solid var(--success);
+    border-radius: 9999px;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bvb-lane-brand .bvb-customer:first-child::after {
+      animation: sc-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
+  }
+
+  .bvb-customer {
+    position: relative;
+  }
+
+  @container sc (min-width: 640px) {
+    .bvb-board {
+      --bvb-label: 220px minmax(0, 1fr);
+    }
+
+    .bvb-axis {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      column-gap: 20px;
+      padding-inline: 15px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--subtle, var(--muted-foreground));
+    }
+
+    .bvb-axis > span {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .bvb-axis > span:last-child {
+      justify-self: end;
+    }
+
+    .bvb-axis > span:last-child::after {
+      content: ' →';
+    }
+
+    .bvb-rows {
+      position: relative;
+      padding-block: 8px 12px;
+    }
+
+    .bvb-guide {
+      position: absolute;
+      top: 8px;
+      bottom: 23px;
+      left: calc(14px + 240px + var(--live) * (100% - 28px - 240px));
+      display: block;
+      border-left: 1.5px dashed var(--border-strong);
+      pointer-events: none;
+    }
+  }
+
+  /* Bars draw in, one after another, as the scene scrolls into view. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      /* One timeline for the whole board, so both lanes draw in step. */
+      .bvb-board {
+        view-timeline: --bvb block;
+      }
+
+      .bvb-bar {
+        animation: bvb-draw linear both;
+        animation-timeline: --bvb;
+        animation-range: cover calc(5% + var(--i) * 4%) cover calc(25% + var(--i) * 4%);
+      }
+
+      .bvb-customer {
+        animation: bvb-pop linear both;
+        animation-timeline: --bvb;
+        animation-range: cover calc(25% + var(--i) * 3%) cover calc(35% + var(--i) * 3%);
+      }
+    }
+  }
+
+  @keyframes bvb-pop {
+    from { scale: 0; }
+    to { scale: 1; }
+  }
+
+  @keyframes bvb-draw {
+    from { transform: scaleX(0); opacity: 0.3; }
+    to { transform: scaleX(1); opacity: 1; }
   }
 </style>

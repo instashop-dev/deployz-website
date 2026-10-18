@@ -33,6 +33,7 @@ const included = [
   'Per-customer release selection',
   'Updates, retries, and rollbacks',
   'Failure diagnosis and environment removal',
+  'Customer installation without a Deployz account',
 ];
 
 const benefits = [
@@ -83,8 +84,8 @@ const questions = [
     Evaluate for free. Pay when you’re ready to deploy for customers.
   </PageHeader>
 
-  <!-- P2. Plan -->
-  <Section labelledby="plan-title">
+  <!-- P2. Plan: sits close under the header, so no top padding. -->
+  <Section labelledby="plan-title" class="pt-0!">
     <div class="overflow-hidden rounded-xl border border-border-strong bg-background">
       <div class="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div class="px-6 py-8 sm:px-8">

@@ -1,102 +1,86 @@
 ---
 /*
- * AI and guardrails scene: deterministic checks and AI analysis read the repository, the
- * vendor reviews what Deployz detected, then Deployz's rule-based compiler turns the reviewed
- * configuration into CloudFormation for supported AWS resources only. AI output never becomes
- * infrastructure directly. Scene system: src/styles/scene.css.
+ * AI and guardrails scene for How It Works step 1. A different form from the hero journey:
+ * two zones split by a guardrail. Left, "Understanding": the detected configuration, where
+ * each value shows its source (rule-based check or AI) and you review it. Right, "Deploying":
+ * the rule-based compiler, which can create only the supported AWS resources (an allowlist)
+ * and uses no AI. Only the reviewed configuration crosses the guardrail.
+ * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only caption describes it.
  */
-import { ScanSearch, UserCheck } from 'lucide-react';
-import Beam from '@/components/site/scene/Beam.astro';
+import { Lock, ShieldCheck, X } from 'lucide-react';
 import Mark from '@/components/site/scene/Mark.astro';
 
 const detected = [
-  { label: 'Dockerfile', value: 'found', state: 'done' },
-  { label: 'Port', value: '3000', state: 'done' },
-  { label: 'Database', value: 'PostgreSQL', state: 'done' },
-  { label: 'Start command', value: 'npm start', state: 'brand' },
+  { label: 'Port', value: '3000', source: 'check' },
+  { label: 'Health check', value: '/health', source: 'check' },
+  { label: 'Database', value: 'PostgreSQL', source: 'check' },
+  { label: 'Start command', value: 'npm start', source: 'ai' },
+  { label: 'OPENAI_API_KEY', value: 'needs input', source: 'input' },
 ] as const;
 
-const review = [
-  { label: 'What Deployz detected', state: 'done' },
-  { label: 'Needs input: OPENAI_API_KEY', state: 'warn' },
-  { label: 'Overrides, if needed', state: 'idle' },
-] as const;
-
-const guardrails = [
-  'Schema-checked configuration',
-  'Supported AWS resources only',
-  'Rule-based preflight checks',
-  'Fixed size profile',
-];
+const allowed = ['ECS Fargate', 'Load balancer', 'RDS', 'ElastiCache', 'S3', 'Secrets Manager', 'VPC', 'ACM'];
 ---
 
 <figure class="sc guard-sc mx-auto w-full max-w-[1120px]">
   <figcaption class="sr-only">
-    Deployz analysis runs deterministic checks on your repository first. AI helps only with questions
-    the checks leave open, and Deployz labels those values as inferred by AI. You review what Deployz
-    detected and enter the values it needs. Deployz then compiles the reviewed configuration into
-    CloudFormation with its own rule-based compiler, which can create only supported AWS resources.
+    Two zones split by a guardrail. Understanding: Deployz detects your configuration. Each value shows its source:
+    a rule-based check, or AI for a question the checks leave open, such as the start command. You review the
+    values and enter what is missing. Deploying: only the reviewed configuration crosses the guardrail. Deployz's
+    rule-based compiler uses no AI and can create only supported AWS resources: ECS on Fargate, a load balancer,
+    RDS, ElastiCache, S3, Secrets Manager, a VPC, and ACM certificates. Anything else is not possible.
   </figcaption>
 
-  <div class="sc-stage" aria-hidden="true">
-    <div class="sc-flow">
-      <!-- 1. Understand -->
-      <div class="sc-card">
-        <div class="sc-head">
-          <span class="sc-icon"><ScanSearch strokeWidth={1.75} /></span>
-          <p class="sc-head-title">Analysis<small>Checks first, then AI</small></p>
-        </div>
-        <div class="sc-body">
-          <ul class="sc-checks">
+  <div class="sc-stage sc-stage-plain" aria-hidden="true">
+    <div class="guard-zones">
+      <!-- Understanding -->
+      <div class="guard-zone">
+        <p class="guard-zone-tag">Understanding<span>checks, then AI</span></p>
+        <div class="sc-card">
+          <div class="guard-table">
             {detected.map((row) => (
-              <li><Mark state={row.state} /><span>{row.label}</span><span class="sc-mono">{row.value}</span></li>
+              <div class:list={['guard-tr', row.source === 'ai' && 'guard-tr-ai']}>
+                <span class="guard-key">{row.label}</span>
+                <span class:list={['sc-mono', 'guard-val', row.source === 'input' && 'guard-val-warn']}>{row.value}</span>
+                {row.source === 'check' && <span class="sc-badge">Check</span>}
+                {row.source === 'ai' && <span class="sc-badge sc-badge-brand guard-ai">AI · verify</span>}
+                {row.source === 'input' && <span class="sc-badge sc-badge-warn">You</span>}
+              </div>
             ))}
-          </ul>
-        </div>
-        <div class="sc-foot">
-          <span class="guard-hint">Inferred by AI analysis — verify before relying on it</span>
+          </div>
+          <div class="sc-foot">
+            <span class="guard-review"><Mark /> You review every value</span>
+          </div>
         </div>
       </div>
 
-      <Beam label="you review" variant="neutral" />
-
-      <!-- 2. Review -->
-      <div class="sc-card">
-        <div class="sc-head">
-          <span class="sc-icon"><UserCheck strokeWidth={1.75} /></span>
-          <p class="sc-head-title">Your review<small>Configuration</small></p>
-        </div>
-        <div class="sc-body">
-          <ul class="sc-checks">
-            {review.map((row) => (
-              <li><Mark state={row.state} /><span>{row.label}</span></li>
-            ))}
-          </ul>
-        </div>
-        <div class="sc-foot">
-          <span class="sc-label">Release</span>
-          <span class="sc-mono text-foreground">v1.4.0</span>
-        </div>
+      <!-- Guardrail -->
+      <div class="guard-rail">
+        <span class="guard-rail-line"></span>
+        <span class="guard-rail-badge"><ShieldCheck strokeWidth={1.75} /></span>
+        <span class="guard-rail-line"></span>
       </div>
 
-      <Beam label="compile" variant="brand" delay={1.3} />
-
-      <!-- 3. Guardrails -->
-      <div class="sc-card sc-card-brand">
-        <div class="sc-head">
-          <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
-          <p class="sc-head-title">Deployz<small>Guardrails</small></p>
-        </div>
-        <div class="sc-body">
-          <ul class="sc-checks">
-            {guardrails.map((label) => (
-              <li><Mark /><span>{label}</span></li>
-            ))}
-          </ul>
-        </div>
-        <div class="sc-foot">
-          <span class="sc-label">Output</span>
-          <span class="sc-mono text-foreground">CloudFormation</span>
+      <!-- Deploying -->
+      <div class="guard-zone">
+        <p class="guard-zone-tag">Deploying<span>rules only, no AI</span></p>
+        <div class="sc-card sc-card-brand">
+          <div class="sc-head">
+            <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
+            <p class="sc-head-title">Rule-based compiler</p>
+            <span class="sc-badge"><Lock strokeWidth={2} />Allowlist</span>
+          </div>
+          <div class="sc-body">
+            <div class="guard-chips">
+              {allowed.map((name, index) => (
+                <span class="guard-chip" style={`--i: ${index}`}><Mark />{name}</span>
+              ))}
+              <span class="guard-chip guard-chip-no"><X strokeWidth={2} />Anything else</span>
+            </div>
+          </div>
+          <div class="sc-foot">
+            <span class="sc-label">Output</span>
+            <span class="sc-mono text-foreground">CloudFormation</span>
+          </div>
         </div>
       </div>
     </div>
@@ -104,34 +88,253 @@ const guardrails = [
 </figure>
 
 <style>
-  .guard-sc .sc-flow {
-    --sc-cols: minmax(0, 1fr) 132px minmax(0, 1fr) 132px minmax(0, 1fr);
+  .guard-zones {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 480px;
+    margin-inline: auto;
   }
 
-  .guard-hint {
+  .guard-zone {
+    min-width: 0;
+  }
+
+  .guard-zone-tag {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .guard-zone-tag > span {
+    font-family: var(--font-mono);
     font-size: 12px;
-    line-height: 1.4;
+    font-weight: 500;
     color: var(--muted-foreground);
   }
 
-  @container sc (min-width: 960px) {
-    .guard-sc .sc-flow {
-      align-items: stretch;
+  /* Detected configuration table. */
+  .guard-table {
+    display: grid;
+    padding: 6px 14px;
+  }
+
+  .guard-tr {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .guard-tr:first-child {
+    border-top: 0;
+  }
+
+  /* The AI row is highlighted: the one value to verify. */
+  .guard-tr-ai::before {
+    content: '';
+    position: absolute;
+    inset: 4px -8px;
+    z-index: -1;
+    border-radius: 8px;
+    background: var(--brand-subtle);
+  }
+
+  .guard-tr-ai {
+    isolation: isolate;
+    border-top-color: transparent;
+  }
+
+  .guard-tr-ai + .guard-tr {
+    border-top-color: transparent;
+  }
+
+  .guard-key {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 13px;
+    color: var(--foreground);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .guard-val {
+    color: var(--foreground);
+  }
+
+  .guard-val-warn {
+    color: var(--warning);
+  }
+
+  .guard-review {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* The guardrail: vertical in a wide scene, horizontal in a narrow one. */
+  .guard-rail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-block: 22px;
+  }
+
+  .guard-rail-line {
+    flex: 1;
+    height: 0;
+    border-top: 2px dashed var(--brand-border);
+  }
+
+  .guard-rail-badge {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--brand-border);
+    border-radius: 9999px;
+    background: var(--background);
+    color: var(--brand);
+    box-shadow: 0 0 0 5px rgb(37 99 235 / 0.07);
+  }
+
+  .guard-rail-badge svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Supported resources, and the one that is not possible. */
+  .guard-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .guard-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    padding: 0 10px 0 6px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--background);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .guard-chip :global(.sc-mark) {
+    width: 14px;
+    height: 14px;
+  }
+
+  .guard-chip-no {
+    border-style: dashed;
+    border-color: var(--border-strong);
+    color: var(--muted-foreground);
+    text-decoration: line-through;
+  }
+
+  .guard-chip-no svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .guard-sc :global(.sc-badge svg) {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Very narrow: the value moves under its label. */
+  @container sc (max-width: 359px) {
+    .guard-tr {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 2px 8px;
+      padding-block: 6px;
     }
 
-    .guard-sc .sc-flow > .sc-card {
+    .guard-val {
+      grid-row: 2;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .guard-tr > .sc-badge {
+      grid-row: 1 / 3;
+      grid-column: 2;
+    }
+  }
+
+  @container sc (min-width: 840px) {
+    .guard-zones {
+      grid-template-columns: minmax(0, 1fr) 88px minmax(0, 1fr);
+      align-items: stretch;
+      max-width: 1000px;
+    }
+
+    .guard-zone {
       display: flex;
       flex-direction: column;
     }
 
-    .guard-sc .sc-flow > .sc-card > .sc-body {
+    .guard-zone > .sc-card {
+      display: flex;
       flex: 1;
+      flex-direction: column;
+    }
+
+    .guard-zone .guard-table,
+    .guard-zone .sc-body {
+      flex: 1;
+    }
+
+    .guard-rail {
+      flex-direction: column;
+      padding-block: 30px 0;
+    }
+
+    .guard-rail-line {
+      width: 0;
+      height: auto;
+      border-top: 0;
+      border-left: 2px dashed var(--brand-border);
+    }
+
+    .guard-sc :global(.sc-stage) {
+      padding: 44px 36px;
     }
   }
 
-  @container sc (min-width: 960px) and (max-width: 1039px) {
-    .guard-sc .sc-flow {
-      --sc-cols: minmax(0, 1fr) 112px minmax(0, 1fr) 112px minmax(0, 1fr);
+  /* Motion: the AI badge breathes, and the allowed resources light up one by one. */
+  @media (prefers-reduced-motion: no-preference) {
+    .guard-ai {
+      animation: guard-breathe 2.8s ease-in-out infinite;
     }
+
+    .guard-chip:not(.guard-chip-no) {
+      animation: guard-light 4.8s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 0.3s);
+    }
+  }
+
+  @keyframes guard-breathe {
+    0%, 100% { box-shadow: 0 0 0 0 rgb(37 99 235 / 0); }
+    50% { box-shadow: 0 0 0 4px rgb(37 99 235 / 0.14); }
+  }
+
+  @keyframes guard-light {
+    0%, 20%, 100% { border-color: var(--border); background: var(--background); }
+    8% { border-color: var(--brand-border); background: var(--brand-subtle); }
   }
 </style>
