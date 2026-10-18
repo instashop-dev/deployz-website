@@ -4,7 +4,10 @@
  * laptops showing the same product. Thin cobalt paths pass through one Deployz marker to three
  * equal environments labelled "Customer AWS", each with the same product inside.
  * Inline SVG, two compositions: wide (environments to the right) and narrow (environments
- * stacked below the workbench). The scene sits on the standard stage (src/styles/scene.css).
+ * stacked below the workbench). It uses the scene tokens (src/styles/scene.css): devices are
+ * drawn like cards (1px outline, soft depth), the desk like a neutral track (1.5px), the paths
+ * like the brand beam (1.5px --brand-border, cobalt ports and light), the marker like the brand
+ * icon tile, and each environment like .sc-boundary with its tag on the top border.
  * The drawings are aria-hidden; the sr-only text describes them, and the caption is visible.
  */
 const environments = [0, 1, 2];
@@ -20,97 +23,113 @@ const environments = [0, 1, 2];
   <div class="sc-stage" aria-hidden="true">
     <!-- Wide: workbench left, marker center, environments right. -->
     <svg class="reach-svg reach-wide" viewBox="0 0 1040 360" fill="none" focusable="false">
-      <!-- Paths: workbench to marker, marker to each environment. -->
-      <path class="reach-path" d="M392 180 H532" />
-      <path class="reach-path" d="M588 180 C 660 180, 660 70, 732 70" />
-      <path class="reach-path" d="M588 180 H732" />
-      <path class="reach-path" d="M588 180 C 660 180, 660 290, 732 290" />
-      <path class="reach-flow" pathLength="100" d="M392 180 H532" />
-      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M588 180 C 660 180, 660 70, 732 70" />
-      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M588 180 H732" />
-      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M588 180 C 660 180, 660 290, 732 290" />
+      <g class="reach-path">
+        <path d="M376 180 H534" />
+        <path d="M586 180 C 660 180, 660 70, 732 70" />
+        <path d="M586 180 H732" />
+        <path d="M586 180 C 660 180, 660 290, 732 290" />
+      </g>
+      <path class="reach-flow" pathLength="100" d="M376 180 H534" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M586 180 C 660 180, 660 70, 732 70" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M586 180 H732" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M586 180 C 660 180, 660 290, 732 290" />
+      <g class="reach-port">
+        <circle cx="376" cy="180" r="3.5" />
+        <circle cx="732" cy="70" r="3.5" />
+        <circle cx="732" cy="180" r="3.5" />
+        <circle cx="732" cy="290" r="3.5" />
+      </g>
 
       <!-- Workbench: desk, legs, two laptops with the same product. -->
-      <g class="reach-ink">
-        <path d="M48 262 H384" stroke-width="2" />
-        <path d="M76 262 V318 M356 262 V318" stroke-width="2" />
-        <!-- Laptop A -->
-        <rect x="92" y="150" width="112" height="86" rx="7" stroke-width="2" class="reach-fill" />
-        <path d="M80 262 L92 236 H204 L216 262 Z" stroke-width="2" class="reach-fill" />
-        <!-- Laptop B -->
-        <rect x="228" y="150" width="112" height="86" rx="7" stroke-width="2" class="reach-fill" />
-        <path d="M216 262 L228 236 H340 L352 262 Z" stroke-width="2" class="reach-fill" />
+      <g class="reach-track">
+        <path d="M48 262 H384" />
+        <path d="M76 262 V318 M356 262 V318" />
       </g>
-      <g transform="translate(116 171)"><use href="#reach-product-wide" /></g>
-      <g transform="translate(252 171)"><use href="#reach-product-wide" /></g>
+      <g class="reach-device">
+        <rect x="92" y="150" width="112" height="86" rx="8" />
+        <path d="M80 262 L92 236 H204 L216 262 Z" />
+        <rect x="228" y="150" width="112" height="86" rx="8" />
+        <path d="M216 262 L228 236 H340 L352 262 Z" />
+      </g>
+      <use href="#reach-product-wide" x="116" y="171" />
+      <use href="#reach-product-wide" x="252" y="171" />
 
-      <!-- Deployz marker. -->
-      <circle cx="560" cy="180" r="34" class="reach-halo" />
-      <circle cx="560" cy="180" r="27" class="reach-marker" stroke-width="1.5" />
-      <image href="/deployz-icon-master.svg" x="547" y="167" width="26" height="26" />
+      <!-- Deployz marker: the brand icon tile. -->
+      <rect x="536" y="156" width="48" height="48" rx="12" class="reach-marker" />
+      <image href="/deployz-icon-master.svg" x="548" y="168" width="24" height="24" />
 
-      <!-- Three equal customer environments. -->
+      <!-- Three equal customer environments: dashed boundaries with the tag on the top border. -->
       {environments.map((index) => {
         const y = 26 + index * 110;
         return (
           <g>
-            <rect x="732" y={y} width="268" height="88" rx="14" class="reach-boundary" stroke-width="1.5" />
-            <text x="756" y={y + 49} class="reach-label">Customer AWS</text>
-            <g transform={`translate(914 ${y + 22})`}><use href="#reach-product-wide" /></g>
+            <rect x="732" y={y} width="268" height="88" rx="14" class="reach-boundary" />
+            <rect x="748" y={y - 14} width="134" height="28" rx="6" class="reach-tag" />
+            <text x="761" y={y + 5} class="reach-label">Customer AWS</text>
+            <use href="#reach-product-wide" x="834" y={y + 28} />
           </g>
         );
       })}
 
       <defs>
-        <!-- The product: a window with a cobalt mark and two lines. 64 × 44. -->
+        <!-- The product: a small window with a cobalt mark and two lines. 64 × 44. -->
         <symbol id="reach-product-wide" viewBox="0 0 64 44" width="64" height="44" overflow="visible">
-          <rect x="1" y="1" width="62" height="42" rx="6" class="reach-ink reach-fill" stroke-width="2" />
-          <rect x="10" y="11" width="14" height="14" rx="3.5" class="reach-accent" />
-          <path d="M31 14 H53 M31 22 H46 M10 33 H53" class="reach-soft" stroke-width="2.5" stroke-linecap="round" />
+          <rect x="0.5" y="0.5" width="63" height="43" rx="7" class="reach-window" />
+          <rect x="10" y="11" width="14" height="14" rx="4" class="reach-accent" />
+          <path d="M31 14 H53 M31 22 H46 M10 33 H53" class="reach-lines" />
         </symbol>
       </defs>
     </svg>
 
     <!-- Narrow: workbench on top, marker, environments stacked below. -->
     <svg class="reach-svg reach-narrow" viewBox="0 0 360 700" fill="none" focusable="false">
-      <path class="reach-path" d="M180 226 V284" />
-      <path class="reach-path" d="M180 340 V366 Q180 378 168 378 H48 Q36 378 36 390 V616 Q36 628 48 628 H64" />
-      <path class="reach-path" d="M36 428 Q36 440 48 440 H64" />
-      <path class="reach-path" d="M36 522 Q36 534 48 534 H64" />
-      <path class="reach-flow" pathLength="100" d="M180 226 V284" />
-      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M180 340 V366 Q180 378 168 378 H48 Q36 378 36 390 V616 Q36 628 48 628 H64" />
-
-      <g class="reach-ink">
-        <path d="M24 182 H336" stroke-width="2" />
-        <path d="M48 182 V222 M312 182 V222" stroke-width="2" />
-        <rect x="56" y="82" width="104" height="78" rx="7" stroke-width="2" class="reach-fill" />
-        <path d="M46 182 L56 160 H160 L170 182 Z" stroke-width="2" class="reach-fill" />
-        <rect x="200" y="82" width="104" height="78" rx="7" stroke-width="2" class="reach-fill" />
-        <path d="M190 182 L200 160 H304 L314 182 Z" stroke-width="2" class="reach-fill" />
+      <g class="reach-path">
+        <path d="M180 226 V288" />
+        <path d="M180 336 V366 Q180 378 168 378 H48 Q36 378 36 390 V616 Q36 628 48 628 H64" />
+        <path d="M36 428 Q36 440 48 440 H64" />
+        <path d="M36 522 Q36 534 48 534 H64" />
       </g>
-      <g transform="translate(76 99)"><use href="#reach-product-narrow" /></g>
-      <g transform="translate(220 99)"><use href="#reach-product-narrow" /></g>
+      <path class="reach-flow" pathLength="100" d="M180 226 V288" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M180 336 V366 Q180 378 168 378 H48 Q36 378 36 390 V616 Q36 628 48 628 H64" />
+      <g class="reach-port">
+        <circle cx="180" cy="226" r="3.5" />
+        <circle cx="64" cy="440" r="3.5" />
+        <circle cx="64" cy="534" r="3.5" />
+        <circle cx="64" cy="628" r="3.5" />
+      </g>
 
-      <circle cx="180" cy="312" r="34" class="reach-halo" />
-      <circle cx="180" cy="312" r="27" class="reach-marker" stroke-width="1.5" />
-      <image href="/deployz-icon-master.svg" x="167" y="299" width="26" height="26" />
+      <g class="reach-track">
+        <path d="M24 182 H336" />
+        <path d="M48 182 V222 M312 182 V222" />
+      </g>
+      <g class="reach-device">
+        <rect x="56" y="82" width="104" height="78" rx="8" />
+        <path d="M46 182 L56 160 H160 L170 182 Z" />
+        <rect x="200" y="82" width="104" height="78" rx="8" />
+        <path d="M190 182 L200 160 H304 L314 182 Z" />
+      </g>
+      <use href="#reach-product-narrow" x="76" y="99" />
+      <use href="#reach-product-narrow" x="220" y="99" />
+
+      <rect x="156" y="288" width="48" height="48" rx="12" class="reach-marker" />
+      <image href="/deployz-icon-master.svg" x="168" y="300" width="24" height="24" />
 
       {environments.map((index) => {
         const y = 400 + index * 94;
         return (
           <g>
-            <rect x="64" y={y} width="272" height="80" rx="14" class="reach-boundary" stroke-width="1.5" />
-            <text x="86" y={y + 46} class="reach-label">Customer AWS</text>
-            <g transform={`translate(258 ${y + 18})`}><use href="#reach-product-narrow" /></g>
+            <rect x="64" y={y} width="272" height="80" rx="14" class="reach-boundary" />
+            <text x="86" y={y + 46} class="reach-label reach-label-lg">Customer AWS</text>
+            <use href="#reach-product-narrow" x="256" y={y + 18} />
           </g>
         );
       })}
 
       <defs>
         <symbol id="reach-product-narrow" viewBox="0 0 64 44" width="64" height="44" overflow="visible">
-          <rect x="1" y="1" width="62" height="42" rx="6" class="reach-ink reach-fill" stroke-width="2" />
-          <rect x="10" y="11" width="14" height="14" rx="3.5" class="reach-accent" />
-          <path d="M31 14 H53 M31 22 H46 M10 33 H53" class="reach-soft" stroke-width="2.5" stroke-linecap="round" />
+          <rect x="0.5" y="0.5" width="63" height="43" rx="7" class="reach-window" />
+          <rect x="10" y="11" width="14" height="14" rx="4" class="reach-accent" />
+          <path d="M31 14 H53 M31 22 H46 M10 33 H53" class="reach-lines" />
         </symbol>
       </defs>
     </svg>
@@ -148,62 +167,98 @@ const environments = [0, 1, 2];
     }
   }
 
-  .reach-ink {
-    stroke: var(--foreground);
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  /* Strokes keep their scene widths (1px outlines, 1.5px tracks) at any drawing size. */
+  .reach-svg :is(path, rect, circle) {
+    vector-effect: non-scaling-stroke;
   }
 
-  .reach-fill {
-    fill: var(--background);
-  }
-
-  .reach-soft {
+  /* Desk, like a neutral beam track: 1.5px --border-strong. */
+  .reach-track {
     stroke: var(--border-strong);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  /* Devices, like scene cards: white fill, 1px outline, soft depth. */
+  .reach-device {
+    fill: var(--background);
+    stroke: var(--border-strong);
+    stroke-width: 1;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 1px 2px rgb(17 17 17 / 0.04)) drop-shadow(0 8px 12px rgb(17 17 17 / 0.06));
+  }
+
+  /* The product window, like a scene tile. */
+  .reach-window {
+    fill: var(--background);
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+
+  .reach-lines {
+    stroke: var(--border);
+    stroke-width: 3;
+    stroke-linecap: round;
   }
 
   .reach-accent {
     fill: var(--brand);
   }
 
+  /* Paths, like the brand beam: 1.5px --brand-border, cobalt ports, a travelling cobalt light. */
   .reach-path {
     stroke: var(--brand-border);
-    stroke-width: 1.75;
+    stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
-  /* Short cobalt dashes that travel along the paths. */
+  .reach-port {
+    fill: var(--background);
+    stroke: var(--brand);
+    stroke-width: 1.5;
+  }
+
   .reach-flow {
     stroke: var(--brand);
-    stroke-width: 1.75;
+    stroke-width: 1.5;
     stroke-linecap: round;
     stroke-dasharray: 12 200;
     stroke-dashoffset: 12;
     opacity: 0;
   }
 
+  /* Marker, like .sc-icon-brand with the brand card ring. */
   .reach-marker {
-    fill: var(--background);
+    fill: var(--brand-subtle);
     stroke: var(--brand-border);
+    stroke-width: 1;
+    filter: drop-shadow(0 0 4px rgb(37 99 235 / 0.16));
   }
 
-  .reach-halo {
-    fill: rgb(37 99 235 / 0.07);
-  }
-
+  /* Customer AWS boundary, like .sc-boundary: 1.5px dashed --border-strong. */
   .reach-boundary {
-    fill: rgb(250 250 250 / 0.9);
-    stroke: var(--foreground);
-    stroke-dasharray: 5 5;
+    fill: rgb(250 250 250 / 0.85);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+
+  /* Boundary tag, like .sc-boundary-tag. */
+  .reach-tag {
+    fill: var(--background);
+    stroke: var(--border-strong);
+    stroke-width: 1;
   }
 
   .reach-label {
     fill: var(--foreground);
-    font-family: var(--font-sans, inherit);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    letter-spacing: -0.01em;
+  }
+
+  .reach-label-lg {
+    font-size: 16px;
   }
 
   .reach-caption {
