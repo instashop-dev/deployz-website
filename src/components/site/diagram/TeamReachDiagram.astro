@@ -1,0 +1,227 @@
+---
+/*
+ * "A small team, a wider reach" scene for the About page. A small shared workbench with two
+ * laptops showing the same product. Thin cobalt paths pass through one Deployz marker to three
+ * equal environments labelled "Customer AWS", each with the same product inside.
+ * Inline SVG, two compositions: wide (environments to the right) and narrow (environments
+ * stacked below the workbench). The scene sits on the standard stage (src/styles/scene.css).
+ * The drawings are aria-hidden; the sr-only text describes them, and the caption is visible.
+ */
+const environments = [0, 1, 2];
+---
+
+<figure class="sc reach-sc mx-auto w-full max-w-[1120px]">
+  <p class="sr-only">
+    Illustration: a small shared workbench with two laptops. Both screens show the same product. Thin blue paths
+    run from the workbench through a Deployz marker to three separate, equal environments, each labelled
+    Customer AWS, and the same product runs in each one.
+  </p>
+
+  <div class="sc-stage" aria-hidden="true">
+    <!-- Wide: workbench left, marker center, environments right. -->
+    <svg class="reach-svg reach-wide" viewBox="0 0 1040 360" fill="none" focusable="false">
+      <!-- Paths: workbench to marker, marker to each environment. -->
+      <path class="reach-path" d="M392 180 H532" />
+      <path class="reach-path" d="M588 180 C 660 180, 660 70, 732 70" />
+      <path class="reach-path" d="M588 180 H732" />
+      <path class="reach-path" d="M588 180 C 660 180, 660 290, 732 290" />
+      <path class="reach-flow" pathLength="100" d="M392 180 H532" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M588 180 C 660 180, 660 70, 732 70" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M588 180 H732" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M588 180 C 660 180, 660 290, 732 290" />
+
+      <!-- Workbench: desk, legs, two laptops with the same product. -->
+      <g class="reach-ink">
+        <path d="M48 262 H384" stroke-width="2" />
+        <path d="M76 262 V318 M356 262 V318" stroke-width="2" />
+        <!-- Laptop A -->
+        <rect x="92" y="150" width="112" height="86" rx="7" stroke-width="2" class="reach-fill" />
+        <path d="M80 262 L92 236 H204 L216 262 Z" stroke-width="2" class="reach-fill" />
+        <!-- Laptop B -->
+        <rect x="228" y="150" width="112" height="86" rx="7" stroke-width="2" class="reach-fill" />
+        <path d="M216 262 L228 236 H340 L352 262 Z" stroke-width="2" class="reach-fill" />
+      </g>
+      <g transform="translate(116 171)"><use href="#reach-product-wide" /></g>
+      <g transform="translate(252 171)"><use href="#reach-product-wide" /></g>
+
+      <!-- Deployz marker. -->
+      <circle cx="560" cy="180" r="34" class="reach-halo" />
+      <circle cx="560" cy="180" r="27" class="reach-marker" stroke-width="1.5" />
+      <image href="/deployz-icon-master.svg" x="547" y="167" width="26" height="26" />
+
+      <!-- Three equal customer environments. -->
+      {environments.map((index) => {
+        const y = 26 + index * 110;
+        return (
+          <g>
+            <rect x="732" y={y} width="268" height="88" rx="14" class="reach-boundary" stroke-width="1.5" />
+            <text x="756" y={y + 49} class="reach-label">Customer AWS</text>
+            <g transform={`translate(914 ${y + 22})`}><use href="#reach-product-wide" /></g>
+          </g>
+        );
+      })}
+
+      <defs>
+        <!-- The product: a window with a cobalt mark and two lines. 64 × 44. -->
+        <symbol id="reach-product-wide" viewBox="0 0 64 44" width="64" height="44" overflow="visible">
+          <rect x="1" y="1" width="62" height="42" rx="6" class="reach-ink reach-fill" stroke-width="2" />
+          <rect x="10" y="11" width="14" height="14" rx="3.5" class="reach-accent" />
+          <path d="M31 14 H53 M31 22 H46 M10 33 H53" class="reach-soft" stroke-width="2.5" stroke-linecap="round" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- Narrow: workbench on top, marker, environments stacked below. -->
+    <svg class="reach-svg reach-narrow" viewBox="0 0 360 700" fill="none" focusable="false">
+      <path class="reach-path" d="M180 226 V284" />
+      <path class="reach-path" d="M180 340 V366 Q180 378 168 378 H48 Q36 378 36 390 V616 Q36 628 48 628 H64" />
+      <path class="reach-path" d="M36 428 Q36 440 48 440 H64" />
+      <path class="reach-path" d="M36 522 Q36 534 48 534 H64" />
+      <path class="reach-flow" pathLength="100" d="M180 226 V284" />
+      <path class="reach-flow" pathLength="100" style="animation-delay: 0.6s" d="M180 340 V366 Q180 378 168 378 H48 Q36 378 36 390 V616 Q36 628 48 628 H64" />
+
+      <g class="reach-ink">
+        <path d="M24 182 H336" stroke-width="2" />
+        <path d="M48 182 V222 M312 182 V222" stroke-width="2" />
+        <rect x="56" y="82" width="104" height="78" rx="7" stroke-width="2" class="reach-fill" />
+        <path d="M46 182 L56 160 H160 L170 182 Z" stroke-width="2" class="reach-fill" />
+        <rect x="200" y="82" width="104" height="78" rx="7" stroke-width="2" class="reach-fill" />
+        <path d="M190 182 L200 160 H304 L314 182 Z" stroke-width="2" class="reach-fill" />
+      </g>
+      <g transform="translate(76 99)"><use href="#reach-product-narrow" /></g>
+      <g transform="translate(220 99)"><use href="#reach-product-narrow" /></g>
+
+      <circle cx="180" cy="312" r="34" class="reach-halo" />
+      <circle cx="180" cy="312" r="27" class="reach-marker" stroke-width="1.5" />
+      <image href="/deployz-icon-master.svg" x="167" y="299" width="26" height="26" />
+
+      {environments.map((index) => {
+        const y = 400 + index * 94;
+        return (
+          <g>
+            <rect x="64" y={y} width="272" height="80" rx="14" class="reach-boundary" stroke-width="1.5" />
+            <text x="86" y={y + 46} class="reach-label">Customer AWS</text>
+            <g transform={`translate(258 ${y + 18})`}><use href="#reach-product-narrow" /></g>
+          </g>
+        );
+      })}
+
+      <defs>
+        <symbol id="reach-product-narrow" viewBox="0 0 64 44" width="64" height="44" overflow="visible">
+          <rect x="1" y="1" width="62" height="42" rx="6" class="reach-ink reach-fill" stroke-width="2" />
+          <rect x="10" y="11" width="14" height="14" rx="3.5" class="reach-accent" />
+          <path d="M31 14 H53 M31 22 H46 M10 33 H53" class="reach-soft" stroke-width="2.5" stroke-linecap="round" />
+        </symbol>
+      </defs>
+    </svg>
+  </div>
+
+  <figcaption class="reach-caption">Your product. At home in your customers’ cloud.</figcaption>
+</figure>
+
+<style>
+  .reach-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .reach-wide {
+    display: none;
+  }
+
+  .reach-narrow {
+    max-width: 400px;
+    margin-inline: auto;
+  }
+
+  @container sc (min-width: 880px) {
+    .reach-wide {
+      display: block;
+      max-width: 1000px;
+      margin-inline: auto;
+    }
+
+    .reach-narrow {
+      display: none;
+    }
+  }
+
+  .reach-ink {
+    stroke: var(--foreground);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .reach-fill {
+    fill: var(--background);
+  }
+
+  .reach-soft {
+    stroke: var(--border-strong);
+  }
+
+  .reach-accent {
+    fill: var(--brand);
+  }
+
+  .reach-path {
+    stroke: var(--brand-border);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Short cobalt dashes that travel along the paths. */
+  .reach-flow {
+    stroke: var(--brand);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-dasharray: 12 200;
+    stroke-dashoffset: 12;
+    opacity: 0;
+  }
+
+  .reach-marker {
+    fill: var(--background);
+    stroke: var(--brand-border);
+  }
+
+  .reach-halo {
+    fill: rgb(37 99 235 / 0.07);
+  }
+
+  .reach-boundary {
+    fill: rgb(250 250 250 / 0.9);
+    stroke: var(--foreground);
+    stroke-dasharray: 5 5;
+  }
+
+  .reach-label {
+    fill: var(--foreground);
+    font-family: var(--font-sans, inherit);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .reach-caption {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--muted-foreground);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reach-flow {
+      opacity: 1;
+      animation: reach-flow 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+  }
+
+  @keyframes reach-flow {
+    0% { stroke-dashoffset: 12; }
+    70%, 100% { stroke-dashoffset: -100; }
+  }
+</style>
