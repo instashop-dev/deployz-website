@@ -148,8 +148,8 @@ test.describe('public design-system contract', () => {
 
     await expect(page.locator('header a', { hasText: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
     await expect(page.locator('footer').getByRole('link', { name: 'Log In' })).toHaveAttribute('href', LOGIN_URL);
-    // Security, Use Cases, and About are footer-only links.
-    for (const href of ['/security/', '/use-cases/', '/about/']) {
+    // Security, Use Cases, About, and Blog are footer-only links.
+    for (const href of ['/security/', '/use-cases/', '/about/', '/blog/']) {
       await expect(page.getByRole('navigation', { name: /primary/i }).locator(`a[href="${href}"]`)).toHaveCount(0);
       await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);
     }
@@ -258,7 +258,7 @@ test.describe('public design-system contract', () => {
 
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
-    for (const name of ['How It Works', 'Pricing', 'Docs', 'Blog', 'Log In']) {
+    for (const name of ['How It Works', 'Pricing', 'Docs', 'Log In']) {
       await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
     }
     await page.keyboard.press('Escape');
@@ -312,7 +312,6 @@ test.describe('public design-system contract', () => {
     await expect(cards.filter({ hasText: /\d+ min read/ })).toHaveCount(articleRoutes.length);
     await expect(page.locator('main')).not.toContainText('Draft');
     await expect(page.getByRole('link', { name: 'See how Deployz works' })).toHaveAttribute('href', '/how-it-works/');
-    await expect(page.getByRole('navigation', { name: /primary/i }).locator('a[href="/blog/"]')).toHaveAttribute('aria-current', 'page');
   });
 
   test('has no placeholder links or internal product-stage words', async ({ page }) => {
