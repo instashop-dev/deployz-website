@@ -1,0 +1,237 @@
+---
+import { getEntries, render } from 'astro:content';
+import PageHeader from '@/components/site/PageHeader.astro';
+import { formatDate, getVisiblePosts, isoDate, isPublished, isVisible, postUrl, type BlogPost } from '@/lib/blog';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const posts = await getVisiblePosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+const { title, description, category, author, pubDate, updatedDate, related } = post.data;
+const { Content } = await render(post);
+const relatedPosts = (await getEntries(related)).filter(isVisible);
+const canonicalURL = new URL(postUrl(post), Astro.site);
+const isDraft = !isPublished(post);
+
+// Truthful BlogPosting data: only the fields the post really has.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  url: canonicalURL.href,
+  mainEntityOfPage: canonicalURL.href,
+  articleSection: category,
+  ...(pubDate && { datePublished: isoDate(pubDate) }),
+  ...((updatedDate ?? pubDate) && { dateModified: isoDate((updatedDate ?? pubDate)!) }),
+  // A team byline ("Team Deployz") is an organization, not a person.
+  ...(author && { author: { '@type': author.startsWith('Team ') ? 'Organization' : 'Person', name: author } }),
+  publisher: {
+    '@type': 'Organization',
+    name: 'Deployz',
+    url: new URL('/', Astro.site).href,
+    logo: { '@type': 'ImageObject', url: new URL('/android-chrome-512x512.png', Astro.site).href },
+  },
+};
+---
+
+<Base title={`${title} — Deployz Blog`} description={description} ogType="article" noindex={isDraft}>
+  <Fragment slot="head">
+    {pubDate && <meta property="article:published_time" content={pubDate.toISOString()} />}
+    {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
+    {author && <meta name="author" content={author} />}
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </Fragment>
+
+  <PageHeader eyebrow={category} title={title}>
+    {description}
+  </PageHeader>
+
+  <div class="container-site pb-20 sm:pb-24 lg:pb-32">
+    <div class="max-w-[720px]">
+      {isDraft && (
+        <p class="mb-8 rounded-lg border border-border-strong px-4 py-3 text-[15px] text-foreground">
+          Draft preview. This post shows only on the local dev server. It is not in the production build.
+        </p>
+      )}
+
+      <p class="flex flex-wrap gap-x-3 gap-y-1 border-b border-border pb-6 text-[14px] text-subtle">
+        {author && <span>{author}</span>}
+        {pubDate ? <span>Published <time datetime={isoDate(pubDate)}>{formatDate(pubDate)}</time></span> : <span>Not published</span>}
+        {updatedDate && <span>Updated <time datetime={isoDate(updatedDate)}>{formatDate(updatedDate)}</time></span>}
+      </p>
+
+      <article class="post mt-10">
+        <Content />
+      </article>
+
+      {relatedPosts.length > 0 && (
+        <section aria-labelledby="related-title" class="mt-16">
+          <h2 id="related-title" class="text-h3">Related articles</h2>
+          <ul class="mt-4 border-b border-border">
+            {relatedPosts.map((item) => (
+              <li class="border-t border-border py-4">
+                <a href={postUrl(item)} class="flex min-h-11 items-center text-[17px] font-medium text-foreground transition-[color] duration-150 hover:text-brand">
+                  {item.data.title}
+                </a>
+                <p class="text-[15px] text-muted-foreground">{item.data.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <p class="mt-12"><a href="/blog/" class="link-arrow">All articles</a></p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .post {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+
+  .post :global(h2) {
+    margin-top: 56px;
+    font-size: 24px;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+  }
+
+  .post :global(h3) {
+    margin-top: 40px;
+    font-size: 19px;
+    line-height: 1.35;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+  }
+
+  .post :global(> :first-child) {
+    margin-top: 0;
+  }
+
+  .post :global(p),
+  .post :global(ul),
+  .post :global(ol),
+  .post :global(table),
+  .post :global(blockquote),
+  .post :global(pre),
+  .post :global(img) {
+    margin-top: 20px;
+  }
+
+  .post :global(h2 + *),
+  .post :global(h3 + *) {
+    margin-top: 14px;
+  }
+
+  .post :global(ul),
+  .post :global(ol) {
+    display: grid;
+    gap: 8px;
+    padding-left: 22px;
+  }
+
+  .post :global(ul) {
+    list-style: disc;
+  }
+
+  .post :global(ol) {
+    list-style: decimal;
+  }
+
+  .post :global(li::marker) {
+    color: var(--text-subtle);
+  }
+
+  .post :global(strong) {
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  /* Links keep a 44px target, and long URLs wrap instead of overflowing. */
+  .post :global(a) {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--brand);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+  }
+
+  .post :global(a:hover) {
+    color: var(--brand-hover);
+  }
+
+  .post :global(blockquote) {
+    border-left: 2px solid var(--border-strong);
+    padding-left: 20px;
+    color: var(--foreground);
+  }
+
+  .post :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+
+  .post :global(pre) {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .post :global(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .post :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .post :global(th),
+  .post :global(td) {
+    padding: 10px 12px 10px 0;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* At zoom-equivalent widths, long words break anywhere so that the table never overflows. */
+  @media (max-width: 359px) {
+    .post :global(th),
+    .post :global(td) {
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .post :global(th) {
+    font-weight: 600;
+    color: var(--foreground);
+    border-bottom-color: var(--border-strong);
+  }
+</style>

@@ -1,15 +1,35 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/site/PageHeader.astro';
+import { formatDate, getVisiblePosts, isoDate, isPublished, postUrl } from '@/lib/blog';
+
+const posts = await getVisiblePosts();
+const row = 'border-b border-border py-10 sm:py-14 lg:grid lg:grid-cols-[200px_minmax(0,720px)] lg:justify-between lg:gap-16';
 ---
 
-<Base title="Blog — Deployz" description="Updates about Deployz and customer-owned AWS deployments.">
+<Base title="Blog — Deployz" description="Practical guides for delivering software to your customers' cloud.">
   <PageHeader title="Blog">
-    Notes on building Deployz and making customer-owned deployments easier to operate.
+    Practical guides for delivering software to your customers' cloud.
   </PageHeader>
 
   <div class="container-site pb-20 sm:pb-28 lg:pb-32">
-    <article class="border-b border-border py-10 sm:py-14 lg:grid lg:grid-cols-[200px_minmax(0,720px)] lg:justify-between lg:gap-16">
+    {posts.map((post) => (
+      <article class={row}>
+        <p class="mb-3 text-[14px] text-subtle lg:mb-0 lg:pt-2">
+          {post.data.pubDate ? <time datetime={isoDate(post.data.pubDate)}>{formatDate(post.data.pubDate)}</time> : 'Not published'}
+          {!isPublished(post) && <span class="block text-foreground">Draft</span>}
+        </p>
+        <div class="min-w-0">
+          <p class="text-eyebrow mb-2 text-muted-foreground">{post.data.category}</p>
+          <h2 class="text-h3 sm:text-[26px] sm:leading-tight sm:tracking-[-0.025em]">
+            <a href={postUrl(post)} class="inline-flex min-h-11 items-center transition-[color] duration-150 hover:text-brand">{post.data.title}</a>
+          </h2>
+          <p class="mt-4 text-[17px] leading-[1.7] text-muted-foreground">{post.data.description}</p>
+        </div>
+      </article>
+    ))}
+
+    <article class={row}>
       <p class="mb-3 text-[14px] text-subtle lg:mb-0 lg:pt-2"><time datetime="2026-08-25">August 25, 2026</time></p>
       <div class="min-w-0">
         <h2 class="text-h3 sm:text-[26px] sm:leading-tight sm:tracking-[-0.025em]">Introducing Deployz</h2>

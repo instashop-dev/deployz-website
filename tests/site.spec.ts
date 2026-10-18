@@ -1,4 +1,5 @@
-import { mkdir, readFile } from 'node:fs/promises';
+import { readdirSync, readFileSync } from 'node:fs';
+import { access, mkdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { AxeBuilder } from '@axe-core/playwright';
@@ -6,7 +7,7 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test';
 
 const baselineOnly = process.env.SITE_CONTRACT_MODE === 'baseline';
 
-const routes = [
+const coreRoutes = [
   { path: '/', label: 'home' },
   { path: '/how-it-works', label: 'how-it-works' },
   { path: '/security', label: 'security' },
@@ -23,6 +24,24 @@ const routes = [
   { path: '/docs', label: 'docs' },
   { path: '/404', label: 'not-found' },
 ] as const;
+
+// Blog posts from src/content/blog, read from the frontmatter. This mirrors isPublished() in src/lib/blog.ts.
+const blogPosts = readdirSync('src/content/blog')
+  .filter((file) => file.endsWith('.md'))
+  .map((file) => {
+    const frontmatter = readFileSync(join('src/content/blog', file), 'utf8').split('---')[1] ?? '';
+    const field = (name: string) => frontmatter.match(new RegExp(`^${name}:\\s*"?([^"\\n]*)"?`, 'm'))?.[1];
+    const pubDate = field('pubDate');
+    return {
+      slug: field('slug') ?? file.replace(/\.md$/, ''),
+      published: field('draft') !== 'true' && pubDate !== undefined && new Date(pubDate) <= new Date(),
+    };
+  });
+const articleRoutes = blogPosts
+  .filter((post) => post.published)
+  .map((post) => ({ path: `/blog/${post.slug}/`, label: `blog-${post.slug}` }) as const);
+
+const routes = [...coreRoutes, ...articleRoutes];
 type Route = (typeof routes)[number];
 type EvidenceRoute = Route | { readonly path: '/does-not-exist'; readonly label: 'unknown' };
 
@@ -268,6 +287,17 @@ test.describe('public design-system contract', () => {
     expect(robots).toContain('Sitemap: https://deployz.dev/sitemap-index.xml');
   });
 
+  test('keeps drafts and future posts out of the build, the sitemap, and the feed', async () => {
+    const [sitemap, feed] = await Promise.all([readFile('dist/sitemap-0.xml', 'utf8'), readFile('dist/blog/rss.xml', 'utf8')]);
+
+    for (const post of blogPosts) {
+      const built = await access(`dist/blog/${post.slug}/index.html`).then(() => true, () => false);
+      expect(built, post.slug).toBe(post.published);
+      expect(sitemap.includes(`/blog/${post.slug}/`), post.slug).toBe(post.published);
+      expect(feed.includes(`/blog/${post.slug}/`), post.slug).toBe(post.published);
+    }
+  });
+
   test('has no placeholder links or internal product-stage words', async ({ page }) => {
     for (const route of routes) {
       await page.goto(route.path);
@@ -452,7 +482,8 @@ test.describe('public design-system contract', () => {
       'dist/blog/index.html',
       'dist/docs/index.html',
       'dist/404.html',
-    ] as const;
+      ...articleRoutes.map((route) => `dist${route.path}index.html`),
+    ];
     const output = await Promise.all(files.map(async (file) => readFile(file, 'utf8')));
 
     for (const html of output) {

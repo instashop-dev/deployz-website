@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="480" viewBox="0 0 400 480" font-family="Inter Variable, Inter, system-ui, sans-serif" font-size="15" fill="#111111">
+  <defs>
+    <marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#52525B" />
+    </marker>
+  </defs>
+  <rect width="400" height="480" fill="#FFFFFF" />
+
+  <!-- User browser -->
+  <rect x="180" y="10" width="200" height="44" rx="8" fill="#FFFFFF" stroke="#D4D4D8" />
+  <text x="280" y="37" text-anchor="middle">User browser</text>
+  <line x1="280" y1="54" x2="280" y2="104" stroke="#52525B" stroke-width="1.5" marker-end="url(#head)" />
+
+  <!-- Customer AWS account -->
+  <rect x="8" y="78" width="384" height="232" rx="14" fill="none" stroke="#71717A" stroke-dasharray="5 4" />
+  <rect x="22" y="67" width="182" height="22" rx="4" fill="#FFFFFF" stroke="#D4D4D8" />
+  <text x="113" y="83" text-anchor="middle" font-size="14" font-weight="600">Customer AWS account</text>
+
+  <rect x="40" y="106" width="320" height="46" rx="8" fill="#FFFFFF" stroke="#111111" stroke-width="1.5" />
+  <text x="200" y="134" text-anchor="middle" font-weight="600">AI application</text>
+
+  <rect x="16" y="206" width="134" height="60" rx="8" fill="#FAFAFA" stroke="#D4D4D8" />
+  <text x="83" y="231" text-anchor="middle">Documents and</text>
+  <text x="83" y="251" text-anchor="middle">search index</text>
+  <line x1="83" y1="154" x2="83" y2="204" stroke="#52525B" stroke-width="1.5" marker-start="url(#head)" marker-end="url(#head)" />
+
+  <rect x="250" y="206" width="134" height="60" rx="8" fill="#FAFAFA" stroke="#D4D4D8" />
+  <text x="317" y="231" text-anchor="middle">Application</text>
+  <text x="317" y="251" text-anchor="middle">logs</text>
+  <line x1="317" y1="152" x2="317" y2="204" stroke="#52525B" stroke-width="1.5" marker-end="url(#head)" />
+
+  <!-- Paths that leave the account -->
+  <line x1="175" y1="154" x2="175" y2="398" stroke="#52525B" stroke-width="1.5" marker-start="url(#head)" marker-end="url(#head)" />
+  <text x="166" y="336" text-anchor="end" font-size="14" fill="#52525B">Sends question and</text>
+  <text x="166" y="354" text-anchor="end" font-size="14" fill="#52525B">selected passages</text>
+  <text x="166" y="378" text-anchor="end" font-size="14" fill="#52525B">Returns response</text>
+
+  <line x1="225" y1="152" x2="225" y2="398" stroke="#71717A" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#head)" />
+  <text x="234" y="354" font-size="14" fill="#52525B">If configured</text>
+
+  <rect x="16" y="400" width="180" height="60" rx="8" fill="#FFFFFF" stroke="#D4D4D8" />
+  <text x="106" y="425" text-anchor="middle">Model service</text>
+  <text x="106" y="445" text-anchor="middle">outside this account</text>
+
+  <rect x="210" y="400" width="174" height="60" rx="8" fill="#FFFFFF" stroke="#71717A" stroke-dasharray="5 4" />
+  <text x="297" y="425" text-anchor="middle">External telemetry</text>
+  <text x="297" y="445" text-anchor="middle">service</text>
+</svg>

@@ -3,6 +3,11 @@
 Marketing site, documentation, and blog for Deployz — https://deployz.dev.
 Built with Astro, Tailwind CSS, React, and standard shadcn/ui components. The output is fully static and does not hydrate React in the browser.
 
+## Documentation
+
+- [Blog master guidelines](docs/DEPLOYZ_BLOG_MASTER_GUIDELINES.md): the standing reference for all blog work.
+- [Design system](DESIGN.md)
+
 ## Develop
 
 ```
