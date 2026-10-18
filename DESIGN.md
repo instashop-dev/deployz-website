@@ -132,7 +132,7 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 
 | Scene | Component | Page | Shows |
 | --- | --- | --- | --- |
-| Deploy flow | `DeploymentDiagram.astro` | `/` hero | GitHub repo → Deployz readiness report and release → the app live in customer AWS with its resources. |
+| Deploy flow | `DeploymentDiagram.astro` | `/` hero | Three quiet parts joined by unlabelled beams: the repository (`main`, read-only, latest commit) → the Deployz release (v1.4.0, twelve readiness segments, "Ready to deploy") → Customer AWS (your app, Live, four icon-only resource tiles). Small loops: the segments fill, the tiles light up in turn, the live dot pulses. |
 | Product preview | `ProductPreview.astro` | `/` | Configure / Deploy / Manage tabs on a stage. Simplified interface, not a screenshot. |
 | Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` hero | Four compact step cards joined by unlabelled beams: connect GitHub (scan), build a release (tag gets its check), customer connects AWS (cursor clicks Connect), Deployz deploys (live). One small loop per card. |
 | AI and guardrails | `diagram/GuardrailsDiagram.astro` | `/how-it-works` step 1 | Two zones split by a guardrail (no beams): Understanding (detected values, each with its source: Check, AI · verify, or You) and Deploying (the rule-based compiler's allowlist of supported AWS resources, "Anything else" struck through, CloudFormation output). |
