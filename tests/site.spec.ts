@@ -58,6 +58,7 @@ const pageTitles = [
   { path: '/deploy-saas-to-customer-aws', title: "Deploy Your SaaS Into a Customer's AWS Account — Deployz" },
   { path: '/pricing', title: 'Deployz Pricing — $49/month + $19 per Customer Environment' },
   { path: '/security', title: 'Deployz Security & Architecture — Customer AWS' },
+  { path: '/blog', title: 'The Deployz Blog — Guides for Customer-Hosted Software' },
 ] as const;
 
 async function recordRouteEvidence(
@@ -257,7 +258,7 @@ test.describe('public design-system contract', () => {
 
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
-    for (const name of ['How It Works', 'Pricing', 'Docs', 'Log In']) {
+    for (const name of ['How It Works', 'Pricing', 'Docs', 'Blog', 'Log In']) {
       await expect(page.locator('#site-menu').getByRole('link', { name, exact: true })).toBeVisible();
     }
     await page.keyboard.press('Escape');
@@ -296,6 +297,22 @@ test.describe('public design-system contract', () => {
       expect(sitemap.includes(`/blog/${post.slug}/`), post.slug).toBe(post.published);
       expect(feed.includes(`/blog/${post.slug}/`), post.slug).toBe(post.published);
     }
+  });
+
+  test('lists every published article on the blog index and nothing else', async ({ page }) => {
+    await page.goto('/blog/');
+    await expect(page.locator('h1')).toHaveText('The Deployz Blog');
+    const cards = page.getByRole('region', { name: 'Latest articles' }).getByRole('listitem');
+
+    await expect(cards).toHaveCount(articleRoutes.length);
+    const hrefs = await cards.getByRole('link', { name: /^Read article: / }).evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href')),
+    );
+    expect(hrefs.sort()).toEqual(articleRoutes.map((route) => route.path).sort());
+    await expect(cards.filter({ hasText: /\d+ min read/ })).toHaveCount(articleRoutes.length);
+    await expect(page.locator('main')).not.toContainText('Draft');
+    await expect(page.getByRole('link', { name: 'See how Deployz works' })).toHaveAttribute('href', '/how-it-works/');
+    await expect(page.getByRole('navigation', { name: /primary/i }).locator('a[href="/blog/"]')).toHaveAttribute('aria-current', 'page');
   });
 
   test('has no placeholder links or internal product-stage words', async ({ page }) => {

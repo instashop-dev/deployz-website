@@ -1,53 +1,76 @@
 ---
+import { ArrowRight } from 'lucide-react';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/site/PageHeader.astro';
-import { formatDate, getVisiblePosts, isoDate, isPublished, postUrl } from '@/lib/blog';
+import { formatDate, getVisiblePosts, isoDate, isPublished, postUrl, readingMinutes } from '@/lib/blog';
 
-const posts = await getVisiblePosts();
-const row = 'border-b border-border py-10 sm:py-14 lg:grid lg:grid-cols-[200px_minmax(0,720px)] lg:justify-between lg:gap-16';
+/*
+ * Card summaries written for this index. They are shorter than the article descriptions, which
+ * stay in the article metadata for search and social previews. A post without an entry here shows
+ * its description. The order of this list also orders posts that share a publication date.
+ */
+const cardSummaries: Record<string, string> = {
+  'saas-in-customer-aws-account': 'What to clarify before saying yes—from application readiness to costs, updates and support.',
+  'ai-app-customer-cloud-data-privacy': 'Understand where documents, prompts and model responses travel, including external services and logs.',
+};
+const rank = (id: string) => {
+  const index = Object.keys(cardSummaries).indexOf(id);
+  return index === -1 ? Infinity : index;
+};
+
+// Production builds list published posts only. The local dev server also lists drafts, marked "Draft".
+const posts = (await getVisiblePosts()).sort(
+  (a, b) => (b.data.pubDate?.getTime() ?? Infinity) - (a.data.pubDate?.getTime() ?? Infinity) || rank(a.id) - rank(b.id),
+);
+const intro = 'Practical guides to deploying and running software in your customers’ AWS accounts.';
 ---
 
-<Base title="Blog — Deployz" description="Practical guides for delivering software to your customers' cloud.">
-  <PageHeader title="Blog">
-    Practical guides for delivering software to your customers' cloud.
+<Base title="The Deployz Blog — Guides for Customer-Hosted Software" description={intro}>
+  <PageHeader title="The Deployz Blog">
+    {intro}
   </PageHeader>
 
-  <div class="container-site pb-20 sm:pb-28 lg:pb-32">
-    {posts.map((post) => (
-      <article class={row}>
-        <p class="mb-3 text-[14px] text-subtle lg:mb-0 lg:pt-2">
-          {post.data.pubDate ? <time datetime={isoDate(post.data.pubDate)}>{formatDate(post.data.pubDate)}</time> : 'Not published'}
-          {!isPublished(post) && <span class="block text-foreground">Draft</span>}
-        </p>
-        <div class="min-w-0">
-          <p class="text-eyebrow mb-2 text-muted-foreground">{post.data.category}</p>
-          <h2 class="text-h3 sm:text-[26px] sm:leading-tight sm:tracking-[-0.025em]">
-            <a href={postUrl(post)} class="inline-flex min-h-11 items-center transition-[color] duration-150 hover:text-brand">{post.data.title}</a>
-          </h2>
-          <p class="mt-4 text-[17px] leading-[1.7] text-muted-foreground">{post.data.description}</p>
-        </div>
-      </article>
-    ))}
+  <section aria-labelledby="latest-title" class="container-site pb-16 sm:pb-20">
+    <h2 id="latest-title" class="text-h3">Latest articles</h2>
 
-    <article class={row}>
-      <p class="mb-3 text-[14px] text-subtle lg:mb-0 lg:pt-2"><time datetime="2026-08-25">August 25, 2026</time></p>
-      <div class="min-w-0">
-        <h2 class="text-h3 sm:text-[26px] sm:leading-tight sm:tracking-[-0.025em]">Introducing Deployz</h2>
-        <div class="mt-6 grid gap-5 text-[17px] leading-[1.7] text-muted-foreground">
-          <p>
-            Small B2B software companies hear this question more and more: "Can your software run inside
-            our AWS account?" Until now, the answer was a custom engineering project — infrastructure
-            templates, IAM, networking, upgrades, monitoring, and a support load that grows with every
-            customer.
-          </p>
-          <p>
-            Deployz turns that project into a product feature. Connect your application, send each
-            customer an installation link, and Deployz provisions supported AWS resources, deploys
-            your releases, and reports their status.
-          </p>
-          <p>Follow this blog for product notes.</p>
-        </div>
-      </div>
-    </article>
-  </div>
+    {posts.length > 0 ? (
+      <ul class="mt-6 grid gap-5 md:grid-cols-2 md:gap-6">
+        {posts.map((post) => (
+          <li class="group relative flex flex-col rounded-xl border border-border bg-card p-6 transition-[color,border-color] duration-150 hover:border-border-strong has-[a:focus-visible]:border-ring sm:p-8">
+            <p class="text-eyebrow text-muted-foreground">
+              {post.data.category}
+              {!isPublished(post) && <span class="ml-2 text-foreground">Draft</span>}
+            </p>
+            <h3 class="mt-3 text-h3 transition-[color] duration-150 group-hover:text-brand">{post.data.title}</h3>
+            <p class="mt-3 text-muted-foreground">{cardSummaries[post.id] ?? post.data.description}</p>
+            <p class="mt-5 flex flex-wrap gap-x-3 text-[14px] text-subtle">
+              {post.data.pubDate && <time datetime={isoDate(post.data.pubDate)}>{formatDate(post.data.pubDate)}</time>}
+              <span>{readingMinutes(post)} min read</span>
+            </p>
+            <a
+              href={postUrl(post)}
+              aria-label={`Read article: ${post.data.title}`}
+              class="link-arrow mt-auto w-fit pt-4 after:absolute after:inset-0 after:rounded-xl after:content-['']"
+            >
+              Read article
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-6 text-muted-foreground">No articles are published yet.</p>
+    )}
+  </section>
+
+  <section aria-labelledby="blog-cta-title" class="container-site pb-20 sm:pb-24 lg:pb-32">
+    <div class="max-w-[720px]">
+      <h2 id="blog-cta-title" class="text-h3">Your product. Their AWS account.</h2>
+      <p class="mt-2 text-muted-foreground">Explore customer-hosted deployment with Deployz.</p>
+      <a href="/how-it-works/" class="link-arrow mt-2">
+        See how Deployz works
+        <ArrowRight aria-hidden="true" className="size-4" />
+      </a>
+    </div>
+  </section>
 </Base>

@@ -93,7 +93,7 @@ All marketing components are static Astro in `src/components/site/`.
 
 | Component | File | Notes |
 | --- | --- | --- |
-| Site header | `SiteHeader.astro` | Links: How It Works, Pricing, Docs. Security, Use Cases, and About are linked from the footer only. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
+| Site header | `SiteHeader.astro` | Links: How It Works, Pricing, Docs, Blog. Security, Use Cases, and About are linked from the footer only. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
 | Site footer | `SiteFooter.astro` | Logo plus three open link groups (Product; Resources: Documentation, Blog, Log In; Legal: Privacy Policy, Terms of Service, GDPR, DPA) and copyright. The two landing pages are reachable from the sitemap, not the footer. |
 | Logo | `Logo.astro` | Approved mark plus wordmark text. |
 | Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`. No divider border: sections are separated by whitespace. |
@@ -159,7 +159,7 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | `/security` | Left-aligned header with the connector diagram below the text (PageHeader `visual` slot); AWS access + connector permissions + responsibilities; what Deployz receives with short notes on secrets, code and AI, routing; built on audited infrastructure (split: provider SOC 2 coverage, two FAQs); after deployment FAQ + team; closing CTA. |
 | `/docs` | Docs header, in-page navigation, 720px prose column, contained overflow for tables and code. |
 | `/privacy`, `/terms`, `/gdpr`, `/dpa` | Legal documents (`LegalPage.astro`). Linked from the footer Legal group; Security links Privacy, GDPR, and DPA; Docs links Privacy and DPA; Pricing links Terms next to the billing questions. |
-| `/blog` | Editorial list with dates and hairlines: category, title link, and description for each post, newest first, then the static "Introducing Deployz" note. |
+| `/blog` | Left-aligned header (h1 "The Deployz Blog", one-sentence intro); "Latest articles": published posts as framed cards (`rounded-xl`, hairline border, hover to the strong border and a blue title), two equal columns from 768px, one column below. Each card: category eyebrow, title, short summary (`cardSummaries` in the page, else the post description), date, reading time (200 words per minute), and a "Read article" link that covers the card. Then a small closing link to How It Works (no `CtaSection`). No search, filters, featured post, newsletter, or cover images. |
 | `/blog/<slug>/` | Blog article (see section 6). `isPublished()` in `src/lib/blog.ts` is the one publication check for routes, the index, the sitemap, and `/blog/rss.xml`: drafts and future dates are not built. The local dev server also shows drafts, marked "Draft preview" and `noindex`. |
 | `/404` | Short centered message. |
 
