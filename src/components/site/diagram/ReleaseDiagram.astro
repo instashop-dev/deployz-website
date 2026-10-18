@@ -1,0 +1,258 @@
+---
+/*
+ * "Configure and build a release" scene for How It Works step 2. A commit line on main: an
+ * earlier release tag, and the newest commit getting the new release tag. The footer shows the
+ * readiness state (passed, needs input filled, no blockers) and the Build release control.
+ * Commits, tags, and counts are illustrative. Scene system: src/styles/scene.css.
+ */
+import GithubMark from '@/components/site/scene/GithubMark.astro';
+import Mark from '@/components/site/scene/Mark.astro';
+
+const commits = [
+  { sha: '3f9c2e1' },
+  { sha: '8a41d07', tag: 'v1.3.0' },
+  { sha: 'c52e9b4' },
+  { sha: 'e07a6f3' },
+  { sha: 'a1b2c3d', tag: 'v1.4.0', next: true },
+];
+---
+
+<figure class="sc rel-sc mx-auto w-full max-w-[1120px]">
+  <p class="sr-only">
+    A commit line on the main branch of your repository. An earlier commit carries release v1.3.0. The readiness
+    report shows all checks passed, the needed input filled in, and no blockers, so you build release v1.4.0 from
+    the newest commit.
+  </p>
+
+  <div class="sc-stage" aria-hidden="true">
+    <div class="sc-card rel-card">
+      <div class="sc-head">
+        <span class="sc-icon sc-icon-dark"><GithubMark /></span>
+        <p class="sc-head-title sc-mono rel-repo">your-org/your-app</p>
+        <span class="sc-badge sc-mono">main</span>
+      </div>
+
+      <div class="sc-body">
+        <ol class="rel-graph">
+          {commits.map((commit) => (
+            <li class:list={['rel-commit', commit.next && 'rel-commit-next']}>
+              <span class="rel-tag-slot">
+                {commit.tag && (
+                  <span class:list={['sc-badge', 'sc-mono', 'rel-tag', commit.next && 'sc-badge-brand']}>{commit.tag}</span>
+                )}
+              </span>
+              <span class="rel-node"></span>
+              <span class="sc-mono rel-sha">{commit.sha}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="sc-foot">
+        <ul class="rel-ready">
+          <li><Mark />Checks passed</li>
+          <li><Mark />Input filled in</li>
+          <li><Mark />No blockers</li>
+        </ul>
+        <span class="sc-btn sc-btn-dark rel-build">Build release</span>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .rel-card {
+    max-width: 440px;
+    margin-inline: auto;
+  }
+
+  .rel-repo {
+    overflow: hidden;
+    color: var(--foreground);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Narrow: commits run down a vertical track; the tag sits after the SHA. */
+  .rel-graph {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    padding-block: 4px;
+  }
+
+  .rel-graph::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 12px;
+    bottom: 12px;
+    width: 1.5px;
+    background: var(--border-strong);
+  }
+
+  .rel-commit {
+    position: relative;
+    display: grid;
+    grid-template-columns: 14px auto auto;
+    justify-content: start;
+    align-items: center;
+    gap: 12px;
+    min-height: 24px;
+  }
+
+  .rel-node {
+    grid-column: 1;
+    grid-row: 1;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 9999px;
+    background: var(--background);
+  }
+
+  .rel-commit-next .rel-node {
+    position: relative;
+    border-color: var(--brand);
+    background: var(--brand);
+    box-shadow: 0 0 0 4px rgb(37 99 235 / 0.12);
+  }
+
+  .rel-sha {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .rel-commit-next .rel-sha {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  .rel-tag-slot {
+    grid-column: 3;
+    grid-row: 1;
+    display: inline-flex;
+  }
+
+  .rel-tag {
+    font-size: 12px;
+  }
+
+  .rel-ready {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+  }
+
+  .rel-ready > li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .rel-ready :global(.sc-mark) {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Very narrow: the tag moves under its SHA. */
+  @container sc (max-width: 299px) {
+    .rel-commit {
+      grid-template-columns: 14px minmax(0, 1fr);
+      gap: 4px 12px;
+    }
+
+    .rel-tag-slot {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .rel-tag-slot:empty {
+      display: none;
+    }
+  }
+
+  /* Wide: commits run left to right on a horizontal track, tags above, SHAs below. */
+  @container sc (min-width: 640px) {
+    .rel-card {
+      max-width: 880px;
+    }
+
+    .rel-sc .sc-body {
+      padding: 22px 28px 18px;
+    }
+
+    .rel-graph {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
+      padding: 0;
+    }
+
+    .rel-graph::before {
+      left: 10%;
+      right: 10%;
+      top: 38px;
+      bottom: auto;
+      width: auto;
+      height: 1.5px;
+    }
+
+    .rel-commit {
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      gap: 10px;
+    }
+
+    .rel-tag-slot {
+      grid-column: 1;
+      grid-row: 1;
+      min-height: 22px;
+    }
+
+    .rel-node {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .rel-sha {
+      grid-column: 1;
+      grid-row: 3;
+    }
+  }
+
+  /* Motion: the new tag pops in, the newest commit pulses, and Build release is pressed. */
+  @media (prefers-reduced-motion: no-preference) {
+    .rel-commit-next .rel-tag {
+      animation: rel-pop 4s ease-out infinite;
+    }
+
+    .rel-commit-next .rel-node::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border: 1.5px solid var(--brand);
+      border-radius: 9999px;
+      opacity: 0;
+      animation: sc-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .rel-build {
+      animation: rel-press 4s ease-in-out infinite;
+    }
+  }
+
+  @keyframes rel-press {
+    0%, 22% { transform: scale(1); }
+    25% { transform: scale(0.95); }
+    30%, 100% { transform: scale(1); }
+  }
+
+  @keyframes rel-pop {
+    0%, 28% { transform: scale(0); opacity: 0; }
+    36% { transform: scale(1.12); opacity: 1; }
+    42%, 100% { transform: scale(1); opacity: 1; }
+  }
+</style>

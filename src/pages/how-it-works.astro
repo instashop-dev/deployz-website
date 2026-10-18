@@ -4,6 +4,7 @@ import GuardrailsDiagram from '@/components/site/diagram/GuardrailsDiagram.astro
 import InfraDiagram from '@/components/site/diagram/InfraDiagram.astro';
 import InstallDiagram from '@/components/site/diagram/InstallDiagram.astro';
 import JourneyDiagram from '@/components/site/diagram/JourneyDiagram.astro';
+import ReleaseDiagram from '@/components/site/diagram/ReleaseDiagram.astro';
 import CtaSection from '@/components/site/CtaSection.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
@@ -21,33 +22,6 @@ const connection = [
   { title: 'Open the installation link', text: 'They see the resources, an AWS cost estimate, and every IAM action requested.' },
   { title: 'Launch the connector', text: 'They create it as a CloudFormation stack in their own AWS console.' },
   { title: 'Deployz deploys the release', text: "The app and its resources are created in the customer's account." },
-];
-
-const guardrails = [
-  {
-    term: 'Checks first',
-    desc: 'Rule-based detectors read your Dockerfile, package files, and configuration: runtime, port, health check, environment variables, database, cache, storage, and workers.',
-  },
-  {
-    term: 'AI for open questions',
-    desc: 'When the checks leave a question open, such as an unclear start command, AI reads a few relevant files. Values that look like secrets are redacted first.',
-  },
-  {
-    term: 'Strict limits on AI',
-    desc: 'AI answers must match a strict schema and only fill gaps. They never replace a value the checks found, and lower-confidence answers stay suggestions.',
-  },
-  {
-    term: 'Clear labels',
-    desc: 'Each detected value shows its source. AI values are marked “Inferred by AI analysis — verify before relying on it.”',
-  },
-  {
-    term: 'Your review',
-    desc: 'You check what Deployz detected, enter the values it needs, and override anything before you build a release.',
-  },
-  {
-    term: 'Rule-based deployment',
-    desc: "Deployz's own compiler turns the configuration into CloudFormation. It can create only supported AWS resources, in a fixed size profile. Preflight checks use no AI.",
-  },
 ];
 
 const infrastructure = [
@@ -106,30 +80,14 @@ const notSupported = [
 
   <!-- W2. Step 1 -->
   <Section id="ai-guardrails" labelledby="connect-title">
-    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-      <div>
-        <p class="mb-4 inline-flex min-h-7 items-center rounded-full border border-brand-border bg-brand-subtle px-3 text-[13px] font-semibold text-brand-hover">Step 1</p>
-        <h2 id="connect-title" class="text-h2">Connect GitHub and analyze your repo</h2>
-        <p class="mt-5 max-w-[520px] text-muted-foreground">
-          Deployz reads your repository with read-only access and reports what your app needs.
-        </p>
-        <p class="mt-6 max-w-[520px] text-[18px] leading-snug font-semibold tracking-[-0.01em]">
-          AI for understanding. Guardrails for deploying.
-        </p>
-        <p class="mt-2 max-w-[520px] text-[15px] text-muted-foreground">
-          AI does not write your infrastructure, and it does not guarantee that your app is correct or secure.
-        </p>
-      </div>
-      <dl class="min-w-0 border-b border-border">
-        {guardrails.map((row) => (
-          <div class="grid gap-1 border-t border-border py-4 sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-x-8">
-            <dt class="font-semibold">{row.term}</dt>
-            <dd class="text-muted-foreground">{row.desc}</dd>
-          </div>
-        ))}
-      </dl>
+    <div class="max-w-[780px]">
+      <p class="mb-4 inline-flex min-h-7 items-center rounded-full border border-brand-border bg-brand-subtle px-3 text-[13px] font-semibold text-brand-hover">Step 1</p>
+      <h2 id="connect-title" class="text-h2">Connect GitHub and analyze your repo</h2>
+      <p class="text-lead mt-5 text-muted-foreground">
+        Connect GitHub with read-only access. AI-assisted repo analysis shows what your app needs to deploy.
+      </p>
     </div>
-    <div class="mt-12 lg:mt-14">
+    <div class="mt-10 lg:mt-12">
       <GuardrailsDiagram />
     </div>
   </Section>
@@ -144,7 +102,10 @@ const notSupported = [
         versioned release from a commit.
       </p>
     </div>
-    <ul class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
+    <div class="mt-10 lg:mt-12">
+      <ReleaseDiagram />
+    </div>
+    <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
       {reportGroups.map((group) => (
         <li class="border-t border-foreground pt-5">
           <h3 class="text-[18px] font-semibold tracking-[-0.01em]">{group.title}</h3>
