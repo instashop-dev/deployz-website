@@ -1,125 +1,182 @@
 ---
 /*
- * Signature hero scene: GitHub repository -> Deployz readiness and release -> the app
- * running live in the customer's AWS account. Scene system: src/styles/scene.css.
- * The drawing is aria-hidden; the sr-only caption describes it.
+ * Signature hero scene: GitHub repository -> Deployz release -> your app live in the customer's
+ * AWS account. Three quiet cards joined by unlabelled beams whose lights run left to right.
+ * Minimal text; one small loop per card: the readiness segments fill, the resource tiles light
+ * up one by one, and the live dot pulses. Without motion, every part shows its finished state.
+ * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only caption describes it.
  */
-import { Box, Cloud, Database, HardDrive, Layers } from 'lucide-react';
+import { Box, Database, HardDrive, Layers, Lock } from 'lucide-react';
 import Beam from '@/components/site/scene/Beam.astro';
 import GithubMark from '@/components/site/scene/GithubMark.astro';
 import Mark from '@/components/site/scene/Mark.astro';
 
-const checks = [
-  { label: 'Port', value: '3000' },
-  { label: 'Health check', value: '/health' },
-  { label: 'PostgreSQL', value: '16' },
-  { label: 'File storage', value: 'S3' },
-];
-
-const tiles = [
-  { icon: Box, title: 'Container', meta: 'ECS Fargate' },
-  { icon: Database, title: 'Database', meta: 'PostgreSQL' },
-  { icon: Layers, title: 'Cache', meta: 'Valkey' },
-  { icon: HardDrive, title: 'Storage', meta: 'S3' },
-];
+const segments = Array.from({ length: 12 }, (_, index) => index);
+const resources = [Box, Database, Layers, HardDrive];
 ---
 
 <figure class="sc hero-sc mx-auto w-full max-w-[1120px]">
   <figcaption class="sr-only">
-    Deployz reads your GitHub repository with read-only access and checks what your app needs. When
-    the readiness checks pass, it deploys a release of your app into your customer's AWS account, where
-    the container, database, cache, and file storage run.
+    Deployz reads your GitHub repository with read-only access and checks what your app needs. When the
+    readiness checks pass, it deploys a release of your app into your customer's AWS account, where the
+    container, database, cache, and file storage run.
   </figcaption>
 
   <div class="sc-stage" aria-hidden="true">
     <div class="sc-flow">
-      <!-- 1. GitHub -->
-      <div class="sc-card">
+      <!-- 1. Your repository -->
+      <div class="sc-card hero-card">
         <div class="sc-head">
           <span class="sc-icon sc-icon-dark"><GithubMark /></span>
-          <p class="sc-head-title">GitHub<small class="sc-mono">your-org/your-app</small></p>
+          <p class="sc-head-title sc-mono hero-repo">your-org/your-app</p>
         </div>
-        <div class="sc-body">
-          <ul class="sc-kv">
-            <li><span>Access</span><span>read-only</span></li>
-            <li><span>Branch</span><span>main</span></li>
-            <li><span>Commit</span><span>a1f9c3e</span></li>
-          </ul>
-        </div>
-        <div class="sc-foot">
-          <ul class="sc-checks">
-            <li><Mark /><span>Dockerfile found</span></li>
-          </ul>
+        <div class="sc-body hero-body">
+          <div class="hero-branch">
+            <span class="sc-badge sc-mono">main</span>
+            <span class="sc-badge"><Lock strokeWidth={2} />Read-only</span>
+          </div>
+          <p class="hero-commit"><span class="hero-commit-node"></span><span class="sc-mono">a1f9c3e</span></p>
         </div>
       </div>
 
-      <Beam label="reads repo" variant="neutral" />
+      <Beam variant="neutral" />
 
-      <!-- 2. Deployz -->
-      <div class="sc-card sc-card-brand">
+      <!-- 2. Deployz: readiness and release -->
+      <div class="sc-card sc-card-brand hero-card">
         <div class="sc-head">
           <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
-          <p class="sc-head-title">Deployz<small>Readiness report</small></p>
-          <span class="sc-badge sc-badge-brand">Ready</span>
+          <p class="sc-head-title">Release</p>
+          <span class="sc-badge sc-badge-brand sc-mono">v1.4.0</span>
         </div>
-        <div class="sc-body">
-          <div class="flex items-baseline justify-between gap-3">
-            <span class="text-[13px] font-medium">12 of 12 checks passed</span>
+        <div class="sc-body hero-body">
+          <div class="hero-segments">
+            {segments.map((index) => <span style={`--i: ${index}`}></span>)}
           </div>
-          <div class="sc-progress mt-2"><span style="width: 100%"></span></div>
-          <ul class="sc-checks mt-3">
-            {checks.map((check) => (
-              <li><Mark /><span>{check.label}</span><span class="sc-mono">{check.value}</span></li>
-            ))}
-          </ul>
-        </div>
-        <div class="sc-foot">
-          <span class="sc-label">Release</span>
-          <span class="sc-mono text-foreground">v1.4.0</span>
+          <p class="hero-ready"><Mark />Ready to deploy</p>
         </div>
       </div>
 
-      <Beam label="deploy v1.4.0" variant="brand" delay={1.3} />
+      <Beam variant="brand" delay={1.3} />
 
       <!-- 3. Customer AWS -->
       <div class="sc-boundary hero-aws">
-        <span class="sc-boundary-tag"><Cloud strokeWidth={1.75} /> Customer AWS <span class="sc-mono">us-east-1</span></span>
+        <span class="sc-boundary-tag">Customer AWS</span>
         <div class="sc-card hero-app">
           <div class="sc-head">
             <span class="sc-icon"><Box strokeWidth={1.75} /></span>
-            <p class="sc-head-title">Your app<small class="sc-mono">v1.4.0 · HTTPS</small></p>
+            <p class="sc-head-title">Your app</p>
             <span class="sc-badge sc-badge-live"><span class="sc-dot sc-dot-pulse"></span>Live</span>
           </div>
         </div>
-        <ul class="sc-tiles mt-2.5">
-          {tiles.map((tile) => (
-            <li class="sc-tile">
-              <span class="sc-icon sc-icon-sm"><tile.icon strokeWidth={1.75} /></span>
-              <span class="sc-tile-text">{tile.title}<span class="sc-mono">{tile.meta}</span></span>
-            </li>
+        <ul class="hero-tiles">
+          {resources.map((Icon, index) => (
+            <li style={`--i: ${index}`}><Icon strokeWidth={1.75} /></li>
           ))}
         </ul>
-        <p class="hero-note">Their account. Their data.</p>
       </div>
     </div>
   </div>
 </figure>
 
 <style>
-  /* Equal columns and equal heights: the three parts read as one row of peers. */
   .hero-sc .sc-flow {
-    --sc-cols: minmax(0, 1fr) 144px minmax(0, 1fr) 144px minmax(0, 1fr);
+    --sc-cols: minmax(0, 1fr) 104px minmax(0, 1fr) 104px minmax(0, 1fr);
   }
 
+  .hero-repo {
+    overflow: hidden;
+    color: var(--foreground);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hero-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    min-height: 88px;
+  }
+
+  .hero-branch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-branch :global(svg) {
+    width: 12px;
+    height: 12px;
+  }
+
+  .hero-commit {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-commit .sc-mono {
+    color: var(--foreground);
+  }
+
+  .hero-commit-node {
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 9999px;
+    background: var(--background);
+    box-shadow: 0 0 0 3px var(--surface-subtle);
+  }
+
+  /* Readiness: twelve segments, all passed. */
+  .hero-segments {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .hero-segments > span {
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--brand);
+  }
+
+  .hero-ready {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  /* Customer AWS: the app, then its resources as icon tiles. */
   .hero-app .sc-head {
     border-bottom: 0;
   }
 
-  .hero-note {
-    margin-top: 12px;
-    font-size: 12px;
-    line-height: 1.4;
-    color: var(--muted-foreground);
+  .hero-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .hero-tiles > li {
+    display: flex;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--background);
+    box-shadow: 0 1px 2px rgb(17 17 17 / 0.04);
+    color: var(--foreground);
+  }
+
+  .hero-tiles :global(svg) {
+    width: 16px;
+    height: 16px;
   }
 
   @container sc (min-width: 960px) {
@@ -127,42 +184,53 @@ const tiles = [
       align-items: stretch;
     }
 
-    .hero-sc .sc-flow > .sc-card,
+    .hero-sc .hero-card,
     .hero-sc .hero-aws {
       display: flex;
       flex-direction: column;
     }
 
-    .hero-sc .sc-flow > .sc-card > .sc-body {
+    .hero-sc .hero-card > .sc-body {
       flex: 1;
     }
 
-    /* The footers and the boundary note sit on one baseline. */
-    .hero-sc .hero-note {
-      margin-top: auto;
-      padding-top: 12px;
+    .hero-sc .hero-aws {
+      justify-content: center;
     }
 
-    /* Narrow tiles: icon above the text, so every tile has the same shape. */
-    .hero-sc .sc-tile {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
+    .hero-sc :global(.sc-stage) {
+      padding: 56px 44px;
     }
   }
 
   @container sc (min-width: 960px) and (max-width: 1039px) {
     .hero-sc .sc-flow {
-      --sc-cols: minmax(0, 1fr) 120px minmax(0, 1fr) 120px minmax(0, 1fr);
+      --sc-cols: minmax(0, 1fr) 80px minmax(0, 1fr) 80px minmax(0, 1fr);
+    }
+  }
+
+  /* Motion, one 5.2s cycle: the segments fill, then the resources light up after the deploy beam. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-segments > span {
+      animation: hero-fill 5.2s ease-out infinite;
+      animation-delay: calc(var(--i) * 70ms);
     }
 
-    /* A smaller inset keeps two tile columns wide enough for the service names. */
-    .hero-sc .hero-aws {
-      padding-inline: 10px;
+    .hero-tiles > li {
+      animation: hero-light 5.2s ease-in-out infinite;
+      animation-delay: calc(2.4s + var(--i) * 0.18s);
     }
+  }
 
-    .hero-sc .sc-tiles {
-      gap: 6px;
-    }
+  @keyframes hero-fill {
+    0% { background: var(--border); }
+    14%, 88% { background: var(--brand); }
+    100% { background: var(--brand); }
+  }
+
+  @keyframes hero-light {
+    0%, 100% { border-color: var(--border); background: var(--background); color: var(--foreground); }
+    8% { border-color: var(--brand-border); background: var(--brand-subtle); color: var(--brand); }
+    22% { border-color: var(--border); background: var(--background); color: var(--foreground); }
   }
 </style>
