@@ -2,6 +2,7 @@
 import { ArrowRight } from 'lucide-react';
 import GuardrailsDiagram from '@/components/site/diagram/GuardrailsDiagram.astro';
 import InfraDiagram from '@/components/site/diagram/InfraDiagram.astro';
+import InstallDiagram from '@/components/site/diagram/InstallDiagram.astro';
 import JourneyDiagram from '@/components/site/diagram/JourneyDiagram.astro';
 import CtaSection from '@/components/site/CtaSection.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
@@ -160,7 +161,7 @@ const notSupported = [
 
   <!-- W4. Step 3 -->
   <Section labelledby="install-title">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+    <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div>
         <p class="mb-4 inline-flex min-h-7 items-center rounded-full border border-brand-border bg-brand-subtle px-3 text-[13px] font-semibold text-brand-hover">Step 3</p>
         <h2 id="install-title" class="text-h2">Your customer connects AWS</h2>
@@ -181,6 +182,9 @@ const notSupported = [
           </li>
         ))}
       </ol>
+    </div>
+    <div class="mt-12 lg:mt-14">
+      <InstallDiagram />
     </div>
   </Section>
 

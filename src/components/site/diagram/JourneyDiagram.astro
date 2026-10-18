@@ -1,103 +1,91 @@
 ---
 /*
- * "Process at a glance" journey: readiness report, install page, live deployment.
+ * "Four steps" journey for the How It Works hero: one compact card per step, joined by
+ * unlabelled beams whose lights run 1 → 2 → 3 → 4. Each card has one small moving part:
+ * a scan bar, a release tag that gets its check, a cursor that clicks Connect, and a live pulse.
  * Scene system: src/styles/scene.css. The drawing is aria-hidden; the sr-only caption describes it.
  */
-import { Link as LinkIcon } from 'lucide-react';
+import { Cloud, MousePointer2, Tag } from 'lucide-react';
 import Beam from '@/components/site/scene/Beam.astro';
 import GithubMark from '@/components/site/scene/GithubMark.astro';
 import Mark from '@/components/site/scene/Mark.astro';
-
-const installSteps = [
-  'AWS account connected',
-  'Create infrastructure',
-  'Start application',
-  'Check application',
-  'Set up HTTPS',
-];
 ---
 
 <figure class="sc journey-sc mx-auto w-full max-w-[1120px]">
   <figcaption class="sr-only">
-    Steps 1 and 2: you connect GitHub, fix anything the readiness report flags, and build a release. Step 3:
-    you send your customer an installation link; they review the Region, resources, and cost, then connect
-    their AWS account. Step 4: Deployz deploys the release in their account and shows each step until it is
-    live.
+    Step 1: you connect GitHub and Deployz analyzes your repository. Step 2: you build a versioned release. Step 3:
+    your customer connects their AWS account. Step 4: Deployz deploys the release there, and it is live.
   </figcaption>
 
   <div class="sc-stage" aria-hidden="true">
     <div class="sc-flow">
-      <!-- 1. Readiness report -->
+      <!-- 1. Connect GitHub -->
       <div class="journey-step">
-        <p class="journey-tag"><span class="journey-num">1–2</span>You prepare a release</p>
+        <p class="journey-tag"><span class="journey-num">1</span>Connect GitHub</p>
         <div class="sc-card">
           <div class="sc-head">
             <span class="sc-icon sc-icon-dark"><GithubMark /></span>
-            <p class="sc-head-title">your-org/your-app<small class="sc-mono">main</small></p>
+            <p class="sc-head-title sc-mono journey-repo">your-org/your-app</p>
           </div>
-          <div class="sc-body">
-            <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
-              <span class="text-[13px] font-medium">11 of 12 checks passed</span>
-              <span class="sc-badge sc-badge-warn">Needs input</span>
+          <div class="sc-body journey-body">
+            <div class="journey-files">
+              <span style="width: 72%"></span>
+              <span style="width: 54%"></span>
+              <span style="width: 86%"></span>
+              <span style="width: 40%"></span>
+              <i class="journey-scan"></i>
             </div>
-            <div class="sc-progress mt-2"><span style="width: 92%"></span></div>
-            <ul class="sc-checks mt-3">
-              <li><Mark /><span>Dockerfile</span><span class="sc-mono">found</span></li>
-              <li><Mark /><span>Port</span><span class="sc-mono">3000</span></li>
-              <li><Mark /><span>Health check</span><span class="sc-mono">/health</span></li>
-              <li><Mark state="warn" /><span>Environment variables</span><span class="sc-mono">1 value to set</span></li>
-            </ul>
-          </div>
-          <div class="sc-foot">
-            <span class="sc-label">Release</span>
-            <span class="sc-btn sc-btn-dark">Build release</span>
           </div>
         </div>
       </div>
 
-      <Beam label="install link" variant="neutral" />
+      <Beam variant="neutral" />
 
-      <!-- 2. Install page -->
+      <!-- 2. Build a release -->
       <div class="journey-step">
-        <p class="journey-tag"><span class="journey-num">3</span>Your customer connects AWS</p>
+        <p class="journey-tag"><span class="journey-num">2</span>Build a release</p>
         <div class="sc-card">
-          <div class="sc-head">
-            <span class="sc-icon"><LinkIcon strokeWidth={1.75} /></span>
-            <p class="sc-head-title">Install your app<small>Installation link</small></p>
-          </div>
-          <div class="sc-body">
-            <ul class="sc-kv">
-              <li><span>Region</span><span>eu-west-1</span></li>
-              <li><span>Resources</span><span>app, database, storage</span></li>
-              <li><span>Estimated cost</span><span>shown before connecting</span></li>
-            </ul>
-            <p class="mt-3 text-[12px] leading-snug text-muted-foreground">PostgreSQL and stored files are retained</p>
-          </div>
-          <div class="sc-foot">
-            <span class="sc-btn sc-btn-dark journey-full">Connect AWS account</span>
+          <div class="sc-body journey-body journey-center">
+            <span class="journey-release">
+              <Tag strokeWidth={1.75} />
+              <span class="sc-mono">v1.4.0</span>
+              <span class="journey-release-mark"><Mark /></span>
+            </span>
           </div>
         </div>
       </div>
 
-      <Beam label="deploy v1.4.0" variant="brand" delay={1.3} />
+      <Beam variant="neutral" delay={0.9} />
 
-      <!-- 3. Deployment -->
+      <!-- 3. Customer connects AWS -->
       <div class="journey-step">
-        <p class="journey-tag"><span class="journey-num">4</span>Deployz deploys</p>
+        <p class="journey-tag"><span class="journey-num">3</span>Customer connects AWS</p>
+        <div class="sc-card">
+          <div class="sc-body journey-body journey-center">
+            <span class="journey-aws">
+              <span class="sc-icon"><Cloud strokeWidth={1.75} /></span>
+              <span class="sc-btn sc-btn-dark journey-connect">Connect AWS</span>
+              <span class="journey-cursor"><MousePointer2 strokeWidth={1.5} /></span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <Beam variant="brand" delay={1.8} />
+
+      <!-- 4. Deployz deploys -->
+      <div class="journey-step">
+        <p class="journey-tag"><span class="journey-num journey-num-brand">4</span>Deployz deploys</p>
         <div class="sc-card sc-card-brand">
           <div class="sc-head">
             <span class="sc-icon sc-icon-brand"><img src="/deployz-icon-master.svg" alt="" width="16" height="16" /></span>
-            <p class="sc-head-title">Customer A<small class="sc-mono">eu-west-1</small></p>
+            <p class="sc-head-title">Customer A</p>
             <span class="sc-badge sc-badge-live"><span class="sc-dot sc-dot-pulse"></span>Live</span>
           </div>
-          <div class="sc-body">
-            <ul class="sc-checks">
-              {installSteps.map((step) => <li><Mark /><span>{step}</span></li>)}
-            </ul>
-          </div>
-          <div class="sc-foot">
-            <span class="sc-label">Release</span>
-            <span class="sc-mono text-foreground">v1.4.0</span>
+          <div class="sc-body journey-body">
+            <div class="journey-health">
+              {Array.from({ length: 12 }, (_, index) => <span style={`--i: ${index}`}></span>)}
+            </div>
           </div>
         </div>
       </div>
@@ -106,10 +94,8 @@ const installSteps = [
 </figure>
 
 <style>
-  /* Equal columns: the three steps are peers of one size. */
   .journey-sc .sc-flow {
-    --sc-cols: minmax(0, 1fr) 112px minmax(0, 1fr) 112px minmax(0, 1fr);
-    --journey-tag: 32px; /* 22px tag + 10px gap */
+    --sc-cols: minmax(0, 1fr) 56px minmax(0, 1fr) 56px minmax(0, 1fr) 56px minmax(0, 1fr);
   }
 
   .journey-step {
@@ -124,17 +110,13 @@ const installSteps = [
     flex-direction: column;
   }
 
-  .journey-step .sc-body {
-    flex: 1;
-  }
-
   .journey-tag {
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 22px;
+    min-height: 24px;
     margin-bottom: 10px;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.3;
     font-weight: 600;
     color: var(--foreground);
@@ -143,27 +125,147 @@ const installSteps = [
   .journey-num {
     display: inline-flex;
     flex-shrink: 0;
-    min-width: 22px;
-    padding: 0 5px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     align-items: center;
     justify-content: center;
     border: 1px solid var(--border-strong);
-    border-radius: 6px;
+    border-radius: 9999px;
     background: var(--background);
-    font-family: var(--font-mono);
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
     color: var(--muted-foreground);
   }
 
-  .journey-full {
-    width: 100%;
+  .journey-num-brand {
+    border-color: var(--brand);
+    background: var(--brand-subtle);
+    color: var(--brand-hover);
   }
 
-  /* Vertical flow: keep the step cells apart from the beams. */
-  .journey-sc .sc-flow > .journey-step {
-    width: 100%;
+  .journey-repo {
+    overflow: hidden;
+    color: var(--foreground);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .journey-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 92px;
+  }
+
+  .journey-center {
+    align-items: center;
+  }
+
+  /* 1. File lines with a scan bar that sweeps down. */
+  .journey-files {
+    position: relative;
+    display: grid;
+    gap: 9px;
+    overflow: hidden;
+    padding-block: 2px;
+  }
+
+  .journey-files > span {
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--border);
+  }
+
+  .journey-scan {
+    position: absolute;
+    inset-inline: -4px;
+    top: 0;
+    height: 14px;
+    border-bottom: 1.5px solid var(--brand);
+    background: linear-gradient(180deg, transparent, rgb(37 99 235 / 0.12));
+    opacity: 0; /* Shown only while it moves. */
+  }
+
+  /* 2. Release tag with its check. */
+  .journey-release {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 9999px;
+    background: var(--background);
+    box-shadow: 0 1px 2px rgb(17 17 17 / 0.05);
+  }
+
+  .journey-release svg {
+    width: 15px;
+    height: 15px;
+    color: var(--muted-foreground);
+  }
+
+  .journey-release .sc-mono {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .journey-release-mark {
+    display: inline-flex;
+  }
+
+  /* 3. AWS tile, Connect button, and a cursor that clicks it. */
+  .journey-aws {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .journey-connect {
+    min-height: 32px;
+  }
+
+  .journey-cursor {
+    position: absolute;
+    right: 6px;
+    bottom: -14px;
+    display: inline-flex;
+    color: var(--foreground);
+    filter: drop-shadow(0 1px 1px rgb(255 255 255 / 0.9));
+  }
+
+  .journey-cursor svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--background);
+  }
+
+  /* 4. Health bars: every check passed. */
+  .journey-health {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    gap: 4px;
+    height: 36px;
+  }
+
+  .journey-health > span {
+    height: 100%;
+    border-radius: 3px;
+    background: #86efac;
+    transform-origin: bottom;
+  }
+
+  .journey-health > span:nth-child(3n + 2) {
+    height: 82%;
+  }
+
+  .journey-health > span:nth-child(4n + 1) {
+    height: 90%;
   }
 
   @container sc (min-width: 960px) {
@@ -175,32 +277,77 @@ const installSteps = [
       white-space: nowrap;
     }
 
+    /* The beams meet the cards, not the step tags above them. */
     .journey-sc .sc-flow > :global(.sc-beam) {
-      margin-top: var(--journey-tag);
+      margin-top: 34px;
     }
 
     .journey-sc :global(.sc-stage) {
-      padding-inline: 28px;
-    }
-
-    .journey-sc :global(.sc-beam-chip) {
-      max-width: none;
+      padding: 44px 28px;
     }
   }
 
-  /* Just above the horizontal breakpoint: slimmer beams, chips may wrap to two lines. */
-  @container sc (min-width: 960px) and (max-width: 1119px) {
+  @container sc (min-width: 960px) and (max-width: 1079px) {
     .journey-sc .sc-flow {
-      --sc-cols: minmax(0, 1fr) 104px minmax(0, 1fr) 104px minmax(0, 1fr);
+      --sc-cols: minmax(0, 1fr) 40px minmax(0, 1fr) 40px minmax(0, 1fr) 40px minmax(0, 1fr);
+    }
+  }
+
+  /* Motion: one small loop per card, all on the same 3.6s cycle. */
+  @media (prefers-reduced-motion: no-preference) {
+    .journey-scan {
+      animation: journey-scan 3.6s ease-in-out infinite;
     }
 
-    .journey-sc :global(.sc-stage) {
-      padding-inline: 20px;
+    .journey-release-mark {
+      animation: journey-pop 3.6s ease-out infinite;
     }
 
-    .journey-sc :global(.sc-beam-chip) {
-      max-width: 100%;
-      white-space: normal;
+    .journey-cursor {
+      animation: journey-click 3.6s ease-in-out infinite;
     }
+
+    .journey-connect {
+      animation: journey-press 3.6s ease-in-out infinite;
+    }
+
+    .journey-health > span {
+      animation: journey-bar 3.6s ease-out infinite;
+      animation-delay: calc(var(--i) * 60ms);
+    }
+  }
+
+  @keyframes journey-scan {
+    0% { transform: translateY(-16px); opacity: 0; }
+    10% { opacity: 1; }
+    60% { transform: translateY(46px); opacity: 1; }
+    70%, 100% { transform: translateY(46px); opacity: 0; }
+  }
+
+  @keyframes journey-pop {
+    0%, 30% { transform: scale(0); }
+    40% { transform: scale(1.2); }
+    46%, 100% { transform: scale(1); }
+  }
+
+  @keyframes journey-click {
+    0%, 45% { transform: translate(28px, 18px); opacity: 0; }
+    55% { transform: translate(6px, 4px); opacity: 1; }
+    62% { transform: translate(0, 0) scale(0.9); }
+    68% { transform: translate(0, 0) scale(1); }
+    90% { opacity: 1; }
+    100% { transform: translate(0, 0); opacity: 0; }
+  }
+
+  @keyframes journey-press {
+    0%, 60% { transform: scale(1); }
+    63% { transform: scale(0.95); }
+    68%, 100% { transform: scale(1); }
+  }
+
+  @keyframes journey-bar {
+    0%, 70% { transform: scaleY(1); }
+    78% { transform: scaleY(0.4); }
+    92%, 100% { transform: scaleY(1); }
   }
 </style>

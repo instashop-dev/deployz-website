@@ -1,8 +1,8 @@
 /get-started https://app.deployz.dev/sign-up 301
 /get-started/ https://app.deployz.dev/sign-up 301
-/use-cases /case-studies/ 301
-/use-cases/ /case-studies/ 301
-/who-its-for /case-studies/ 301
-/who-its-for/ /case-studies/ 301
+/case-studies /use-cases/ 301
+/case-studies/ /use-cases/ 301
+/who-its-for /use-cases/ 301
+/who-its-for/ /use-cases/ 301
 /features /how-it-works/ 301
 /features/ /how-it-works/ 301

@@ -11,7 +11,7 @@ This file records the implemented marketing design system. The canonical specifi
 - Signature: the solid, bold Deployz mark against thin, ordered, architectural connectors.
 - Attention budget (heuristic): about 80% calm neutral surfaces and text, 15% structure (diagrams, hairlines, frames), 5% blue.
 - Do not build on page surfaces: hero gradients, glows, dot or grid backgrounds, parallax, glass panes, fake terminals, stock 3D clouds, dashboard collages, boxes around every sentence, invented logos or statistics.
-- Exception, illustrations only (since v3.1, 15 October 2026): inside a scene stage (section 7) a fading dot grid, one faint cobalt light, layered card depth, and two kinds of quiet motion (the beam light and the live pulse) are allowed. They never leave the stage.
+- Exception, illustrations only (since v3.1, 15 October 2026): inside a scene stage (section 7) a fading dot grid, one faint cobalt light, layered card depth, and quiet motion (the beam light, the live pulse, and one small state loop per card, section 7) are allowed. They never leave the stage.
 
 ## 2. Logo
 
@@ -93,7 +93,7 @@ All marketing components are static Astro in `src/components/site/`.
 
 | Component | File | Notes |
 | --- | --- | --- |
-| Site header | `SiteHeader.astro` | Links: How It Works, Pricing, Docs. Security and Case Studies are linked from the footer only. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
+| Site header | `SiteHeader.astro` | Links: How It Works, Pricing, Docs. Security and Use Cases are linked from the footer only. Sticky, solid white (no blur), hairline. ≥1024px: full nav, Sign in, CTA. <1024px: CTA + menu button; links in a disclosure panel. Inline script (not a module) handles `aria-expanded`, Escape, click-away, focus. Without JavaScript the links show as a static row. |
 | Site footer | `SiteFooter.astro` | Logo plus three open link groups (Product; Resources: Documentation, Blog, Log In; Legal: Privacy Policy, Terms of Service, GDPR, DPA) and copyright. The two landing pages are reachable from the sitemap, not the footer. |
 | Logo | `Logo.astro` | Approved mark plus wordmark text. |
 | Section | `Section.astro` | `container-site` + `section-y`; `tone="subtle"`. No divider border: sections are separated by whitespace. |
@@ -127,17 +127,18 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 - **Status**: green only for live or passed states, amber for needs input or changes needed, cobalt for in progress.
 - **Layout** follows the figure width (container queries): vertical below 960px, horizontal above. Mobile is a real vertical composition, never a scaled drawing.
 - **Accessibility**: the stage is `aria-hidden`; each figure has an `sr-only` or visible caption that states what the scene shows. Text is at least 12px.
-- **Motion**: only the beam light and the live pulse. Both stop under `prefers-reduced-motion`.
+- **Motion**: the beam light, the live pulse, and one small state loop per card or bar (scan, check pop, cursor click, status change, bars drawing in). All motion stops under `prefers-reduced-motion`, and the still frame shows the finished state.
 - **Truth**: labels follow the product (for example readiness "X of Y checks passed", install steps "Create infrastructure", "Start application", "Check application", "Set up HTTPS", fleet statuses "Live", "Updating", "Waiting for customer"). Example values (repo, commit, version, region, the roadmap chips) are illustrative.
 
 | Scene | Component | Page | Shows |
 | --- | --- | --- | --- |
 | Deploy flow | `DeploymentDiagram.astro` | `/` hero | GitHub repo → Deployz readiness report and release → the app live in customer AWS with its resources. |
 | Product preview | `ProductPreview.astro` | `/` | Configure / Deploy / Manage tabs on a stage. Simplified interface, not a screenshot. |
-| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` | Readiness report and release (steps 1–2) → installation link page (step 3) → live deployment with the install steps (step 4). |
-| AI and guardrails | `diagram/GuardrailsDiagram.astro` | `/how-it-works` step 1 | Analysis (rule-based checks, one AI-inferred value with the real "Inferred by AI analysis" hint) → your review (detected values, needs input) → Deployz guardrails (schema, supported resources, preflight, size profile) producing CloudFormation. |
-| Fleet | `diagram/FleetDiagram.astro` | `/case-studies` header | One release branching into three customer AWS accounts, each with its own status. |
-| Build vs. Deployz | `diagram/BuildVsBuyDiagram.astro` | `/pricing` | The same six pieces of work twice. Build it yourself: "Your team" owns all six. With Deployz: your team owns the product; Deployz owns the five deployment rows. |
+| Journey | `diagram/JourneyDiagram.astro` | `/how-it-works` hero | Four compact step cards joined by unlabelled beams: connect GitHub (scan), build a release (tag gets its check), customer connects AWS (cursor clicks Connect), Deployz deploys (live). One small loop per card. |
+| AI and guardrails | `diagram/GuardrailsDiagram.astro` | `/how-it-works` step 1 | Two zones split by a guardrail (no beams): Understanding (detected values, each with its source: Check, AI · verify, or You) and Deploying (the rule-based compiler's allowlist of supported AWS resources, "Anything else" struck through, CloudFormation output). |
+| Customer install | `diagram/InstallDiagram.astro` | `/how-it-works` step 3 | Two browser windows: the installation link (resources, cost estimate, IAM actions, Launch connector), then the customer's CloudFormation console inside the AWS account boundary, where the connector stack goes from CREATE_IN_PROGRESS to CREATE_COMPLETE. |
+| Fleet | `diagram/FleetDiagram.astro` | `/use-cases` header | One release branching into three customer AWS accounts, each with its own status. |
+| Build vs. Deployz | `diagram/BuildVsBuyDiagram.astro` | `/pricing` | Two timeline lanes on one unitless time axis. Build it yourself: five deployment projects in a staircase, the product waits (dashed), one customer live at the end. With Deployz: one short setup bar, the product ships the whole time, customers go live from early on. Bars draw in on scroll where supported. |
 | Infrastructure | `diagram/InfraDiagram.astro` | `/how-it-works` | Customer AWS account: edge (ACM, ALB), dedicated VPC (web service, workers, RDS, ElastiCache), account level (S3, Secrets Manager). |
 | Architecture | `diagram/RelayDiagram.astro` | `/security` | Customer account with VPC resources and the connector; outbound HTTPS to Deployz; no inbound path. |
 
@@ -146,8 +147,8 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 | Page | Composition |
 | --- | --- |
 | `/` | Seven sections: centered hero (audience line "For B2B SaaS Teams", H1 "Deploy into customer AWS", primary + secondary action) + diagram; three benefits (quiet grid); 4-step process rail; product preview tabs; ownership (quiet grid); FAQ (split); closing CTA. |
-| `/how-it-works` | Left-aligned header with the journey diagram below the text (PageHeader `visual` slot); step 1 connect GitHub and analyze your repo (split: text and the AI-and-guardrails definition list, then the guardrails diagram; anchor `#ai-guardrails`); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail); 4 deploy and manage updates (quiet grid of four); what Deployz creates in customer AWS (heading, infrastructure diagram, two-column definition list); compatibility (split); closing CTA. Step labels are blue pills. `/features` redirects here. |
-| `/case-studies` | Left-aligned header with the fleet diagram aside and a note that the cases are example scenarios, not named customer stories; four cases (split rows: audience and headline, then "The situation", "With Deployz", and two checks); what you can build (split, definition list); good fit / not a fit (split); closing CTA. `/who-its-for` and `/use-cases` redirect here. Never present invented customers, quotes, logos, or metrics as real. |
+| `/how-it-works` | Left-aligned header with the journey diagram below the text (PageHeader `visual` slot); step 1 connect GitHub and analyze your repo (split: text and the AI-and-guardrails definition list, then the guardrails diagram; anchor `#ai-guardrails`); 2 configure and build a release (quiet grid); 3 customer connects AWS (split + step rail, then the install diagram); 4 deploy and manage updates (quiet grid of four); what Deployz creates in customer AWS (heading, infrastructure diagram, two-column definition list); compatibility (split); closing CTA. Step labels are blue pills. `/features` redirects here. |
+| `/use-cases` | Left-aligned header with the fleet diagram aside and a note that the cases are example scenarios, not named customer stories; four cases (split rows: audience and headline, then "The situation", "With Deployz", and two checks); what you can build (split, definition list); good fit / not a fit (split); closing CTA. `/who-its-for` and `/case-studies` redirect here. Never present invented customers, quotes, logos, or metrics as real. |
 | `/byoc-deployments` | Landing page. Header with CTA; hosted SaaS vs. BYOC vs. self-hosted (quiet grid of definition lists, BYOC column with the brand hairline); what a BYOC platform needs (split); limits; closing CTA. |
 | `/deploy-saas-to-customer-aws` | Landing page. Header with CTA; three ways teams do it (quiet grid); you / your customer / Deployz (split); FAQ (split); closing CTA. |
 | `/pricing` | Left-aligned header; one bounded plan frame (price and CTA beside the free evaluation) with the included list below in two columns; cost estimator for an active subscription (range input, inline script); value section (build vs. Deployz diagram, three benefits, punchline); billing FAQ; closing CTA. |
@@ -159,7 +160,7 @@ Direction: **blueprint precision**. Every illustration is a small, believable pr
 
 ## 9. Motion and accessibility
 
-- Motion: color transitions only (150ms), using `transition-[color]` so that the focus outline never animates. No entrance animations, no `transition-all`. Illustrations may run the beam light and the live pulse (section 7). `prefers-reduced-motion` disables all transitions and hides both animations.
+- Motion: color transitions only (150ms), using `transition-[color]` so that the focus outline never animates. No entrance animations, no `transition-all`. Illustrations may run the quiet motion in section 7. `prefers-reduced-motion` disables all transitions and stops every illustration animation.
 - WCAG 2.2 AA: secondary text `#52525B` for paragraphs; tertiary `#71717A` only for short labels.
 - Every link and button has a target of at least 44px.
 - One h1 per page; headings in order; named landmarks; skip link to `#main-content`.
