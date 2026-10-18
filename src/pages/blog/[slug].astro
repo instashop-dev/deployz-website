@@ -31,7 +31,8 @@ const structuredData = {
   articleSection: category,
   ...(pubDate && { datePublished: isoDate(pubDate) }),
   ...((updatedDate ?? pubDate) && { dateModified: isoDate((updatedDate ?? pubDate)!) }),
-  ...(author && { author: { '@type': 'Person', name: author } }),
+  // A team byline ("Team Deployz") is an organization, not a person.
+  ...(author && { author: { '@type': author.startsWith('Team ') ? 'Organization' : 'Person', name: author } }),
   publisher: {
     '@type': 'Organization',
     name: 'Deployz',

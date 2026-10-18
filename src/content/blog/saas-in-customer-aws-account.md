@@ -3,7 +3,11 @@ title: "Your customer wants your SaaS in their AWS account. Now what?"
 description: "A practical guide to clarifying customer-hosted requirements, checking your app, assigning responsibilities and planning a first deployment."
 slug: "saas-in-customer-aws-account"
 category: "Decisions"
-draft: true
+draft: false
+author: "Team Deployz"
+pubDate: 2026-10-18
+related:
+  - ai-app-customer-cloud-data-privacy
 ---
 
 The demo went well. Then your customer asks: “Can this run in our AWS account?”
