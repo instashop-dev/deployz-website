@@ -262,6 +262,9 @@ test.describe('public design-system contract', () => {
     // Cloudflare Web Analytics injects its beacon at the edge; the CSP must allow it.
     expect(headers).toMatch(/script-src[^;]*https:\/\/static\.cloudflareinsights\.com/);
     expect(headers).toMatch(/connect-src[^;]*https:\/\/cloudflareinsights\.com/);
+    // The Google tag loads from googletagmanager.com and sends hits to google-analytics.com.
+    expect(headers).toMatch(/script-src[^;]*https:\/\/\*\.googletagmanager\.com/);
+    expect(headers).toMatch(/connect-src[^;]*https:\/\/\*\.google-analytics\.com/);
     expect(robots).toContain('Sitemap: https://deployz.dev/sitemap-index.xml');
   });
 
