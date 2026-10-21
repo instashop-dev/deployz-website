@@ -215,7 +215,7 @@ const sec = 'mt-16 scroll-mt-24 sm:mt-20';
           <li>Price: $49 a month base plus $19 a month for each billable customer environment, in US dollars. Taxes may apply.</li>
           <li>Free, with no card: sign-up, analysis, configuration, release builds, and one active test deployment per application in your own AWS account. That AWS account pays its own AWS costs.</li>
           <li>The $49 base starts when you activate your subscription. Deployz asks you to subscribe when you start your first customer deployment, and customers can install only while the subscription is active. The base continues until you cancel, even with zero environments.</li>
-          <li>The $19 for an environment starts when it first becomes ready and stops when its removal starts. Paddle prorates partial months. An installation that never becomes ready has no $19 charge.</li>
+          <li>The $19 for an environment starts when it first becomes ready. It pauses while the environment has failed with nothing running, or while its connector has not checked in for 15 minutes. It resumes when the environment is ready and connected again. A failed update that keeps the previous release running is still billed. The $19 stops permanently when removal starts. Paddle prorates partial months. An installation that never becomes ready has no $19 charge.</li>
           <li>Updates, retries, and rollbacks have no extra charge.</li>
           <li>If a payment fails or you cancel, existing environments keep running and you can still manage them, but you cannot start new customer deployments.</li>
           <li>You manage invoices, payment details, and cancellation in the Paddle billing portal.</li>

@@ -55,7 +55,7 @@ const questions = [
   {
     question: 'What is a billable customer environment?',
     answer:
-      "One Deployz-managed deployment of your app in a customer's AWS account that has become ready and has not started removal. Test deployments in your own account are not billable.",
+      "One Deployz-managed deployment of your app in a customer's AWS account while it serves the customer. Billing starts when it first becomes ready. It pauses while the environment has failed with nothing running, or while its connector has not checked in for 15 minutes. It resumes when the environment is ready and connected again. A failed update that keeps the previous release running is still billable. Test deployments in your own account are not billable.",
   },
   {
     question: 'Are AWS costs included?',
@@ -70,7 +70,7 @@ const questions = [
   {
     question: 'Do costs continue after I remove an environment?',
     answer:
-      'The Deployz charge stops when removal starts. Removal keeps the database and the S3 bucket, and they continue to cause AWS charges until someone deletes them.',
+      'The Deployz charge stops permanently when removal starts. Removal keeps the database and the S3 bucket, and they continue to cause AWS charges until someone deletes them.',
   },
 ];
 ---
