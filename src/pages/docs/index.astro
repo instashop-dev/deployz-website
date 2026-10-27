@@ -16,14 +16,14 @@ const toc = [
 const steps = [
   { title: 'Connect GitHub.', body: 'Deployz uses a GitHub App with read-only access to repository contents and metadata. It analyzes the repository and gives a readiness report: what passed, what needs input, and what blocks deployment.' },
   { title: 'Configure and build a release.', body: 'Enter the required settings and fix issues in your code. Deployz can write fix instructions for your own coding agent. It does not change your repository. Build a versioned release from a commit. You can also keep one free test deployment per application in your own AWS account.' },
-  { title: 'Your customer connects AWS.', body: 'Send your customer an installation link. They review the plan, the resources, the AWS cost estimate, and the requested IAM actions, then launch the connector as a CloudFormation stack from their own AWS console. They do not need a Deployz account. Customers can install only while your subscription is active.' },
+  { title: 'Your customer connects AWS.', body: 'Send your customer an installation link. They review the plan, the resources, the AWS cost estimate, and the requested IAM actions, then launch the connector as a CloudFormation stack from their own AWS console. They do not need a Deployz account; they confirm their email with a one-time code. Customers can install only while your subscription is active.' },
   { title: 'Deploy and manage updates.', body: 'Deployz creates the infrastructure and deploys the release. You start each later update and rollback.' },
 ];
 
 const requirements = [
   'Your repository is on GitHub.',
   'The repository has a Dockerfile that builds a production image. This is required. There is no buildpack.',
-  'The application returns a 2xx response on an HTTP health-check path, such as /health. A deployment becomes ready only after this check passes.',
+  'The application answers an HTTP health check on a path such as /health. If Deployz finds no health route, it checks / and accepts a redirect. A deployment becomes ready only after this check passes.',
   'Migration and scheduled-job commands run through sh, so the image must include a shell.',
   'Each customer has an AWS account. The person who launches the connector can create a CloudFormation stack that includes IAM roles.',
   'Container images are Linux x86-64. ARM64 is not supported.',
@@ -144,8 +144,8 @@ const sec = 'mt-16 scroll-mt-24 sm:mt-20';
         <h3 class="mt-10 text-[18px] font-semibold tracking-[-0.01em]">Permissions</h3>
         <ul class="mt-4 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-subtle">
           <li>The permissions are substantial. The connector creates network, compute, database, cache, storage, and IAM resources for the application.</li>
-          <li>Most write actions are limited to resources tagged for the installation, and the connector role has a permissions boundary.</li>
-          <li>The CloudFormation execution role that the connector uses can create IAM roles for the application and has no permissions boundary.</li>
+          <li>Most write actions are limited to the resources of the installation, and the connector role has a permissions boundary.</li>
+          <li>The CloudFormation execution role that the connector uses can create IAM roles for the application. It has no permissions boundary itself, but every IAM role it creates must carry an application role boundary.</li>
           <li>The connector cannot read application logs.</li>
           <li>Before connecting, the customer can review every requested IAM action on the installation page.</li>
         </ul>
