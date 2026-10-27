@@ -18,7 +18,7 @@ const permissions = [
 
 const limits = [
   'The customer can review every requested IAM action before connecting.',
-  'Most write actions are limited to resources tagged for the installation. The connector role has a permissions boundary; the CloudFormation role that creates app resources does not.',
+  'Most write actions are limited to the resources of the installation, so several deployments can share one AWS account. The connector role has a permissions boundary. The CloudFormation role that creates app resources does not, but every IAM role it creates must carry an application role boundary.',
   'The connector cannot read application logs.',
 ];
 

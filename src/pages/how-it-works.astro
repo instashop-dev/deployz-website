@@ -44,7 +44,7 @@ const lifecycle = [
 
 const goodFit = [
   'One Linux x86-64 container image, built from your Dockerfile',
-  'A web or API service with an HTTP health check',
+  'A web or API service that answers HTTP requests',
   'Optional background workers from the same image',
   'Optional PostgreSQL 16 or MySQL 8.0',
   'Optional Redis-compatible cache',
@@ -115,8 +115,9 @@ const notSupported = [
     </ul>
     <p class="mt-10 max-w-[720px] text-[15px] text-muted-foreground">
       The report is advisory and can miss behavior in your code. For a blocker, Deployz can write fix
-      instructions for your own coding tool; it never changes your repository. You can also run one free test
-      deployment in your own AWS account.
+      instructions for your own coding tool; it never changes your repository. If some blockers come from code you do
+      not use in production, you can mark them as not used. You can also run one free test deployment in your own
+      AWS account to confirm the result.
     </p>
   </Section>
 
@@ -127,8 +128,8 @@ const notSupported = [
         <p class="mb-4 inline-flex min-h-7 items-center rounded-full border border-brand-border bg-brand-subtle px-3 text-[13px] font-semibold text-brand-hover">Step 3</p>
         <h2 id="install-title" class="text-h2">Your customer connects AWS</h2>
         <p class="mt-5 max-w-[520px] text-muted-foreground">
-          Send each customer an installation link. They do not need a Deployz account. Customers can
-          install only while your subscription is active.
+          Send each customer an installation link. They do not need a Deployz account; they confirm their
+          email with a one-time code. Customers can install only while your subscription is active.
         </p>
         <a class="link-arrow mt-6" href="/security/#aws-access">How AWS access works <ArrowRight className="size-4" aria-hidden="true" /></a>
       </div>
