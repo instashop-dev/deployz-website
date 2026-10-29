@@ -1,0 +1,90 @@
+---
+// Google Analytics loads only after the visitor accepts. The choice is kept in localStorage.
+// Without JavaScript, the banner stays hidden and Google Analytics does not load.
+const GA_ID = 'G-DE7R661L7Z';
+---
+
+<section
+  data-cookie-banner
+  hidden
+  aria-label="Cookie consent"
+  class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background shadow-menu"
+>
+  <div class="container-site flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <p class="text-[14px] text-muted-foreground">
+      We use Google Analytics cookies to measure how visitors use this site. These cookies load only if you accept.
+    </p>
+    <div class="flex shrink-0 flex-wrap gap-3">
+      <button type="button" class="btn btn-secondary flex-1 sm:flex-none" data-cookie-choice="denied">Reject</button>
+      <button type="button" class="btn btn-primary flex-1 sm:flex-none" data-cookie-choice="granted">Accept</button>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ GA_ID }}>
+  (function () {
+    var KEY = 'deployz-cookie-consent';
+    var banner = document.querySelector('[data-cookie-banner]');
+    var loaded = false;
+
+    function read() {
+      try { return localStorage.getItem(KEY); } catch (e) { return null; }
+    }
+    function write(value) {
+      try { localStorage.setItem(KEY, value); } catch (e) {}
+    }
+    function loadAnalytics() {
+      if (loaded) return;
+      loaded = true;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', GA_ID);
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+      document.head.appendChild(script);
+    }
+    function clearAnalyticsCookies() {
+      var host = location.hostname;
+      var domains = ['', host, '.' + host, '.' + host.split('.').slice(-2).join('.')];
+      document.cookie.split(';').forEach(function (cookie) {
+        var name = cookie.split('=')[0].trim();
+        if (name.indexOf('_ga') !== 0) return;
+        domains.forEach(function (domain) {
+          document.cookie = name + '=; Max-Age=0; path=/' + (domain ? '; domain=' + domain : '');
+        });
+      });
+    }
+
+    var choice = read();
+    if (choice === 'granted') loadAnalytics();
+    // Google Analytics can write its cookies again while the page unloads, so clear them on each visit.
+    else if (choice === 'denied') clearAnalyticsCookies();
+    else if (banner) banner.hidden = false;
+
+    if (banner) {
+      banner.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-cookie-choice]');
+        if (!button) return;
+        var choice = button.getAttribute('data-cookie-choice');
+        write(choice);
+        banner.hidden = true;
+        if (choice === 'granted') {
+          loadAnalytics();
+        } else {
+          clearAnalyticsCookies();
+          // Google Analytics cannot be unloaded from a page. Reload so it stops.
+          if (loaded) location.reload();
+        }
+      });
+    }
+
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest('[data-cookie-settings]') || !banner) return;
+      banner.hidden = false;
+      var focusTarget = banner.querySelector('[data-cookie-choice="granted"]');
+      if (focusTarget) focusTarget.focus();
+    });
+  })();
+</script>

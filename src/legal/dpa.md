@@ -1,6 +1,6 @@
 ---
 title: "Data Processing Addendum"
-updated: "October 15, 2026"
+updated: "October 29, 2026"
 ---
 
 This Data Processing Addendum ("DPA") applies to Deployz, operated by Thalia Technologies Private Limited, Mumbai, India. It forms part of the Terms of Service or other agreement between Deployz and the customer ("Agreement") when incorporated into that Agreement. It governs personal data Deployz processes on a customer's behalf.
@@ -50,8 +50,10 @@ The following providers support Deployz. Their specific legal roles may differ d
 | HubSpot | CRM |
 | OpenAI | AI services |
 | Anthropic | AI services |
+| OpenRouter | AI services |
 | Brevo | Emails |
 | PostHog | Analytics |
+| Google Analytics | Website analytics |
 
 ## 6. International transfers
 

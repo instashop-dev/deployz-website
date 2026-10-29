@@ -1,6 +1,6 @@
 ---
 title: "Privacy Policy"
-updated: "October 15, 2026"
+updated: "October 29, 2026"
 ---
 
 Deployz is operated by Thalia Technologies Private Limited, Mumbai, India ("Deployz", "we", "us"). We respect your privacy. This policy explains the information we collect, how we use it, and your choices.
@@ -43,7 +43,7 @@ We retain information for as long as reasonably necessary to provide services, m
 
 ## 8. Cookies and analytics
 
-We may use cookies and similar technologies for authentication, security, functionality, and analytics. Where required, we provide consent choices. You can also manage cookies through your browser.
+We may use cookies and similar technologies for authentication, security, functionality, and analytics. On this website, we use Google Analytics to measure how visitors use the site. Google Analytics loads only after you click Accept in the cookie banner. To change your choice, use the Cookie Settings link in the website footer. You can also manage cookies through your browser.
 
 ## 9. Your privacy rights
 
