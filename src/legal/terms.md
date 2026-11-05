@@ -1,6 +1,6 @@
 ---
 title: "Terms of Service"
-updated: "October 15, 2026"
+updated: "November 3, 2026"
 ---
 
 These Terms govern Deployz, a service operated by Thalia Technologies Private Limited, Mumbai, India. By using Deployz, you agree to these Terms. If acting for an organization, you confirm that you may accept them on its behalf.
@@ -35,7 +35,7 @@ AI-assisted recommendations may be incomplete or inaccurate, even when combined 
 
 ## 6. Fees and billing
 
-Fees follow the plan and terms shown at checkout. Recurring subscriptions continue until canceled; cancellation stops future renewals but does not automatically refund past charges. Taxes may apply. AWS charges are separate. Refunds required by law will be honored. We may change prices with reasonable advance notice for affected subscriptions.
+Our order process is conducted by our online reseller, Creem, which is the merchant of record for all orders. Creem processes payments and handles billing inquiries, invoices, sales tax and VAT, and refunds. Fees follow the plan and terms shown at checkout. Recurring subscriptions continue until canceled; cancellation stops future renewals but does not automatically refund past charges. Taxes may apply. AWS charges are separate. Refunds required by law will be honored. We may change prices with reasonable advance notice for affected subscriptions.
 
 ## 7. Acceptable use
 
