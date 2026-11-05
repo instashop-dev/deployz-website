@@ -1,6 +1,6 @@
 ---
 title: "Privacy Policy"
-updated: "November 3, 2026"
+updated: "November 5, 2026"
 ---
 
 Deployz is operated by Thalia Technologies Private Limited, Mumbai, India ("Deployz", "we", "us"). We respect your privacy. This policy explains the information we collect, how we use it, and your choices.
@@ -64,3 +64,5 @@ Thalia Technologies Private Limited — Mumbai, India
 Website: https://deployz.dev
 
 Privacy and other inquiries: https://share.hsforms.com/1dOsn_DJtRhq47DXIaRjeLw5auur
+
+Email: [help@deployz.dev](mailto:help@deployz.dev)

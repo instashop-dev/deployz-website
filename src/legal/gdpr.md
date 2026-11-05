@@ -1,6 +1,6 @@
 ---
 title: "GDPR & Data Protection"
-updated: "October 15, 2026"
+updated: "November 5, 2026"
 ---
 
 Deployz helps software teams deploy applications into AWS accounts they control. This page explains our approach to data protection and how responsibilities are shared.
@@ -48,3 +48,5 @@ Thalia Technologies Private Limited — Mumbai, India
 Website: https://deployz.dev
 
 Data protection inquiries: https://share.hsforms.com/1dOsn_DJtRhq47DXIaRjeLw5auur
+
+Email: [help@deployz.dev](mailto:help@deployz.dev)

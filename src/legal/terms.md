@@ -1,6 +1,6 @@
 ---
 title: "Terms of Service"
-updated: "November 3, 2026"
+updated: "November 5, 2026"
 ---
 
 These Terms govern Deployz, a service operated by Thalia Technologies Private Limited, Mumbai, India. By using Deployz, you agree to these Terms. If acting for an organization, you confirm that you may accept them on its behalf.
@@ -84,3 +84,5 @@ Thalia Technologies Private Limited — Mumbai, India
 Website: https://deployz.dev
 
 Contact: https://share.hsforms.com/1dOsn_DJtRhq47DXIaRjeLw5auur
+
+Email: [help@deployz.dev](mailto:help@deployz.dev)

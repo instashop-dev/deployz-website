@@ -1,6 +1,6 @@
 ---
 title: "Data Processing Addendum"
-updated: "November 3, 2026"
+updated: "November 5, 2026"
 ---
 
 This Data Processing Addendum ("DPA") applies to Deployz, operated by Thalia Technologies Private Limited, Mumbai, India. It forms part of the Terms of Service or other agreement between Deployz and the customer ("Agreement") when incorporated into that Agreement. It governs personal data Deployz processes on a customer's behalf.
@@ -70,3 +70,5 @@ Thalia Technologies Private Limited — Mumbai, India
 Website: https://deployz.dev
 
 DPA inquiries: https://share.hsforms.com/1dOsn_DJtRhq47DXIaRjeLw5auur
+
+Email: [help@deployz.dev](mailto:help@deployz.dev)
