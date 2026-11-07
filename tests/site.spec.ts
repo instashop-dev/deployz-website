@@ -239,8 +239,9 @@ test.describe('public design-system contract', () => {
 
     await expect(slider).toHaveValue('3');
     await expect(total).toHaveText('$106');
-    // The estimate assumes an active subscription: the $49 base stays at zero environments.
-    for (const [value, expected] of [['0', '$49'], ['1', '$68'], ['10', '$239'], ['30', '$619']] as const) {
+    // A subscription always bills at least one environment, so the slider starts at one.
+    await expect(slider).toHaveAttribute('min', '1');
+    for (const [value, expected] of [['1', '$68'], ['10', '$239'], ['30', '$619']] as const) {
       await slider.fill(value);
       await expect(total).toHaveText(expected);
     }

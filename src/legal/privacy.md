@@ -1,6 +1,6 @@
 ---
 title: "Privacy Policy"
-updated: "November 5, 2026"
+updated: "November 7, 2026"
 ---
 
 Deployz is operated by Thalia Technologies Private Limited, Mumbai, India ("Deployz", "we", "us"). We respect your privacy. This policy explains the information we collect, how we use it, and your choices.
@@ -13,7 +13,7 @@ Deployz is operated by Thalia Technologies Private Limited, Mumbai, India ("Depl
 
 - Technical information: IP addresses, browser details, service activity, diagnostics, and cookies.
 
-- Billing information: Subscriptions, billing details, and payment status. Payments are processed by Creem, our merchant of record, which collects your payment details under its own privacy policy.
+- Billing information: Subscriptions, billing details, and payment status. Payments are processed by Polar, our merchant of record, which collects your payment details under its own privacy policy.
 
 - Support information: Information you provide when contacting us.
 

@@ -32,7 +32,7 @@ const requirements = [
 const architecture = [
   { term: 'Application', desc: 'One container image built from your Dockerfile. It runs as a web service on Amazon ECS (Fargate) behind an Application Load Balancer. Optional background workers run from the same image with a different command. Workers have no public URL. An optional one-time migration command runs before each release starts.' },
   { term: 'AWS Regions', desc: 'Each customer environment runs in one AWS Region. You choose the Region when you create the deployment. The product shows the Regions that are available for installation.' },
-  { term: 'Database', desc: 'Optional. Amazon RDS for PostgreSQL 16 or RDS for MySQL 8.0, encrypted, in private subnets. Automated backups are kept for 7 days and deletion protection is on. Deployz creates a database only when the analysis finds that the application needs one.' },
+  { term: 'Database', desc: 'Optional. Amazon RDS for PostgreSQL 16 or RDS for MySQL 8.0, encrypted, in private subnets. Automated backups are kept for 7 days by default and deletion protection is on. Deployz creates a database only when the analysis finds that the application needs one.' },
   { term: 'Cache', desc: 'Optional. One Redis-compatible node (Amazon ElastiCache for Valkey). TLS connections, AUTH, cluster mode, and Redis Stack modules are not supported.' },
   { term: 'File storage', desc: 'One Amazon S3 bucket for each environment. Object storage only. Attachable disk volumes are not available.' },
   { term: 'HTTPS and custom domains', desc: 'Each deployment gets an HTTPS URL on a deployz.dev subdomain. Traffic to this default URL passes through the Deployz Cloudflare proxy before it reaches the load balancer in the customer account. One custom domain per deployment is optional: the customer adds two DNS records, and traffic to the custom domain goes directly to their load balancer. The default URL stays available.' },
@@ -212,13 +212,13 @@ const sec = 'mt-16 scroll-mt-24 sm:mt-20';
       <section id="billing" class={sec}>
         <h2 class={h2}>Billing</h2>
         <ul class="mt-4 grid list-disc gap-3 pl-5 text-muted-foreground marker:text-subtle">
-          <li>Price: $49 a month base plus $19 a month for each billable customer environment, in US dollars. Taxes may apply.</li>
+          <li>Price: $49 a month base plus $19 a month for each billable customer environment, in US dollars. A subscription always bills at least one environment, so it starts at $68 a month. Taxes may apply.</li>
           <li>Free, with no card: sign-up, analysis, configuration, release builds, and one active test deployment per application in your own AWS account. That AWS account pays its own AWS costs.</li>
-          <li>The $49 base starts when you activate your subscription. Deployz asks you to subscribe when you start your first customer deployment, and customers can install only while the subscription is active. The base continues until you cancel, even with zero environments.</li>
+          <li>The $49 base starts when you activate your subscription. Deployz asks you to subscribe when you start your first customer deployment, and customers can install only while the subscription is active. The base and one environment charge continue until you cancel, even with zero live environments. Only an owner or admin can start or change the subscription.</li>
           <li>The $19 for an environment starts when it first becomes ready. It pauses while the environment has failed with nothing running, or while its connector has not checked in for 15 minutes. It resumes when the environment is ready and connected again. A failed update that keeps the previous release running is still billed. The $19 stops permanently when removal starts. Partial months are prorated. An installation that never becomes ready has no $19 charge.</li>
           <li>Updates, retries, and rollbacks have no extra charge.</li>
           <li>If a payment fails or you cancel, existing environments keep running and you can still manage them, but you cannot start new customer deployments.</li>
-          <li>Creem is the merchant of record. It processes payments and handles invoices, tax, and refunds. You manage invoices, payment details, and cancellation in the Creem billing portal.</li>
+          <li>Polar is the merchant of record. It processes payments and handles invoices, receipts, and tax. You can enter a discount code at checkout. You manage invoices, payment details, and cancellation in the Polar billing portal.</li>
           <li>AWS bills the AWS account owner for infrastructure.</li>
         </ul>
         <a class="link-arrow mt-4" href="/pricing/">See pricing <ArrowRight className="size-4" aria-hidden="true" /></a>
