@@ -1,0 +1,58 @@
+[
+  {
+    "scene": 1,
+    "start": 0,
+    "end": 18.41599059376837,
+    "label": "Product walkthrough",
+    "title": "Deploy your SaaS into customer AWS"
+  },
+  {
+    "scene": 2,
+    "start": 18.41599059376837,
+    "end": 40.20205761316872,
+    "label": "Readiness analysis",
+    "title": "Check the app before installation"
+  },
+  {
+    "scene": 3,
+    "start": 40.20205761316872,
+    "end": 62.552666498698244,
+    "label": "Live product capture",
+    "title": "Review resources and settings"
+  },
+  {
+    "scene": 4,
+    "start": 62.552666498698244,
+    "end": 86.62532963802805,
+    "label": "Architecture illustration",
+    "title": "Your customer approves AWS access"
+  },
+  {
+    "scene": 5,
+    "start": 86.62532963802805,
+    "end": 110.3416477702192,
+    "label": "Process illustration",
+    "title": "Deploy the selected release"
+  },
+  {
+    "scene": 6,
+    "start": 110.3416477702192,
+    "end": 130.96117409926933,
+    "label": "Release illustration",
+    "title": "Choose each customer's release"
+  },
+  {
+    "scene": 7,
+    "start": 130.96117409926933,
+    "end": 160.72683295540438,
+    "label": "Technical review",
+    "title": "Review data flows and costs"
+  },
+  {
+    "scene": 8,
+    "start": 160.72683295540438,
+    "end": 185.0360376249265,
+    "label": "Free evaluation",
+    "title": "Get Started Free at deployz.dev"
+  }
+]
