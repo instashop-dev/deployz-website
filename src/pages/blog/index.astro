@@ -25,7 +25,13 @@ const posts = (await getVisiblePosts()).sort(
 const intro = 'Practical guides to deploying and running software in your customers’ AWS accounts.';
 ---
 
-<Base title="The Deployz Blog — Guides for Customer-Hosted Software" description={intro}>
+<Base
+  title="The Deployz Blog — Guides for Customer-Hosted Software"
+  description={intro}
+  ogImage="/og/blog.png"
+  ogImageAlt="The Deployz Blog: guides for customer-hosted software"
+  breadcrumbs={[{ name: 'Blog', path: '/blog/' }]}
+>
   <PageHeader title="The Deployz Blog">
     {intro}
   </PageHeader>

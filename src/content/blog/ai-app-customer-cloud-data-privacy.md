@@ -1,5 +1,6 @@
 ---
 title: "Deploying an AI app in a customer's cloud: what stays private?"
+seoTitle: "AI app in a customer's cloud: what stays private?"
 description: "Learn where documents, prompts, embeddings, model calls and logs travel, and how to explain an AI application's data boundaries to customers."
 slug: "ai-app-customer-cloud-data-privacy"
 category: "Guides"

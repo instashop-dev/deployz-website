@@ -50,7 +50,7 @@ const LOGIN_URL = 'https://app.deployz.dev/sign-in';
 const CTA_LABEL = 'Get Started Free';
 
 const pageTitles = [
-  { path: '/', title: 'Deployz — Deploy Your SaaS Into Customer AWS' },
+  { path: '/', title: 'Deploy Your SaaS Into Customer AWS Accounts | Deployz' },
   { path: '/how-it-works', title: 'How Deployz Works — From GitHub to Customer AWS' },
   { path: '/use-cases', title: 'Deployz Use Cases — Deploying Into Customer AWS' },
   { path: '/about', title: 'About Deployz — Customer-Hosted Deployment for Small Teams' },
@@ -507,6 +507,145 @@ test.describe('public design-system contract', () => {
       expect(html).not.toMatch(/<astro-island\b/i);
       expect(html).not.toMatch(/(?:@astrojs\/react|react-dom|client:(?:load|idle|visible|media|only))/i);
       expect(html).not.toMatch(/<script\b[^>]*(?:type=["']module["']|data-astro-(?:rerun|exec))/i);
+    }
+  });
+});
+
+// SEO checks for each URL in the built sitemap (docs/SEO_PLAN.md, task 11). Run them before each release.
+test.describe('SEO contract', () => {
+  test.skip(baselineOnly, 'The baseline run isolates current route behavior.');
+
+  const SITE = 'https://deployz.dev';
+  const landingPages = ['/byoc-deployments/', '/deploy-saas-to-customer-aws/'];
+
+  async function sitemapPaths(): Promise<string[]> {
+    const sitemap = await readFile('dist/sitemap-0.xml', 'utf8');
+    return [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => new URL(match[1]).pathname);
+  }
+
+  test('gives each sitemap page one h1, a short unique title and description, a canonical URL, and valid JSON-LD', async ({ page, request }) => {
+    const paths = await sitemapPaths();
+    const titles = new Map<string, string>();
+    const imagePaths = new Set<string>();
+    expect(paths.length).toBeGreaterThan(10);
+
+    for (const path of paths) {
+      const response = await page.goto(path);
+      expect(response?.status(), path).toBe(200);
+
+      await expect(page.locator('h1'), path).toHaveCount(1);
+
+      const title = await page.title();
+      expect(title.length, `${path} title "${title}"`).toBeLessThanOrEqual(60);
+      expect(titles.get(title), `${path} has the same title as ${titles.get(title)}`).toBeUndefined();
+      titles.set(title, path);
+
+      const description = (await page.locator('meta[name="description"]').getAttribute('content')) ?? '';
+      expect(description.length, `${path} description`).toBeGreaterThan(50);
+      expect(description.length, `${path} description`).toBeLessThanOrEqual(160);
+
+      await expect(page.locator('link[rel="canonical"]'), path).toHaveAttribute('href', `${SITE}${path}`);
+      await expect(page.locator('meta[property="og:url"]'), path).toHaveAttribute('content', `${SITE}${path}`);
+      await expect(page.locator('meta[name="robots"][content*="noindex" i]'), path).toHaveCount(0);
+
+      // Social preview: a large card with a 1200 × 630 image and page-specific alt text.
+      await expect(page.locator('meta[name="twitter:card"]'), path).toHaveAttribute('content', 'summary_large_image');
+      await expect(page.locator('meta[property="og:image:width"]'), path).toHaveAttribute('content', '1200');
+      await expect(page.locator('meta[property="og:image:height"]'), path).toHaveAttribute('content', '630');
+      await expect(page.locator('meta[property="og:image:alt"]'), path).toHaveAttribute('content', /\S/);
+      const image = (await page.locator('meta[property="og:image"]').getAttribute('content')) ?? '';
+      expect(image.startsWith(`${SITE}/og/`), `${path} og:image ${image}`).toBe(true);
+      imagePaths.add(new URL(image).pathname);
+
+      const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+      expect(blocks.length, `${path} JSON-LD`).toBeGreaterThan(0);
+      const types: string[] = [];
+      for (const block of blocks) {
+        const data = JSON.parse(block);
+        expect(data['@context'], path).toBe('https://schema.org');
+        expect(typeof data['@type'], path).toBe('string');
+        types.push(data['@type']);
+      }
+      if (path === '/') {
+        expect(types, path).toEqual(expect.arrayContaining(['Organization', 'WebSite']));
+      } else {
+        expect(types, path).toContain('BreadcrumbList');
+      }
+      expect(types, path).not.toContain('FAQPage');
+    }
+
+    for (const image of imagePaths) {
+      const response = await request.get(image);
+      expect(response.status(), image).toBe(200);
+      expect(response.headers()['content-type'], image).toContain('image/png');
+    }
+  });
+
+  test('describes the published price in the pricing structured data', async ({ page }) => {
+    await page.goto('/pricing/');
+    const blocks = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((block) => JSON.parse(block));
+    const app = blocks.find((data) => data['@type'] === 'SoftwareApplication');
+    const pageText = await page.locator('main').innerText();
+
+    expect(app.applicationCategory).toBe('DeveloperApplication');
+    expect(app.operatingSystem).toBe('Web');
+    expect(app.offers.priceCurrency).toBe('USD');
+    expect(pageText).toContain(`$${app.offers.price}`);
+    for (const spec of app.offers.priceSpecification) {
+      expect(pageText).toContain(`$${spec.price}`);
+    }
+    expect(app.aggregateRating).toBeUndefined();
+    expect(app.review).toBeUndefined();
+  });
+
+  test('gives each blog post a truthful BlogPosting with an image', async ({ page, request }) => {
+    for (const route of articleRoutes) {
+      await page.goto(route.path);
+      const blocks = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((block) => JSON.parse(block));
+      const post = blocks.find((data) => data['@type'] === 'BlogPosting');
+
+      expect(post.headline, route.path).toBe(await page.locator('h1').innerText());
+      expect(post.url, route.path).toBe(`${SITE}${route.path}`);
+      expect(post.datePublished, route.path).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(post.image.length, route.path).toBeGreaterThan(0);
+      for (const image of post.image) {
+        expect((await request.get(new URL(image).pathname)).status(), image).toBe(200);
+      }
+    }
+  });
+
+  test('links to each landing page from the body of another page', async ({ page }) => {
+    const paths = await sitemapPaths();
+    const linkedFrom = new Map(landingPages.map((path) => [path, [] as string[]]));
+
+    for (const path of paths) {
+      await page.goto(path);
+      for (const landing of landingPages) {
+        if (landing !== path && (await page.locator(`main a[href="${landing}"]`).count()) > 0) {
+          linkedFrom.get(landing)?.push(path);
+        }
+      }
+    }
+
+    for (const [landing, sources] of linkedFrom) {
+      expect(sources.length, `${landing} body links`).toBeGreaterThan(0);
+    }
+  });
+
+  test('sets a truthful lastmod on sitemap URLs', async () => {
+    const sitemap = await readFile('dist/sitemap-0.xml', 'utf8');
+    const entries = [...sitemap.matchAll(/<url><loc>([^<]+)<\/loc>(?:<lastmod>([^<]+)<\/lastmod>)?/g)];
+    const lastmods = entries.map((entry) => entry[2]).filter(Boolean);
+
+    expect(entries.length).toBeGreaterThan(10);
+    for (const lastmod of lastmods) {
+      expect(new Date(lastmod).getTime(), lastmod).toBeLessThanOrEqual(Date.now());
+    }
+    // The build time is not a change date, so the URLs must not all share one timestamp.
+    expect(new Set(lastmods).size).toBeGreaterThan(1);
+    for (const route of articleRoutes) {
+      const entry = entries.find((match) => new URL(match[1]).pathname === route.path);
+      expect(entry?.[2], route.path).toBeTruthy();
     }
   });
 });

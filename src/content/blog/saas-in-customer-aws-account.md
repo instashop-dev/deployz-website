@@ -1,5 +1,6 @@
 ---
 title: "Your customer wants your SaaS in their AWS account. Now what?"
+seoTitle: "Your customer wants your SaaS in their AWS account"
 description: "A practical guide to clarifying customer-hosted requirements, checking your app, assigning responsibilities and planning a first deployment."
 slug: "saas-in-customer-aws-account"
 category: "Decisions"

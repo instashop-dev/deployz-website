@@ -9,6 +9,7 @@
     "check": "astro check",
     "preview": "astro preview",
     "test:e2e": "playwright test",
+    "og-images": "node scripts/og-images.mjs",
     "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {

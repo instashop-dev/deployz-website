@@ -12,6 +12,8 @@ const blog = defineCollection({
     z
       .object({
         title: z.string().min(1),
+        // Optional shorter title for the <title> tag and social cards. The page heading keeps `title`.
+        seoTitle: z.string().min(1).max(60).optional(),
         description: z.string().min(1),
         slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
         category: z.enum(['Guides', 'Decisions', 'Engineering']),
