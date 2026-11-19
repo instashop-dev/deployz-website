@@ -112,7 +112,10 @@ const questions = [
     <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
       <div>
         <h2 id="faq-title" class="text-h2 max-w-[440px]">Questions</h2>
-        <a class="link-arrow mt-6" href="/security/">Security and architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
+        <div class="mt-6 flex flex-wrap gap-x-8 gap-y-2">
+          <a class="link-arrow" href="/security/">Security and architecture <ArrowRight className="size-4" aria-hidden="true" /></a>
+          <a class="link-arrow" href="/byoc-deployments/">BYOC deployments on AWS <ArrowRight className="size-4" aria-hidden="true" /></a>
+        </div>
       </div>
       <FaqList items={questions} class="max-w-[760px]" />
     </div>

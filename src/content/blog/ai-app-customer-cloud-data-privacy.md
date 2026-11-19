@@ -136,4 +136,4 @@ Your application's model calls, document processing, telemetry and agent permiss
 
 Review the deployment platform's boundaries too. In Deployz's current architecture, builds and release images are handled in its control plane, while application runtime logs remain in the customer's account. Default deployment URLs use Cloudflare's edge, and vendor-managed custom domains route directly to the customer's load balancer.
 
-**[Explore Deployz](https://deployz.dev/) as the deployment layer, then map the complete data path for your AI application.**
+**[See how Deployz runs BYOC deployments on AWS](/byoc-deployments/), then map the complete data path for your AI application.**

@@ -139,4 +139,4 @@ The vendor connects a GitHub repository, prepares a release and shares an instal
 
 Check application compatibility and networking requirements first. Deployz does not currently support private-only web applications or deployment into an existing customer VPC.
 
-**[Explore Deployz](https://deployz.dev/) to see whether its customer-hosted deployment model fits your application.**
+**[See how Deployz deploys your SaaS into a customer's AWS account](/deploy-saas-to-customer-aws/) and check whether its model fits your application.**
