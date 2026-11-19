@@ -2,7 +2,8 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "deployz-website",
   "compatibility_date": "2026-08-01",
-  "workers_dev": true,
+  // Serve the site only on deployz.dev. A workers.dev copy is a duplicate host for search engines.
+  "workers_dev": false,
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page"
