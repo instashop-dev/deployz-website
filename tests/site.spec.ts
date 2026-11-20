@@ -21,7 +21,6 @@ const coreRoutes = [
   { path: '/gdpr', label: 'gdpr' },
   { path: '/dpa', label: 'dpa' },
   { path: '/blog', label: 'blog' },
-  { path: '/docs', label: 'docs' },
   { path: '/404', label: 'not-found' },
 ] as const;
 
@@ -349,8 +348,29 @@ test.describe('public design-system contract', () => {
     }
 
     for (const path of paths) {
+      // The Mintlify docs site serves /docs on production. This build has no /docs pages.
+      if (path === '/docs' || path.startsWith('/docs/')) continue;
       expect((await request.get(path)).status(), path).toBe(200);
     }
+  });
+
+  test('links to the Mintlify docs with their canonical URLs and keeps /docs out of this build', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('navigation', { name: /primary/i }).locator('a[href="/docs"]')).toHaveCount(1);
+    await expect(page.locator('footer a[href="/docs"]')).toHaveCount(1);
+    await page.goto('/how-it-works/');
+    await expect(page.getByRole('link', { name: 'Technical requirements' })).toHaveAttribute('href', '/docs/prepare/requirements');
+
+    for (const route of routes) {
+      await page.goto(route.path);
+      // Mintlify uses no trailing slash and has no anchors from the old single docs page.
+      await expect(page.locator('a[href^="/docs/"][href$="/"], a[href^="/docs/#"], a[href^="/docs#"]'), route.path).toHaveCount(0);
+    }
+
+    const [sitemap, robots] = await Promise.all([readFile('dist/sitemap-0.xml', 'utf8'), readFile('dist/robots.txt', 'utf8')]);
+    expect(sitemap).not.toContain('https://deployz.dev/docs');
+    expect(robots).toContain('Sitemap: https://deployz.dev/docs/sitemap.xml');
+    expect(await access('dist/docs').then(() => true, () => false)).toBe(false);
   });
 
   test('shows a keyboard focus indicator on an auth action', async ({ page }) => {
@@ -497,7 +517,6 @@ test.describe('public design-system contract', () => {
       'dist/gdpr/index.html',
       'dist/dpa/index.html',
       'dist/blog/index.html',
-      'dist/docs/index.html',
       'dist/404.html',
       ...articleRoutes.map((route) => `dist${route.path}index.html`),
     ];

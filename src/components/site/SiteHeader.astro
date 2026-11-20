@@ -1,11 +1,11 @@
 ---
-import { CTA_LABEL, LOGIN_URL, SIGNUP_URL } from '@/lib/site';
+import { CTA_LABEL, DOCS_URL, LOGIN_URL, SIGNUP_URL } from '@/lib/site';
 import Logo from './Logo.astro';
 
 const navLinks = [
   { href: '/how-it-works/', label: 'How It Works' },
   { href: '/pricing/', label: 'Pricing' },
-  { href: '/docs/', label: 'Docs' },
+  { href: DOCS_URL, label: 'Docs' },
 ];
 
 const pathname = Astro.url.pathname;

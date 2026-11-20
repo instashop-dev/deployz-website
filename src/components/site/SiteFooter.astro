@@ -1,5 +1,5 @@
 ---
-import { LOGIN_URL, SUPPORT_EMAIL } from '@/lib/site';
+import { DOCS_URL, LOGIN_URL, SUPPORT_EMAIL } from '@/lib/site';
 import Logo from './Logo.astro';
 
 const footerGroups = [
@@ -18,7 +18,7 @@ const footerGroups = [
     title: 'Resources',
     links: [
       { href: '/about/', label: 'About' },
-      { href: '/docs/', label: 'Documentation' },
+      { href: DOCS_URL, label: 'Documentation' },
       { href: '/blog/', label: 'Blog' },
       { href: LOGIN_URL, label: 'Log In' },
       { href: `mailto:${SUPPORT_EMAIL}`, label: SUPPORT_EMAIL },

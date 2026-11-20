@@ -9,7 +9,7 @@ import CtaSection from '@/components/site/CtaSection.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
 import SectionHeading from '@/components/site/SectionHeading.astro';
-import { CTA_LABEL, SIGNUP_URL } from '@/lib/site';
+import { CTA_LABEL, DOCS_REQUIREMENTS_URL, SIGNUP_URL } from '@/lib/site';
 import Base from '../layouts/Base.astro';
 
 const reportGroups = [
@@ -200,7 +200,7 @@ const notSupported = [
           Deployz supports one application architecture on AWS. Some apps need code changes first.
         </p>
         <div class="mt-6 flex flex-wrap gap-x-8 gap-y-2">
-          <a class="link-arrow" href="/docs/#supported-architecture">Technical requirements <ArrowRight className="size-4" aria-hidden="true" /></a>
+          <a class="link-arrow" href={DOCS_REQUIREMENTS_URL}>Technical requirements <ArrowRight className="size-4" aria-hidden="true" /></a>
           <a class="link-arrow" href="/deploy-saas-to-customer-aws/">Compare deployment options <ArrowRight className="size-4" aria-hidden="true" /></a>
         </div>
       </div>

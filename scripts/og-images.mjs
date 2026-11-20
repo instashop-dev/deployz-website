@@ -32,7 +32,6 @@ const pages = [
   { file: 'about', eyebrow: 'About', headline: 'Customer-hosted deployment for small teams', sub: 'Why we started Deployz and why we focus on AWS.' },
   { file: 'byoc-deployments', eyebrow: 'BYOC deployments', headline: 'BYOC deployments for SaaS on AWS', sub: "Install, update, and monitor your SaaS in each customer's AWS account." },
   { file: 'deploy-saas-to-customer-aws', eyebrow: 'Guide', headline: "Deploy your SaaS into a customer's AWS account", sub: 'Templates, a home-built platform, or Deployz: who does what.' },
-  { file: 'docs', eyebrow: 'Documentation', headline: 'Requirements, AWS architecture and access', sub: 'Connector access, data handling, updates, removal, and billing.' },
   { file: 'blog', eyebrow: 'Deployz Blog', headline: 'Guides for customer-hosted software', sub: "Deploy and run software in your customers' AWS accounts." },
 ];
 
