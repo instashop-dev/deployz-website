@@ -52,7 +52,7 @@ The audit used the source code and a production build (`npm run build`, 17 pages
 | P6 | HTTP is not sent to HTTPS | Live check: `http://deployz.dev/pricing/` returns 200. (`www` correctly returns 301 to the apex host.) | Crawlers can see a duplicate `http://` copy of each page. |
 | P7 | Some meta descriptions are long | `/how-it-works/`, `/security/` and `/deploy-saas-to-customer-aws/` are about 165–170 characters | Search engines cut the text. |
 | P8 | Blog titles are long | Template adds " — Deployz Blog". The result is about 80 characters. | Search engines cut the title. The brand suffix uses space that the topic needs. |
-| P9 | Documentation is one page | `/docs/` has seven topics on one URL | One URL cannot rank for many specific questions, for example connector IAM access or supported architecture. |
+| P9 | Documentation is one page | `/docs/` has seven topics on one URL | One URL cannot rank for many specific questions, for example connector IAM access or supported architecture. Status (20 November 2026): solved. A Mintlify docs site with about 30 topic pages now serves `deployz.dev/docs` (see task 12). |
 | P10 | No `lastmod` in the sitemap | Default `@astrojs/sitemap` settings | Search engines get no signal when a page changes. |
 | P11 | No search engine accounts are documented | No verification file or record in the repository | Unknown. Confirm that GSC and Bing Webmaster Tools are set up. |
 | P12 | Only two blog posts | `src/content/blog/` | Little topical depth. Few pages can earn links. |
@@ -119,7 +119,7 @@ Do these tasks in order. Each task names the files to change and the check that 
    - Keep titles at about 60 characters or fewer. Keep descriptions at about 150–155 characters.
    - Change the blog title template in `src/pages/blog/[slug].astro`. Use `{title} | Deployz`. If the post title has more than 50 characters, use the post title only.
    - Apply the page changes in section 5.
-   - Status: done in the repository. The home and docs titles are changed as section 5 tells. The descriptions of `/how-it-works/`, `/security/`, `/deploy-saas-to-customer-aws/`, `/byoc-deployments/` and `/pricing/` are 155 characters or fewer. All titles are 60 characters or fewer. The two blog post titles have more than 60 characters, so each post has an optional `seoTitle` in the frontmatter. The `<title>` uses `seoTitle` (if it exists), and the page heading keeps `title`.
+   - Status: done in the repository. The home and docs titles are changed as section 5 tells. (Later, the Astro docs page was removed, because Mintlify serves `/docs` on production. See task 12.) The descriptions of `/how-it-works/`, `/security/`, `/deploy-saas-to-customer-aws/`, `/byoc-deployments/` and `/pricing/` are 155 characters or fewer. All titles are 60 characters or fewer. The two blog post titles have more than 60 characters, so each post has an optional `seoTitle` in the frontmatter. The `<title>` uses `seoTitle` (if it exists), and the page heading keeps `title`.
 
 10. **Add `lastmod` to the sitemap (P10).**
     - Use the `serialize` option of `@astrojs/sitemap`. For blog posts, use `updatedDate` or `pubDate`. For other pages, use the date of the last substantive change. Do not use the build date for every page, because it is not true.
@@ -139,14 +139,12 @@ Do these tasks in order. Each task names the files to change and the check that 
 ### 3.3 Priority 2 (weeks 4–8)
 
 12. **Split the documentation into topic pages (P9).**
-    - Keep `/docs/` as an overview page with links. Move each topic to its own URL, for example:
-      - `/docs/requirements/`
-      - `/docs/supported-architecture/`
-      - `/docs/aws-connector-access/` (IAM actions, CloudFormation stack)
-      - `/docs/data-and-secrets/`
-      - `/docs/updates-and-removal/`
-      - `/docs/billing/`
-    - Give each page its own title, description and `BreadcrumbList`. Keep the current anchor links on `/docs/` as links to the new pages.
+    - Status (20 November 2026): the split is done outside this repository. A Mintlify docs site serves `deployz.dev/docs` through the Cloudflare edge. It has about 30 topic pages, for example `/docs/prepare/requirements` and `/docs/customers/security`. Mintlify sets the titles, descriptions, canonical URLs and social images of these pages. It publishes its own sitemap at `https://deployz.dev/docs/sitemap.xml`.
+    - This repository has no `/docs` page now. Its sitemap does not list `/docs`. `robots.txt` lists the Mintlify sitemap. The header and footer link to `/docs`. Mintlify uses no trailing slash, so do not add one.
+    - Remaining work:
+      - Submit `https://deployz.dev/docs/sitemap.xml` in GSC and Bing Webmaster Tools.
+      - Link marketing pages and posts to the matching Mintlify topic pages (section 5).
+      - Check the Mintlify titles and descriptions with the same length rules as task 9. Change them in the Mintlify project, not here.
     - Verify each fact against the product repository before you publish. Documentation pages describe the product. Keep sales copy out of them.
 
 13. **Decide the AI crawler policy.**
@@ -170,7 +168,7 @@ Give each cluster one primary page. Do not let two pages target the same main qu
 | Deploy into customer AWS | deploy SaaS to customer AWS account; deploy app into customer's AWS; install software in customer AWS account | Commercial, problem-aware | `/deploy-saas-to-customer-aws/` | Exists, orphan |
 | BYOC | BYOC SaaS; bring your own cloud deployment; BYOC on AWS; how to offer BYOC | Commercial, solution-aware | `/byoc-deployments/` | Exists, orphan |
 | BYOC definitions and comparisons | what is BYOC; BYOC vs self-hosted; BYOC vs single-tenant SaaS; customer-hosted vs on-premises | Informational | New blog post (Decisions) | Planned |
-| Customer AWS access | cross-account IAM role for SaaS vendor; vendor access to customer AWS; CloudFormation stack for vendor access; least-privilege vendor IAM | Informational, technical | `/docs/aws-connector-access/` plus a Guides post | Planned |
+| Customer AWS access | cross-account IAM role for SaaS vendor; vendor access to customer AWS; CloudFormation stack for vendor access; least-privilege vendor IAM | Informational, technical | `/docs/customers/security` (Mintlify) plus a Guides post | Docs page exists. Post planned. |
 | App readiness | Dockerfile for customer deployment; health check for ECS Fargate; prepare app for single-tenant deployment | Informational, technical | `/how-it-works/` plus a Guides post | Partly exists |
 | Updates and operations | update software in customer environments; roll back customer deployment; database migrations across tenants | Informational | Guides and Engineering posts | Planned |
 | AI apps in customer cloud | deploy AI app in customer cloud; AI app data privacy customer AWS; private AI agent deployment | Informational | Existing post `ai-app-customer-cloud-data-privacy` plus `/use-cases/` | Exists |
@@ -188,13 +186,13 @@ Apply these changes after you check the queries in section 4. Keep the current f
 | Page | Primary query | Recommended change |
 | --- | --- | --- |
 | `/` | deploy SaaS into customer AWS | Title: "Deploy Your SaaS Into Customer AWS Accounts \| Deployz". Put the query first and the brand last. Add body links to `/byoc-deployments/` and `/deploy-saas-to-customer-aws/`. Add `Organization` and `WebSite` JSON-LD. |
-| `/how-it-works/` | how to deploy into a customer AWS account | Trim the description to 155 characters or fewer. Link each step to the matching docs page after the split (task 12). |
+| `/how-it-works/` | how to deploy into a customer AWS account | Trim the description to 155 characters or fewer. Link each step to the matching Mintlify docs page (task 12). The "Technical requirements" link goes to `/docs/prepare/requirements`. |
 | `/byoc-deployments/` | BYOC deployments on AWS | Keep the title. Add a short "What is BYOC?" answer in the first 100 words. Link to the BYOC definitions post when it exists. |
 | `/deploy-saas-to-customer-aws/` | deploy SaaS to customer AWS account | Trim the description. Link to the "Your customer wants your SaaS in their AWS account" post and to `/security/`. |
 | `/use-cases/` | customer-hosted deployment use cases | Link each persona section to one relevant post. Consider separate persona pages only when each page has distinct, verified content. |
 | `/pricing/` | BYOC pricing, customer-hosted deployment pricing | Keep the price in the title. Add `SoftwareApplication` and `Offer` JSON-LD. Link to the cost post when it exists. |
-| `/security/` | customer-hosted SaaS security | Trim the description. Link to `/docs/aws-connector-access/` and to `/gdpr/`. |
-| `/docs/` | Deployz documentation | Title: "Deployz Docs: Requirements, AWS Architecture and Access". Then split the page (task 12). |
+| `/security/` | customer-hosted SaaS security | Trim the description. Link to `/docs/customers/security` and to `/gdpr/`. |
+| `/docs` | Deployz documentation | Mintlify manages this page and its topic pages, not this repository (task 12). Make title and description changes in the Mintlify project. |
 | `/about/` | brand | Keep. Add links to real company and founder profiles. Use these links in `Organization.sameAs`. |
 | `/blog/` | customer-hosted software guides | Keep. Add the category to each list item when the archive grows. |
 | Blog posts | Each post's central question | Use the new title template (task 9). Add at least one link to a commercial page and one to a related post. |
@@ -213,8 +211,8 @@ Use this structure. Add a section only when it has enough useful pages (blog gui
 ├── /byoc-deployments/             Landing page: BYOC
 ├── /deploy-saas-to-customer-aws/  Landing page: customer AWS
 ├── /compare/                      Comparison pages (planned, after verification)
-├── /docs/                         Docs overview
-│   └── /docs/<topic>/             Docs topic pages (planned)
+├── /docs                          Docs (Mintlify, separate site and sitemap)
+│   └── /docs/<section>/<topic>    Docs topic pages (Mintlify)
 ├── /blog/                         Blog index
 │   └── /blog/<slug>/              Articles
 └── /about/, legal pages
@@ -284,7 +282,7 @@ Get links and mentions that a real vendor audience sees. Do not buy links. Do no
 Many buyers now ask AI assistants, for example ChatGPT, Claude, Perplexity and Google AI features, questions such as "How can I deploy my SaaS into a customer's AWS account?"
 
 1. Answer the main question in the first paragraph of each page and post. The current blog posts already do this.
-2. Use clear facts that a model can quote: supported resources, prices, limits and steps. The docs page has these facts. The split in task 12 makes each fact easier to find and cite.
+2. Use clear facts that a model can quote: supported resources, prices, limits and steps. The Mintlify docs pages have these facts, one topic on each page, so each fact is easy to find and cite. Mintlify also publishes `/docs/llms.txt`.
 3. Keep the entity data the same everywhere: name, description, URL and category.
 4. Keep important text in the HTML. Do not put it only in images or diagrams. The current diagrams use SVG with text, which is good.
 5. Each month, ask the main AI assistants the ten most important questions from section 4. Record whether they mention or cite Deployz, and which pages they cite. Use this record to choose content updates.
@@ -315,7 +313,7 @@ Do not add identity tracking to fill gaps in attribution.
 | --- | --- | --- |
 | Days 1–7 | Tasks 1–6 (P0): duplicate hosts, trailing slash, orphan links, GSC and Bing, customer domain decision | No duplicate hosts. Landing pages have internal links. Sitemap submitted. Domain decision recorded. |
 | Days 8–21 | Tasks 7–11 (P1): structured data, social images, titles and descriptions, `lastmod`, SEO tests | Validators show no errors. SEO tests pass in the release check. |
-| Days 22–60 | Task 12 docs split. Blog posts 1–4. Footer and body links for new pages. | Six docs topic pages indexed. Four new posts published and linked. |
+| Days 22–60 | Task 12: submit the Mintlify docs sitemap and link to the docs topic pages. Blog posts 1–4. Footer and body links for new pages. | Docs topic pages indexed. Four new posts published and linked. |
 | Days 61–90 | Blog posts 5–6. First comparison page. Product Hunt or Show HN launch. First quarterly review. | Baseline and targets recorded. First external links earned. |
 | Months 4–6 | Blog posts 7–12. More comparison pages after verification. Content refresh. | Plan updated from GSC data. |
 
