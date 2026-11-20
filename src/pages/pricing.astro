@@ -6,6 +6,7 @@ import FaqList from '@/components/site/FaqList.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
 import { BASE_PRICE, CTA_LABEL, ENVIRONMENT_PRICE, SIGNUP_URL } from '@/lib/site';
+import { pricingStructuredData } from '@/lib/seo';
 import Base from '../layouts/Base.astro';
 
 const DEFAULT_ENVIRONMENTS = 3;
@@ -81,8 +82,12 @@ const questions = [
 ---
 
 <Base
-  title="Deployz Pricing — $49/month + $19 per Customer Environment"
-  description="Free evaluation with no card. Then $49 a month plus $19 a month per billable customer environment, from $68 a month. AWS bills infrastructure costs separately."
+  title={`Deployz Pricing — $${BASE_PRICE}/month + $${ENVIRONMENT_PRICE} per Customer Environment`}
+  description={`Free evaluation, no card. Then $${BASE_PRICE} a month plus $${ENVIRONMENT_PRICE} a month per billable customer environment, from $${estimate(1)} a month. AWS bills infrastructure separately.`}
+  ogImage="/og/pricing.png"
+  ogImageAlt={`Deployz pricing: $${BASE_PRICE} a month plus $${ENVIRONMENT_PRICE} per customer environment`}
+  structuredData={pricingStructuredData()}
+  breadcrumbs={[{ name: 'Pricing', path: '/pricing/' }]}
 >
   <!-- P1. Hero -->
   <PageHeader eyebrow="Pricing" title="Private deployments. Small-team pricing.">

@@ -106,20 +106,24 @@ Do these tasks in order. Each task names the files to change and the check that 
    - Blog posts and inner pages: `BreadcrumbList` (Home › Blog › Post).
    - Do not add `FAQPage` markup to get rich results. Google shows FAQ rich results only for a small set of authoritative sites. Keep the FAQ text in HTML, because it helps AI answers.
    - Check: Google Rich Results Test and the Schema.org validator show no errors.
+   - Status: done in the repository. `Base.astro` has the `structuredData` and `breadcrumbs` props. The builders are in `src/lib/seo.ts`. The home page has `Organization` and `WebSite`. `Organization` has no `sameAs`, because the site links to no company profile now. Add `sameAs` when the `/about/` page links to real profiles. The pricing page has `SoftwareApplication` with an `Offer` from `BASE_PRICE` and `ENVIRONMENT_PRICE`. All other public pages have a `BreadcrumbList`. There is no `FAQPage`, rating or review markup. After the deploy, run the Rich Results Test on the live URLs.
 
 8. **Make real social preview images (P5).**
    - Make one 1200 × 630 image for each main page and a template for blog posts. Use the marketing design system (`DESIGN.md`). Generate the images at build time with a fixed template, or make them by hand.
    - Add `og:image:width`, `og:image:height` and a page-specific `og:image:alt`. Set `twitter:card` to `summary_large_image`.
    - Add `image` to the `BlogPosting` data when a post has a cover or a preview image.
    - Check: the LinkedIn Post Inspector and an X card preview show the large image.
+   - Status: done in the repository. `scripts/og-images.mjs` (`npm run og-images`) makes the PNG files in `public/og/` with the Chromium of Playwright. It adds no dependency. There is one image for each main page, one default image and one image for each blog post that is not a draft. Run the script again after you add a post or change a headline in the script. If a post has no image file, the post uses the default image. `BlogPosting.image` contains the cover (if the post has one) and the preview image. After the deploy, check the LinkedIn Post Inspector and the X card preview.
 
 9. **Fix title and description lengths (P7, P8).**
    - Keep titles at about 60 characters or fewer. Keep descriptions at about 150–155 characters.
    - Change the blog title template in `src/pages/blog/[slug].astro`. Use `{title} | Deployz`. If the post title has more than 50 characters, use the post title only.
    - Apply the page changes in section 5.
+   - Status: done in the repository. The home and docs titles are changed as section 5 tells. The descriptions of `/how-it-works/`, `/security/`, `/deploy-saas-to-customer-aws/`, `/byoc-deployments/` and `/pricing/` are 155 characters or fewer. All titles are 60 characters or fewer. The two blog post titles have more than 60 characters, so each post has an optional `seoTitle` in the frontmatter. The `<title>` uses `seoTitle` (if it exists), and the page heading keeps `title`.
 
 10. **Add `lastmod` to the sitemap (P10).**
     - Use the `serialize` option of `@astrojs/sitemap`. For blog posts, use `updatedDate` or `pubDate`. For other pages, use the date of the last substantive change. Do not use the build date for every page, because it is not true.
+    - Status: done in the repository. `scripts/sitemap-lastmod.mjs` gives the `serialize` function. A blog post uses `updatedDate` or `pubDate`. Another page uses the date of the last git commit that changed its source file (and the legal Markdown file that it imports). If git is not available, the URL has no `lastmod`. Build from a full clone, not a shallow clone, so that the dates are correct.
 
 11. **Add automated SEO checks (P13).**
     - In `tests/site.spec.ts`, add checks for each page in the sitemap:
@@ -130,6 +134,7 @@ Do these tasks in order. Each task names the files to change and the check that 
       - no `noindex` on public pages;
       - each landing page has at least one internal link from body content.
     - Run the tests before each release.
+    - Status: done in the repository. The `SEO contract` group in `tests/site.spec.ts` reads `dist/sitemap-0.xml` and does these checks on each URL. It also checks the social image tags and files, the pricing `Offer` against the page text, the `BlogPosting` data, and the sitemap `lastmod` values.
 
 ### 3.3 Priority 2 (weeks 4–8)
 

@@ -23,7 +23,7 @@ const documents = [
 ];
 ---
 
-<Base title={`${title} — Deployz`} description={description}>
+<Base title={`${title} — Deployz`} description={description} breadcrumbs={[{ name: title, path: current }]}>
   <PageHeader eyebrow="Legal" title={title}>
     Last updated: {updated}
   </PageHeader>

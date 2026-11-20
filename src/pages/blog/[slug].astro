@@ -1,7 +1,9 @@
 ---
+import { existsSync } from 'node:fs';
 import { getEntries, render } from 'astro:content';
 import PageHeader from '@/components/site/PageHeader.astro';
 import { formatDate, getVisiblePosts, isoDate, isPublished, isVisible, postUrl, type BlogPost } from '@/lib/blog';
+import { DEFAULT_OG_IMAGE, ORGANIZATION_ID } from '@/lib/seo';
 import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
@@ -14,11 +16,25 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, category, author, pubDate, updatedDate, related } = post.data;
+const { title, seoTitle, description, category, author, pubDate, updatedDate, related, cover } = post.data;
 const { Content } = await render(post);
 const relatedPosts = (await getEntries(related)).filter(isVisible);
 const canonicalURL = new URL(postUrl(post), Astro.site);
 const isDraft = !isPublished(post);
+
+// Title template: "{title} | Deployz". A title of more than 50 characters has no suffix.
+const shortTitle = seoTitle ?? title;
+const pageTitle = shortTitle.length > 50 ? shortTitle : `${shortTitle} | Deployz`;
+
+// Social preview: the generated 1200 × 630 image for this post (scripts/og-images.mjs), else the site default.
+const postOgImage = `/og/blog/${post.id}.png`;
+const hasPostOgImage = existsSync(`public${postOgImage}`);
+const ogImage = hasPostOgImage ? postOgImage : DEFAULT_OG_IMAGE;
+const ogImageAlt = hasPostOgImage ? `${title} — Deployz Blog` : undefined;
+const images = [
+  ...(cover ? [new URL(cover.src, Astro.site).href] : []),
+  ...(hasPostOgImage ? [new URL(postOgImage, Astro.site).href] : []),
+];
 
 // Truthful BlogPosting data: only the fields the post really has.
 const structuredData = {
@@ -33,8 +49,10 @@ const structuredData = {
   ...((updatedDate ?? pubDate) && { dateModified: isoDate((updatedDate ?? pubDate)!) }),
   // A team byline ("Team Deployz") is an organization, not a person.
   ...(author && { author: { '@type': author.startsWith('Team ') ? 'Organization' : 'Person', name: author } }),
+  ...(images.length > 0 && { image: images }),
   publisher: {
     '@type': 'Organization',
+    '@id': ORGANIZATION_ID,
     name: 'Deployz',
     url: new URL('/', Astro.site).href,
     logo: { '@type': 'ImageObject', url: new URL('/android-chrome-512x512.png', Astro.site).href },
@@ -42,12 +60,23 @@ const structuredData = {
 };
 ---
 
-<Base title={`${title} — Deployz Blog`} description={description} ogType="article" noindex={isDraft}>
+<Base
+  title={pageTitle}
+  description={description}
+  ogType="article"
+  noindex={isDraft}
+  ogImage={ogImage}
+  ogImageAlt={ogImageAlt}
+  structuredData={structuredData}
+  breadcrumbs={[
+    { name: 'Blog', path: '/blog/' },
+    { name: title, path: postUrl(post) },
+  ]}
+>
   <Fragment slot="head">
     {pubDate && <meta property="article:published_time" content={pubDate.toISOString()} />}
     {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
     {author && <meta name="author" content={author} />}
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </Fragment>
 
   <PageHeader eyebrow={category} title={title}>
