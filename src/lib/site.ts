@@ -9,6 +9,7 @@ export const CTA_LABEL = 'Get Started Free';
 // its own sitemap (https://deployz.dev/docs/sitemap.xml).
 export const DOCS_URL = '/docs';
 export const DOCS_REQUIREMENTS_URL = '/docs/prepare/requirements';
+export const DOCS_API_PIPELINE_URL = '/docs/api/pipeline';
 
 // Published prices (USD per month). The pricing page, its estimator, and the FAQs read these.
 export const BASE_PRICE = 49;
