@@ -66,7 +66,7 @@ const questions = [
   {
     question: 'What happens if a payment fails or I cancel?',
     answer:
-      'Existing customer environments keep running, and you can still update, roll back, and remove them. You cannot start new customer deployments until your subscription is active again. Manage invoices, payment details, and cancellation in the Polar billing portal.',
+      'Existing customer environments keep running, and you can still update, roll back, and remove them. You cannot start new customer deployments until your subscription is active again. Cancel and download invoices in the Deployz billing settings. A cancellation takes effect at the end of the paid period. Update payment details in the Polar billing portal.',
   },
   {
     question: 'Who processes payments?',
@@ -76,7 +76,7 @@ const questions = [
   {
     question: 'Do costs continue after I remove an environment?',
     answer:
-      'The Deployz charge stops permanently when removal starts. Removal keeps the database and the S3 bucket, and they continue to cause AWS charges until someone deletes them.',
+      'The Deployz charge stops permanently when removal starts. Removal keeps the database and the S3 bucket, and they continue to cause AWS charges until someone deletes them. You can delete them from the Deployz dashboard. If the customer already removed the connector, Reconnect AWS gives them a link that brings it back only to delete that data.',
   },
 ];
 ---
