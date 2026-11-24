@@ -9,7 +9,7 @@ import CtaSection from '@/components/site/CtaSection.astro';
 import PageHeader from '@/components/site/PageHeader.astro';
 import Section from '@/components/site/Section.astro';
 import SectionHeading from '@/components/site/SectionHeading.astro';
-import { CTA_LABEL, DOCS_REQUIREMENTS_URL, SIGNUP_URL } from '@/lib/site';
+import { CTA_LABEL, DOCS_API_PIPELINE_URL, DOCS_REQUIREMENTS_URL, SIGNUP_URL } from '@/lib/site';
 import Base from '../layouts/Base.astro';
 
 const reportGroups = [
@@ -162,6 +162,11 @@ const notSupported = [
         Deployz's rule-based compiler creates the supported AWS infrastructure. Deployz then deploys the
         release and marks the environment ready when its health check passes.
       </p>
+      <p class="mt-4 text-muted-foreground">
+        You can also do this from your CI pipeline. With the Deployz API, your pipeline builds a release
+        from a commit and deploys it to each customer environment.
+      </p>
+      <a class="link-arrow mt-4" href={DOCS_API_PIPELINE_URL}>Deploy from your pipeline <ArrowRight className="size-4" aria-hidden="true" /></a>
     </div>
     <ul class="mt-10 grid gap-10 md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-10">
       {lifecycle.map((item) => (

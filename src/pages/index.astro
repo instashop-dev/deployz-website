@@ -97,6 +97,11 @@ const questions = [
       "From a few minutes to a few hours. Deployz analyzes your repository, identifies infrastructure requirements, and automates deployment into your customer's AWS account. The time depends on the application, the changes it needs, and the AWS resources being provisioned.",
   },
   {
+    question: 'Can I deploy from my CI pipeline?',
+    answer:
+      'Yes. With the Deployz API, your pipeline can build a release from a commit, deploy it to a customer environment, restart it, or roll it back, and then check the result. Send one request for each customer environment. An owner or admin creates the API key in the Deployz dashboard. Setup, customer invitations, and configuration stay in the dashboard.',
+  },
+  {
     question: 'What happens if Deployz is unavailable?',
     answer:
       "The application keeps running in the customer's account, because its requests do not pass through the Deployz management service. New installations and updates pause. Traffic to the default deployz.dev URL depends on the Deployz proxy; with a custom domain, traffic goes directly to the customer's load balancer.",
