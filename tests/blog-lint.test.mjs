@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { lintPost, proseOf, splitFrontmatter } from '../scripts/blog-lint.mjs';
+import { lintPost, proseOf, splitFrontmatter, svgProblems } from '../scripts/blog-lint.mjs';
 
 const NOW = new Date('2026-11-25T12:00:00Z');
 
@@ -104,4 +104,24 @@ test('long titles, headings that skip levels and h1 in the body are errors', () 
 
 test('proseOf removes code and link targets', () => {
   assert.equal(proseOf('a `b` [c](/d) ```\ne\n```').replace(/\s+/g, ' ').trim(), 'a c');
+});
+
+const goodSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" font-family="Inter Variable, Inter, system-ui, sans-serif" font-size="14" fill="#111111"><rect width="400" height="300" fill="#FFFFFF"/><rect x="20" y="20" width="160" height="44" rx="12" fill="#FFFFFF" stroke="#2563EB"/><text x="30" y="47">Deployz</text></svg>';
+
+test('svgProblems accepts a palette SVG and rejects unsafe or unreadable ones', () => {
+  assert.deepEqual(svgProblems(goodSvg), []);
+  assert.ok(svgProblems(goodSvg.replace('<text', '<script>alert(1)</script><text')).some((p) => p.includes('scripts')));
+  assert.ok(svgProblems(goodSvg.replace('<rect', '<rect onload="x()"')).some((p) => p.includes('event handlers')));
+  assert.ok(svgProblems(goodSvg.replace('<text', '<a href="https://evil.example"><text').replace('</text>', '</text></a>')).some((p) => p.includes('external reference')));
+  assert.ok(svgProblems(goodSvg.replace(/400/g, '720')).some((p) => p.includes('vertical composition')));
+  assert.ok(svgProblems(goodSvg.replace('font-size="14"', 'font-size="11"')).some((p) => p.includes('below 12px')));
+  assert.ok(svgProblems(goodSvg.replace('#2563EB', '#FF0000')).some((p) => p.includes('#ff0000')));
+});
+
+test('a new post needs an illustration; older posts are exempt', () => {
+  const live = { ...base, draft: false, pubDate: '2026-11-28', author: 'Team Deployz', summary: base.summary };
+  const later = new Date('2026-12-01T12:00:00Z');
+  assert.ok(lintPost(post(live, goodBody), [], '', later).errors.some((e) => e.includes('at least one illustration')));
+  assert.ok(!lintPost(post({ ...live, pubDate: '2026-11-01' }, goodBody), [], '', later).errors.some((e) => e.includes('illustration')));
+  assert.ok(lintPost(post(base, goodBody), [], '', later).warnings.some((w) => w.includes('at least one illustration')));
 });

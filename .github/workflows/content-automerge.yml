@@ -8,7 +8,8 @@
 #   - the pull request comes from a branch in this repository named content/<slug>
 #   - the title starts with [content-engine]
 #   - the author is the account in the repository variable CONTENT_ENGINE_ACTOR, if that is set
-#   - every changed file is a blog post (src/content/blog/*.md) or its social image (public/og/blog/*.png)
+#   - every changed file is a blog post (src/content/blog/*.md), its illustration (src/content/blog/*.svg,
+#     checked for scripts and external references by the blog lint) or its social image (public/og/blog/*.png)
 #   - unit tests, blog lint, type check, build and browser tests pass
 #
 # Setup: a repository admin sets the variables above and the secrets CLOUDFLARE_API_TOKEN
@@ -52,7 +53,7 @@ jobs:
         run: |
           changed="$(git diff --name-only "$BASE...$HEAD")"
           echo "Changed files:"; echo "$changed"
-          outside="$(echo "$changed" | grep -Ev '^(src/content/blog/[a-z0-9-]+\.md|public/og/blog/[a-z0-9-]+\.png)$' || true)"
+          outside="$(echo "$changed" | grep -Ev '^(src/content/blog/[a-z0-9-]+\.(md|svg)|public/og/blog/[a-z0-9-]+\.png)$' || true)"
           if [ -n "$outside" ]; then
             echo "::error::This pull request changes files outside blog content. A person must review it:"
             echo "$outside"

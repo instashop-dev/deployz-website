@@ -111,9 +111,27 @@ Use one publication eligibility check across routes, listings, sitemap and RSS. 
 
 Use accurate diagrams and current screenshots. Cover artwork is optional. Optimize images and specify dimensions. Keep text and links in rendered HTML. Add descriptive metadata, canonical URLs, social previews, sitemap, RSS and truthful Article or BlogPosting structured data. Preserve slugs; redirect changed URLs.
 
+### Illustrations
+
+Each article has at least one illustration. It shows the article's main idea, such as a data path, an account boundary, a flow or a comparison. It is never decoration. This rule applies to articles published on or after 26 November 2026; `npm run blog:lint` enforces it.
+
+Draw it in the website's illustration language: "blueprint precision" (`DESIGN.md`, section 7). A Markdown post cannot use the scene components, so a blog illustration is a static SVG file that follows the same rules:
+
+- **File.** Put an SVG file next to the post, named `<slug>-<name>.svg`. Reference it in the body with a Markdown image: `![Alt text](./<slug>-<name>.svg)`. Put it where it explains the text, usually after the paragraph that introduces it.
+- **Canvas.** White stage (`#FFFFFF`). The article template adds the 1px frame and the 12px radius, so do not draw an outer frame. A faint dot grid that fades to the edges is allowed (dots `#D4D4D8`), as in the scene stage.
+- **Parts.** Cards: white, 1px `#D4D4D8` outline, 12px radius, a bold title row. Boundaries (AWS account, VPC): dashed `#71717A` outline, 14px radius, with the label in a small tag on the top border. Connections: 1.5px lines, a small port (circle) at each end, and a short label on or next to the line. A connection that does not exist is dashed and marked as blocked.
+- **Color.** Only the site palette: text `#111111`, muted text `#52525B` or `#71717A`, lines and surfaces `#A1A1AA`, `#D4D4D8`, `#E4E4E7`, `#F4F4F5`, `#FAFAFA`. Cobalt (`#2563EB`, with `#EFF6FF` and `#BFDBFE`) marks the one Deployz element: one brand card or one brand connection per illustration. Green (`#15803D`, `#F0FDF4`, `#BBF7D0`) only for live or passed states. Amber (`#A16207`, `#FFFBEB`, `#FDE68A`) only for needs input or changes needed. No other colors, no gradients other than the fading dot grid.
+- **Type.** Inter (`font-family="Inter Variable, Inter, system-ui, sans-serif"`). Monospace (`ui-monospace, SFMono-Regular, Menlo, monospace`) only for real technical tokens: repository, branch, commit, Region, version, file path.
+- **Layout.** A vertical composition, at most 480 units wide (400 is typical), so that it reads on a phone without a second layout. Text renders at 12px or more on a 343px column: at 400 units wide, use a font size of 14 or more.
+- **Truth.** Labels follow the product and AWS exactly: real UI labels, statuses and AWS service names, checked like any other claim. Mark example values (repository, version, Region) as examples in the caption or the alt text. Do not show Deployz data paths more simply than the product facts state them.
+- **Accessibility.** The alt text states what the illustration shows, including each connection and what it carries, so that a reader who cannot see it gets the same facts (at least 12 words). If the illustration needs a caption, write it as a sentence after the image.
+- **Safety.** The file is static: no scripts, event handlers, animation, embedded images or fonts, links, or external references. Keep it under 100 KB.
+
+Reference: `src/content/blog/ai-app-data-flow.svg`.
+
 ## 8 Review and maintenance
 
-For each article, check the brief, factual evidence, originality, title, category, internal links, visuals and CTA. Complete an accountable review: the automated gates in section 10, or a named reviewer. Use the existing release process.
+For each article, check the brief, factual evidence, originality, title, category, internal links, visuals (at least one illustration, section 7) and CTA. Complete an accountable review: the automated gates in section 10, or a named reviewer. Use the existing release process.
 
 For content edits, run relevant validation and inspect the rendered article on mobile and desktop. For template or pipeline changes, also verify keyboard use, code and table overflow, metadata, structured data, draft exclusion, future dates, feeds, redirects and 404s. Run the project's applicable build, type, lint and frontend checks. Do not run AWS tests for blog UI work.
 
@@ -130,10 +148,11 @@ The content engine in the deployz-marketing repository (`content/README.md`) doe
 3. An article publishes only when every gate passes (`npm run content -- gate <id>`):
    - no contradicted or unverifiable claim, and no statement to avoid;
    - each quality score (usefulness, originality, accuracy, clarity) is 4 or more of 5;
-   - `npm run blog:lint` passes;
+   - `npm run blog:lint` passes, which includes at least one illustration that follows section 7;
+   - the illustration's labels pass the same claim check as the text;
    - each `/docs` link goes to a page that exists, and no source URL returns an error.
-4. When a gate fails, the engine revises the draft (at most two times). Then it stops and marks the topic `needs-attention`. A person decides what to do.
-5. Changes arrive as pull requests titled `[content-engine]`. The content auto-merge workflow merges and deploys a pull request only when it changes blog posts and their social images only, and every site check passes. A pull request that changes other files needs a person.
+4. When a gate fails, the engine revises the draft (at most three times). Then it stops and marks the topic `needs-attention`. A person decides what to do.
+5. Changes arrive as pull requests titled `[content-engine]`. The content auto-merge workflow merges and deploys a pull request only when it changes blog posts, their illustrations (`src/content/blog/*.svg`) and their social images only, and every site check passes. A pull request that changes other files needs a person.
 6. Kill switches: `autopilot.enabled` in deployz-marketing `content/config.json` stops publication; the repository variable `CONTENT_AUTOMERGE` stops the merge. Use them when a published article is wrong. Then correct the article promptly (section 8).
 7. Answer engines: put the direct answer in `summary` and in the first paragraph. Use question headings where they match real reader questions. Cite primary sources in `sources`. The site publishes `/llms.txt`, `/llms-full.txt` and a Markdown copy of each post.
 
