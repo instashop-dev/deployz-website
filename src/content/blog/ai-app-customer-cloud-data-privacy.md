@@ -9,7 +9,8 @@ draft: false
 author: "Team Deployz"
 pubDate: 2026-10-18
 related:
-  - saas-in-customer-aws-account
+  - "saas-in-customer-aws-account"
+  - "byoc-vs-self-hosted-vs-single-tenant"
 ---
 
 Moving an AI application into a customer's AWS account gives them control over the resources deployed there. It does not, by itself, tell you where every piece of data goes.
