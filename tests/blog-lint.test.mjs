@@ -54,6 +54,15 @@ test('a draft without a summary or commercial link gets warnings, a published po
   assert.ok(live.errors.some((e) => e.includes('commercial page')));
 });
 
+test('task-list checkboxes and form controls are errors, also in drafts', () => {
+  const tasks = lintPost(post(base, `${goodBody}\n- [ ] Check the Region\n- [x] Check the size\n`), [], '', NOW);
+  assert.ok(tasks.errors.some((e) => e.includes('task-list checkboxes')));
+  const input = lintPost(post(base, `${goodBody}\n<input type="checkbox">\n`), [], '', NOW);
+  assert.ok(input.errors.some((e) => e.includes('form controls')));
+  const fenced = lintPost(post(base, `${goodBody}\n\`\`\`md\n- [ ] in a code block\n\`\`\`\n`), [], '', NOW);
+  assert.equal(fenced.errors.length, 0);
+});
+
 test('a published byline must be in authors.json', () => {
   const live = { ...base, draft: false, pubDate: '2026-11-01', author: 'Jane Invented' };
   assert.ok(lintPost(post(live, goodBody), [], '', NOW, ['Team Deployz']).errors.some((e) => e.includes('not in src/content/authors.json')));

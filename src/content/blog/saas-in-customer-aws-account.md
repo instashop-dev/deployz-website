@@ -10,6 +10,7 @@ author: "Team Deployz"
 pubDate: 2026-10-18
 related:
   - ai-app-customer-cloud-data-privacy
+  - what-is-byoc
 ---
 
 The demo went well. Then your customer asks: “Can this run in our AWS account?”
