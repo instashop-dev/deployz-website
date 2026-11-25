@@ -39,6 +39,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      # due-posts.mjs imports blog-lint.mjs, which needs the yaml package.
+      - run: npm ci
       - name: Find posts due today
         id: due
         env:
@@ -51,8 +53,6 @@ jobs:
             echo "$slugs"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
-      - if: steps.due.outputs.slugs != ''
-        run: npm ci
       - if: steps.due.outputs.slugs != ''
         name: Blog lint
         run: npm run blog:lint
