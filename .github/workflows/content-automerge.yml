@@ -91,4 +91,5 @@ jobs:
       - name: Summary
         env:
           TITLE: ${{ github.event.pull_request.title }}
-        run: echo "### Merged and deployed: $TITLE" >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          echo "### Merged and deployed: $TITLE" >> "$GITHUB_STEP_SUMMARY"
