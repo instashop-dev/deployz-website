@@ -2,6 +2,7 @@
 title: "Your customer wants your SaaS in their AWS account. Now what?"
 seoTitle: "Your customer wants your SaaS in their AWS account"
 description: "A practical guide to clarifying customer-hosted requirements, checking your app, assigning responsibilities and planning a first deployment."
+summary: "First find out what the customer needs to control: the AWS bill, the data, the Region or the network. Then check that you can deliver, update and support the same product in their account. The first milestone is a repeatable deployment, not one running copy."
 slug: "saas-in-customer-aws-account"
 category: "Decisions"
 draft: false

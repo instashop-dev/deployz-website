@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "test:e2e": "playwright test",
     "og-images": "node scripts/og-images.mjs",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler deploy",
+    "blog:lint": "node scripts/blog-lint.mjs",
+    "test:blog": "node --test tests/blog-lint.test.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.5",
@@ -38,6 +40,7 @@
     "shadcn": "^4.18.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
-    "wrangler": "^4.125.0"
+    "wrangler": "^4.125.0",
+    "yaml": "^2.9.0"
   }
 }

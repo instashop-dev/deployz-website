@@ -1,0 +1,48 @@
+# Blog quality gate. Runs on each pull request that changes blog content or the blog templates.
+# The content engine (deployz-marketing, content/README.md) opens its draft and publication pull
+# requests against this repository, so every automated change passes these checks before a person
+# reviews and merges it.
+name: Blog checks
+
+on:
+  pull_request:
+    paths:
+      - 'src/content/**'
+      - 'src/pages/blog/**'
+      - 'src/pages/llms*.ts'
+      - 'src/lib/blog.ts'
+      - 'src/lib/llms.ts'
+      - 'src/lib/seo.ts'
+      - 'src/content.config.ts'
+      - 'scripts/blog-lint.mjs'
+      - 'public/og/blog/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the sitemap lastmod values come from git (scripts/sitemap-lastmod.mjs).
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint rule unit tests
+        run: npm run test:blog
+      - name: Blog lint (SEO, AEO and claims rules)
+        run: npm run blog:lint
+      - name: Type check
+        run: npm run check
+      - name: Install the Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Build and browser tests (SEO and answer-engine contracts)
+        run: npm run test:e2e

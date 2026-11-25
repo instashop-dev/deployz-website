@@ -21,9 +21,13 @@ Local preview: http://localhost:4321
 
 ```text
 npm run check
+npm run blog:lint
+npm run test:blog
 npm run build
 npm run test:e2e
 ```
+
+`npm run blog:lint` checks the SEO, answer-engine and claims rules for each post in `src/content/blog/`. The content engine in the deployz-marketing repository writes drafts for this blog and runs the same check.
 
 The browser tests run the production preview at mobile, tablet, and desktop viewport sizes.
 

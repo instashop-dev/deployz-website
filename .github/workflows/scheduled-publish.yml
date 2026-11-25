@@ -1,0 +1,69 @@
+# Scheduled publication. A merged post with a future pubDate becomes public only after a build on or
+# after that date (src/lib/blog.ts). Each day this workflow checks for posts that are due today and,
+# only then, builds and deploys the site with wrangler.
+#
+# Off by default. To turn it on, a repository admin sets:
+#   - repository variable SCHEDULED_PUBLISH = true
+#   - secrets CLOUDFLARE_API_TOKEN (Workers Scripts: Edit) and CLOUDFLARE_ACCOUNT_ID
+# Until then, publish a scheduled post with the manual `npm run deploy` on its date.
+name: Scheduled publish
+
+on:
+  schedule:
+    # 06:00 UTC every day.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Publish date to check (YYYY-MM-DD). Empty means today (UTC).'
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: vars.SCHEDULED_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Find posts due today
+        id: due
+        env:
+          DATE: ${{ inputs.date }}
+        run: |
+          slugs="$(node scripts/due-posts.mjs ${DATE:+--date "$DATE"})"
+          echo "Due: ${slugs:-none}"
+          {
+            echo "slugs<<EOF"
+            echo "$slugs"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - if: steps.due.outputs.slugs != ''
+        run: npm ci
+      - if: steps.due.outputs.slugs != ''
+        name: Blog lint
+        run: npm run blog:lint
+      - if: steps.due.outputs.slugs != ''
+        name: Build and deploy
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - if: steps.due.outputs.slugs != ''
+        name: Summary
+        run: |
+          echo "### Published" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.due.outputs.slugs }}" | sed 's#^#- https://deployz.dev/blog/#; s#$#/#' >> "$GITHUB_STEP_SUMMARY"

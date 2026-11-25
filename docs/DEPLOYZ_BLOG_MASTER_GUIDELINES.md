@@ -101,7 +101,7 @@ Reuse the existing Astro project, site layout, navigation, components, tokens, t
 
 Use Markdown in an Astro content collection with schema validation. Use reviewed MDX components only when needed and supported by the project. Follow APIs for the installed Astro version. Reuse established content paths and field names; adapt them once rather than creating parallel schemas.
 
-Required metadata: title, stable slug, description, approved category, real author, publication date and draft status. Optional: substantive update date, cover with suitable alt text, featured flag and related posts. Validate dates, unique slugs, assets and internal references. Keep private editorial metadata outside public output.
+Required metadata: title, stable slug, description, approved category, real author, publication date and draft status. Optional: substantive update date, cover with suitable alt text, featured flag, related posts, answer-first summary, key takeaways, sources, reviewer and review date, and the closing call to action. Validate dates, unique slugs, assets and internal references. Keep private editorial metadata outside public output.
 
 Use one publication eligibility check across routes, listings, sitemap and RSS. Exclude drafts and future posts from public output. Protect unpublished previews with access controls. Scheduled publication needs a rebuild or existing publishing trigger.
 
@@ -120,6 +120,17 @@ For content edits, run relevant validation and inspect the rendered article on m
 Use one relevant next step: documentation, pricing or the actual product onboarding flow. Avoid repeated banners and intrusive popups. Measure relevant discovery, CTA clicks, signups and activation with existing analytics. Report attribution limits; do not add identity tracking to fill gaps.
 
 Review volatile pricing, comparisons and instructions about every 90 days; review stable guides about every six months. Correct known errors promptly. Change updated dates only for substantive revisions. Merge overlapping coverage and maintain redirects. Share articles only through authorized channels.
+
+## 10 Automated content pipeline
+
+The content engine in the deployz-marketing repository (`content/README.md`) automates research, briefs, drafts, fact checks, SEO and AEO checks, refresh reminders and distribution drafts. It does not replace section 8. These rules apply to it and to any other automation:
+
+1. Automation writes drafts only. It sets `draft: true`. A person sets `draft: false`, the real author and the publication date.
+2. Each draft has a brief (section 4) and a claims report. The report lists each product claim, its source file in the product repository, and a verdict. Do not publish a post with a contradicted or unverified product claim.
+3. `npm run blog:lint` must pass. It checks titles, descriptions, the answer-first `summary`, headings, links, images and the statements to avoid. The blog workflow runs it on each pull request.
+4. Changes arrive as pull requests. A person reviews and merges them. Automation never merges and never deploys a post that a person did not approve.
+5. Record the fact check in `reviewedBy` and `lastReviewed`. Use the name of the person who did the check.
+6. Answer engines: put the direct answer in `summary` and in the first paragraph. Use question headings where they match real reader questions. Cite primary sources in `sources`. The site publishes `/llms.txt`, `/llms-full.txt` and a Markdown copy of each post.
 
 ## 9 Agent entry point
 

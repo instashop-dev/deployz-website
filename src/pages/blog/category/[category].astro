@@ -1,0 +1,67 @@
+---
+import { ArrowRight } from 'lucide-react';
+import PageHeader from '@/components/site/PageHeader.astro';
+import { categorySlug, formatDate, getCategoryArchives, isoDate, postUrl, readingMinutes, type BlogPost, type Category } from '@/lib/blog';
+import Base from '../../../layouts/Base.astro';
+
+/*
+ * Category archives. A category gets a page only when it has CATEGORY_ARCHIVE_MIN_POSTS published
+ * posts (guidelines, section 3). Until then this route builds no pages.
+ */
+export async function getStaticPaths() {
+  const archives = await getCategoryArchives();
+  return archives.map(({ category, posts }) => ({ params: { category: categorySlug(category) }, props: { category, posts } }));
+}
+
+interface Props {
+  category: Category;
+  posts: BlogPost[];
+}
+
+const { category, posts } = Astro.props;
+const intros: Record<Category, string> = {
+  Guides: 'Practical steps to prepare, deploy, operate and troubleshoot software in customer AWS accounts.',
+  Decisions: 'Costs, ownership, delivery models and build-or-buy choices for customer-hosted software.',
+  Engineering: 'How Deployz mechanisms work, and what we learned while we built them.',
+};
+const path = `/blog/category/${categorySlug(category)}/`;
+---
+
+<Base
+  title={`${category} — The Deployz Blog`}
+  description={intros[category]}
+  ogImage="/og/blog.png"
+  ogImageAlt="The Deployz Blog: guides for customer-hosted software"
+  breadcrumbs={[
+    { name: 'Blog', path: '/blog/' },
+    { name: category, path },
+  ]}
+>
+  <PageHeader eyebrow="The Deployz Blog" title={category}>
+    {intros[category]}
+  </PageHeader>
+
+  <section aria-label={`${category} articles`} class="container-site pb-20 sm:pb-24 lg:pb-32">
+    <ul class="grid gap-5 md:grid-cols-2 md:gap-6">
+      {posts.map((post) => (
+        <li class="group relative flex flex-col rounded-xl border border-border bg-card p-6 transition-[color,border-color] duration-150 hover:border-border-strong has-[a:focus-visible]:border-ring sm:p-8">
+          <h2 class="text-h3 transition-[color] duration-150 group-hover:text-brand">{post.data.title}</h2>
+          <p class="mt-3 text-muted-foreground">{post.data.description}</p>
+          <p class="mt-5 flex flex-wrap gap-x-3 text-[14px] text-subtle">
+            {post.data.pubDate && <time datetime={isoDate(post.data.pubDate)}>{formatDate(post.data.pubDate)}</time>}
+            <span>{readingMinutes(post)} min read</span>
+          </p>
+          <a
+            href={postUrl(post)}
+            aria-label={`Read article: ${post.data.title}`}
+            class="link-arrow mt-auto w-fit pt-4 after:absolute after:inset-0 after:rounded-xl after:content-['']"
+          >
+            Read article
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-12"><a href="/blog/" class="link-arrow">All articles</a></p>
+  </section>
+</Base>

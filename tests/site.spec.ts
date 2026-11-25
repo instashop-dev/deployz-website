@@ -668,3 +668,45 @@ test.describe('SEO contract', () => {
     }
   });
 });
+
+test.describe('Answer-engine contract', () => {
+  test.skip(baselineOnly, 'The baseline run isolates current route behavior.');
+
+  test('gives each blog post a visible short answer that matches its abstract, and a Markdown copy', async ({ page, request }) => {
+    for (const route of articleRoutes) {
+      await page.goto(route.path);
+      const blocks = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((block) => JSON.parse(block));
+      const post = blocks.find((data) => data['@type'] === 'BlogPosting');
+      const summary = page.locator('[data-summary]');
+      if (post.abstract) {
+        await expect(summary, route.path).toHaveText(post.abstract);
+      } else {
+        await expect(summary, route.path).toHaveCount(0);
+      }
+
+      const markdownPath = route.path.replace(/\/$/, '.md');
+      await expect(page.locator('link[rel="alternate"][type="text/markdown"]'), route.path).toHaveAttribute('href', markdownPath);
+      const markdown = await request.get(markdownPath);
+      expect(markdown.status(), markdownPath).toBe(200);
+      expect(await markdown.text(), markdownPath).toContain(`# ${post.headline}`);
+    }
+  });
+
+  test('lists each published post in llms.txt and in the Blog structured data', async ({ page, request }) => {
+    const llms = await request.get('/llms.txt');
+    expect(llms.status()).toBe(200);
+    const text = await llms.text();
+    expect(text.startsWith('# Deployz')).toBe(true);
+    expect((await request.get('/llms-full.txt')).status()).toBe(200);
+
+    await page.goto('/blog/');
+    const blocks = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((block) => JSON.parse(block));
+    const blog = blocks.find((data) => data['@type'] === 'Blog');
+    expect(blog.blogPost.length).toBe(articleRoutes.length);
+
+    for (const route of articleRoutes) {
+      expect(text, route.path).toContain(`https://deployz.dev${route.path.replace(/\/$/, '.md')}`);
+      expect(blog.blogPost.map((item: { url: string }) => new URL(item.url).pathname), route.path).toContain(route.path);
+    }
+  });
+});

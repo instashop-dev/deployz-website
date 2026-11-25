@@ -43,3 +43,42 @@ export function readingMinutes(post: BlogPost): number {
   const words = text.split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
 }
+
+/** Words in the Markdown body, with the same cleanup as readingMinutes(). */
+export function wordCount(post: BlogPost): number {
+  const text = (post.body ?? '')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#>*_`|-]/g, ' ');
+  return text.split(/\s+/).filter(Boolean).length;
+}
+
+/*
+ * A public category archive exists only when the category has at least this many published posts
+ * (guidelines, section 3: avoid empty public archives).
+ */
+export const CATEGORY_ARCHIVE_MIN_POSTS = 5;
+
+export const CATEGORIES = ['Guides', 'Decisions', 'Engineering'] as const;
+export type Category = (typeof CATEGORIES)[number];
+
+export function categorySlug(category: Category): string {
+  return category.toLowerCase();
+}
+
+/** Categories that have a public archive page, with their published posts, newest first. */
+export async function getCategoryArchives(): Promise<{ category: Category; posts: BlogPost[] }[]> {
+  const published = (await getVisiblePosts()).filter((post) => isPublished(post));
+  return CATEGORIES.map((category) => ({ category, posts: published.filter((post) => post.data.category === category) })).filter(
+    (archive) => archive.posts.length >= CATEGORY_ARCHIVE_MIN_POSTS,
+  );
+}
+
+/** The one contextual next step for each `cta` value (guidelines, section 8). */
+export const POST_CTAS = {
+  'how-it-works': { title: 'See the full process', text: 'Follow an application from GitHub to a customer’s AWS account.', href: '/how-it-works/', label: 'See how Deployz works' },
+  signup: { title: 'Check your application', text: 'Connect GitHub and get a readiness report. The evaluation is free; AWS charges still apply.', href: 'SIGNUP', label: 'Get Started Free' },
+  pricing: { title: 'Estimate your Deployz cost', text: 'Deployz charges are separate from the AWS charges that your customer pays.', href: '/pricing/', label: 'See pricing' },
+  docs: { title: 'Read the documentation', text: 'Requirements, setup steps, and reference for vendors and their customers.', href: '/docs', label: 'Open the docs' },
+  security: { title: 'Review the security model', text: 'What the Deployz connector can do in a customer account, and what data reaches Deployz.', href: '/security/', label: 'See security and architecture' },
+} as const;
