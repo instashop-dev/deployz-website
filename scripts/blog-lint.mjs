@@ -117,6 +117,13 @@ export function lintPost(post, posts, pageSources = '', now = new Date(), author
     if (level > previous + 1) errors.push(`The heading "${line.trim()}" skips a level.`);
     previous = level;
   }
+
+  // Task-list items ("- [ ]", "- [x]") render as checkboxes without labels, which fail the
+  // accessibility test (axe: serious). Use plain bullets.
+  const outsideCode = body.replace(/```[\s\S]*?```/g, '');
+  if (/^\s*(?:[-*+]|\d+\.)\s+\[[ xX]\]\s/m.test(outsideCode)) errors.push('Do not use task-list checkboxes ("- [ ]"). They render as inputs without labels. Use plain bullets.');
+  // Raw HTML form controls have the same problem.
+  if (/<(?:input|select|textarea|button)\b/i.test(outsideCode)) errors.push('Do not use HTML form controls in a post.');
   if (headingLines.filter((line) => /^##\s/.test(line)).length < 2) warnings.push('Use at least two h2 sections so that readers and answer engines can find each part.');
   const questionHeadings = headingLines.filter((line) => /\?\s*$/.test(line)).length;
   if (headingLines.length >= 4 && questionHeadings === 0) warnings.push('No heading is a question. Question headings that match real reader questions help answer engines.');
