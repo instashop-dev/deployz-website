@@ -71,6 +71,47 @@ export function linksOf(body) {
   return [...withoutCode.matchAll(/(!?)\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g)].map((m) => ({ image: m[1] === '!', text: m[2], href: m[3] }));
 }
 
+/** Posts published from this date need at least one illustration (guidelines, section 7). */
+export const ILLUSTRATION_RULE_START = new Date('2026-11-26');
+
+// The blog illustration palette: the site tokens that DESIGN.md section 7 uses in scenes.
+const SVG_PALETTE = new Set([
+  '#111111', '#52525b', '#71717a', '#a1a1aa', '#d4d4d8', '#e4e4e7', '#f4f4f5', '#fafafa', '#ffffff',
+  '#2563eb', '#1d4ed8', '#eff6ff', '#bfdbfe', // brand: the one Deployz element
+  '#15803d', '#f0fdf4', '#bbf7d0', // live or passed only
+  '#a16207', '#fffbeb', '#fde68a', // needs input or changes needed
+]);
+/** The narrowest article column. Text must be at least 12px at this width. */
+const MOBILE_COLUMN = 343;
+
+/*
+ * Problems in a blog illustration (SVG source). The file is served from the site, so it must be
+ * inert: no scripts, event handlers, external references or embedded HTML. It must also follow
+ * the blog illustration rules: site palette, readable text on a phone, a vertical composition.
+ */
+export function svgProblems(svg) {
+  const problems = [];
+  if (svg.length > 100_000) problems.push('keep the file under 100 KB.');
+  if (!/^\s*(<\?xml[^>]*>\s*)?<svg\b/.test(svg)) problems.push('the file must start with an <svg> element.');
+  if (/<script\b|<foreignObject\b|<iframe\b|<image\b|<use\b[^>]*href="(?!#)|javascript:|\son[a-z]+\s*=|@import|<!ENTITY/i.test(svg)) problems.push('remove scripts, event handlers, embedded images or HTML, and external references.');
+  for (const m of svg.matchAll(/(?:xlink:)?href="([^"]*)"/g)) if (!m[1].startsWith('#')) problems.push(`remove the external reference ${m[1]}.`);
+  for (const m of svg.matchAll(/url\(\s*['"]?([^)'"]*)/g)) if (!m[1].startsWith('#')) problems.push(`remove the external reference url(${m[1]}).`);
+  const root = svg.match(/<svg\b[^>]*>/)?.[0] ?? '';
+  const viewBox = root.match(/viewBox="\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)\s*"/);
+  if (!viewBox) problems.push('add a viewBox.');
+  const width = viewBox ? Number(viewBox[1]) : 0;
+  if (width > 480) problems.push(`the drawing is ${width} units wide. Use a vertical composition at most 480 wide, so that it reads on a phone.`);
+  const sizes = [...svg.matchAll(/font-size(?:="|:\s*)([\d.]+)/g)].map((m) => Number(m[1]));
+  const smallest = sizes.length ? Math.min(...sizes) : 16;
+  if (width && (smallest * MOBILE_COLUMN) / width < 12) problems.push(`text at font-size ${smallest} renders below 12px on a phone. Use at least ${Math.ceil((12 * width) / MOBILE_COLUMN)}.`);
+  if (/<text\b/.test(svg) && !/font-family="[^"]*(Inter|monospace)/i.test(svg)) problems.push('set font-family to Inter (and ui-monospace for technical tokens).');
+  const colors = new Set([...svg.matchAll(/#[0-9a-f]{3}(?:[0-9a-f]{3})?\b/gi)].map((m) => m[0].toLowerCase()).map((c) => (c.length === 4 ? `#${[...c.slice(1)].map((x) => x + x).join('')}` : c)));
+  const off = [...colors].filter((c) => !SVG_PALETTE.has(c));
+  if (off.length) problems.push(`use only the illustration palette; replace ${off.join(', ')}.`);
+  if (/\brgba?\(|\bhsla?\(/i.test(svg.replace(/url\([^)]*\)/g, ''))) problems.push('write colors as palette hex values (use fill-opacity or stroke-opacity for transparency).');
+  return problems;
+}
+
 export function isPublished(data, now = new Date()) {
   return data.draft !== true && data.pubDate !== undefined && new Date(data.pubDate) <= now;
 }
@@ -162,6 +203,18 @@ export function lintPost(post, posts, pageSources = '', now = new Date(), author
     if (!/^https?:/.test(image.href) && !existsSync(join(dirname(file), image.href))) errors.push(`The image ${image.href} does not exist.`);
   }
   for (const tag of body.match(/<img\b[^>]*>/g) ?? []) if (!/\balt="[^"]+"/.test(tag)) errors.push('An HTML image needs alt text.');
+
+  // Illustrations (guidelines, section 7): at least one SVG illustration next to the post, drawn
+  // to the blog illustration rules. Posts published before the rule started are exempt.
+  const illustrations = links.filter((l) => l.image && /\.svg$/i.test(l.href) && !/^https?:/.test(l.href));
+  const exempt = data.pubDate && new Date(data.pubDate) < ILLUSTRATION_RULE_START;
+  if (!illustrations.length && !exempt) gate('Add at least one illustration: an SVG file next to the post, drawn to the blog illustration rules (guidelines, section 7).');
+  for (const image of illustrations) {
+    const path = join(dirname(file), image.href);
+    if (!existsSync(path)) continue;
+    for (const problem of svgProblems(readFileSync(path, 'utf8'))) errors.push(`${image.href}: ${problem}`);
+    if (image.text.trim().split(/\s+/).length < 12) errors.push(`${image.href}: the alt text must state what the illustration shows (at least 12 words).`);
+  }
 
   // Claims and style.
   const prose = proseOf(body).toLowerCase();
