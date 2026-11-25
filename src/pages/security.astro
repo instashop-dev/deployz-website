@@ -18,7 +18,7 @@ const permissions = [
 
 const limits = [
   'The customer can review every requested IAM action before connecting.',
-  'Most write actions are limited to the resources of the installation, so several deployments can share one AWS account. The connector role has a permissions boundary. The CloudFormation role that creates app resources does not, but every IAM role it creates must carry an application role boundary.',
+  'Most write actions are limited to the resources of one deployment, so several deployments can share one AWS account. The Security details page lists each exception, such as removing old task-definition revisions, and how it is controlled. The connector role has a permissions boundary. The CloudFormation role that creates app resources does not, but every IAM role it creates must carry an application role boundary.',
   'The connector cannot read application logs.',
 ];
 
@@ -41,7 +41,7 @@ const doesNotReceive = ['Database data', 'Cache contents', 'S3 data', 'Applicati
 const notes = [
   {
     title: 'Secrets',
-    text: "Held encrypted until the customer's account connects, then delivered to AWS Secrets Manager there. Values you set for every customer stay encrypted in Deployz.",
+    text: "Held encrypted until the customer's account connects, then delivered to AWS Secrets Manager there. Values you set for every customer are stored and queued encrypted in Deployz. They are decrypted only to send them to the customer's connector over HTTPS, or inside the release build in Deployz’s AWS account. A build-time value can still end up in the release image, depending on your Dockerfile.",
   },
   {
     title: 'Code and AI',
@@ -79,7 +79,7 @@ const lifecycle = [
   {
     question: 'Removal and retained data',
     answer:
-      'Removal deletes the app and most infrastructure but keeps the database, its credentials, and the S3 bucket, which still cost AWS charges. Deleting them is a separate, confirmed step that the software company starts from the Deployz dashboard.',
+      'Removal deletes the app and most infrastructure but keeps the database, its credentials, the S3 bucket, and the network parts the database uses. These still cost AWS charges. Deleting them is a separate, confirmed step that the software company starts from the Deployz dashboard.',
   },
   {
     question: 'Removing the connector',
