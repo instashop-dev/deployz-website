@@ -125,3 +125,11 @@ test('a new post needs an illustration; older posts are exempt', () => {
   assert.ok(!lintPost(post({ ...live, pubDate: '2026-11-01' }, goodBody), [], '', later).errors.some((e) => e.includes('illustration')));
   assert.ok(lintPost(post(base, goodBody), [], '', later).warnings.some((w) => w.includes('at least one illustration')));
 });
+
+test('more than 12 sources is an error, and long inline code is a warning', () => {
+  const sources = Array.from({ length: 13 }, (_, i) => ({ title: `Source ${i}`, url: `https://docs.aws.amazon.com/page-${i}` }));
+  const many = lintPost(post({ ...base, sources }, goodBody), [], '', NOW);
+  assert.ok(many.errors.some((e) => e.includes('at most 12 sources')));
+  const code = lintPost(post(base, `${goodBody}\nCall \`ecs:DeregisterTaskDefinition\` or \`sts:AssumeRole\`.\n`), [], '', NOW);
+  assert.ok(code.warnings.some((w) => w.includes('ecs:DeregisterTaskDefinition') && !w.includes('sts:AssumeRole')));
+});
