@@ -2,6 +2,7 @@
 title: "Deploying an AI app in a customer's cloud: what stays private?"
 seoTitle: "AI app in a customer's cloud: what stays private?"
 description: "Learn where documents, prompts, embeddings, model calls and logs travel, and how to explain an AI application's data boundaries to customers."
+summary: "Running an AI application in a customer's AWS account gives them control of the resources there. It does not tell you where every piece of data goes. To explain what stays private, follow one complete request: the model, integrations, logs and the people who can access them."
 slug: "ai-app-customer-cloud-data-privacy"
 category: "Guides"
 draft: false

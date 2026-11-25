@@ -151,6 +151,7 @@ Do these tasks in order. Each task names the files to change and the check that 
     - The current `robots.txt` allows all crawlers. This is the recommended setting, because AI assistants answer many vendor questions now.
     - If the team wants to block training crawlers but allow AI search crawlers, list each crawler by its user agent. Record the decision and the date in `robots.txt` comments.
     - Optional: add `/llms.txt` with a short product summary and links to the docs pages. It costs little. Its effect is not proven, so do not expect results from it.
+    - Status (25 November 2026): done. `/llms.txt` lists the product pages, the docs and each published post. `/llms-full.txt` has the full text of the posts. Each post also has a Markdown copy at `/blog/<slug>.md`. These text copies send `X-Robots-Tag: noindex` so that search engines index only the HTML page (`public/_headers`). The robots policy is not changed.
 
 14. **Watch performance.**
     - The site is fast now. Keep it fast. Check Core Web Vitals in GSC each month.
@@ -229,7 +230,7 @@ Internal link rules:
 
 ## 7 Content plan
 
-Follow the blog guidelines for each article: write a brief, verify facts in the product repository, use a real author and get human review. The guidelines set the publication rate at about two articles each month. Quality has priority over this rate.
+Follow the blog guidelines for each article: write a brief, verify facts in the product repository, and pass the publication gates (guidelines, section 10). The content engine publishes one article every 3 days under the "Team Deployz" byline. Quality has priority over this rate: when no topic passes the gates, the engine skips the slot.
 
 ### 7.1 Blog topic candidates (first six months)
 
@@ -285,7 +286,7 @@ Many buyers now ask AI assistants, for example ChatGPT, Claude, Perplexity and G
 2. Use clear facts that a model can quote: supported resources, prices, limits and steps. The Mintlify docs pages have these facts, one topic on each page, so each fact is easy to find and cite. Mintlify also publishes `/docs/llms.txt`.
 3. Keep the entity data the same everywhere: name, description, URL and category.
 4. Keep important text in the HTML. Do not put it only in images or diagrams. The current diagrams use SVG with text, which is good.
-5. Each month, ask the main AI assistants the ten most important questions from section 4. Record whether they mention or cite Deployz, and which pages they cite. Use this record to choose content updates.
+5. Each month, ask the main AI assistants the ten most important questions from section 4. The content engine (`npm run content -- aeo check` in deployz-marketing) runs these questions against Claude with web search and records the cited pages. Check the other assistants by hand and record them with `aeo record`. Record whether they mention or cite Deployz, and which pages they cite. Use this record to choose content updates.
 
 ## 10 Measurement and reporting
 

@@ -1,8 +1,9 @@
 ---
 import { ArrowRight } from 'lucide-react';
+import { ORGANIZATION_ID } from '@/lib/seo';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/site/PageHeader.astro';
-import { formatDate, getVisiblePosts, isoDate, isPublished, postUrl, readingMinutes } from '@/lib/blog';
+import { categorySlug, formatDate, getCategoryArchives, getVisiblePosts, isoDate, isPublished, postUrl, readingMinutes } from '@/lib/blog';
 
 /*
  * Card summaries written for this index. They are shorter than the article descriptions, which
@@ -23,6 +24,27 @@ const posts = (await getVisiblePosts()).sort(
   (a, b) => (b.data.pubDate?.getTime() ?? Infinity) - (a.data.pubDate?.getTime() ?? Infinity) || rank(a.id) - rank(b.id),
 );
 const intro = 'Practical guides to deploying and running software in your customers’ AWS accounts.';
+const archives = await getCategoryArchives();
+
+// Blog data with the published posts. Drafts on the dev server are not listed.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  '@id': new URL('/blog/#blog', Astro.site).href,
+  name: 'The Deployz Blog',
+  description: intro,
+  url: new URL('/blog/', Astro.site).href,
+  inLanguage: 'en-US',
+  publisher: { '@id': ORGANIZATION_ID },
+  blogPost: posts
+    .filter((post) => isPublished(post))
+    .map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.data.title,
+      url: new URL(postUrl(post), Astro.site).href,
+      ...(post.data.pubDate && { datePublished: isoDate(post.data.pubDate) }),
+    })),
+};
 ---
 
 <Base
@@ -30,6 +52,7 @@ const intro = 'Practical guides to deploying and running software in your custom
   description={intro}
   ogImage="/og/blog.png"
   ogImageAlt="The Deployz Blog: guides for customer-hosted software"
+  structuredData={structuredData}
   breadcrumbs={[{ name: 'Blog', path: '/blog/' }]}
 >
   <PageHeader title="The Deployz Blog">
@@ -38,6 +61,15 @@ const intro = 'Practical guides to deploying and running software in your custom
 
   <section aria-labelledby="latest-title" class="container-site pb-16 sm:pb-20">
     <h2 id="latest-title" class="text-h3">Latest articles</h2>
+    {archives.length > 0 && (
+      <nav aria-label="Blog categories" class="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-[15px]">
+        {archives.map(({ category, posts: categoryPosts }) => (
+          <a href={`/blog/category/${categorySlug(category)}/`} class="flex min-h-11 items-center text-muted-foreground hover:text-brand">
+            {category} ({categoryPosts.length})
+          </a>
+        ))}
+      </nav>
+    )}
 
     {posts.length > 0 ? (
       <ul class="mt-6 grid gap-5 md:grid-cols-2 md:gap-6">

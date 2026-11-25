@@ -1,0 +1,9 @@
+[
+  {
+    "id": "team-deployz",
+    "name": "Team Deployz",
+    "type": "Organization",
+    "bio": "The people who build Deployz. We write about what we learn from deploying software into customer AWS accounts.",
+    "url": "https://deployz.dev/about/"
+  }
+]
