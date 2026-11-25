@@ -147,14 +147,14 @@ Ask which of these the customer actually needs. A dedicated database or a specif
 
 One running copy in one customer's account is not a BYOC offering. A repeatable process is. Use this checklist before you agree to a first customer:
 
-- [ ] **A production container image** that builds from your repository without manual steps.
-- [ ] **A repeatable install** that the customer can review and approve in their own account.
-- [ ] **Versioned releases**, so you know which version each customer runs.
-- [ ] **An update plan** for many customer accounts, including who starts each update.
-- [ ] **Backward-compatible database migrations.** Rolling back the application does not reverse a migration that already ran.
-- [ ] **A removal plan** that says what is deleted, what is kept and who deletes retained data.
-- [ ] **A cost explanation** that separates your software fee from the customer's cloud bill. Dedicated infrastructure for each customer has its own cloud cost, even for a small customer.
-- [ ] **A support plan** that works without direct access to customer logs, or an agreed way to get them.
+- **A production container image** that builds from your repository without manual steps.
+- **A repeatable install** that the customer can review and approve in their own account.
+- **Versioned releases**, so you know which version each customer runs.
+- **An update plan** for many customer accounts, including who starts each update.
+- **Backward-compatible database migrations.** Rolling back the application does not reverse a migration that already ran.
+- **A removal plan** that says what is deleted, what is kept and who deletes retained data.
+- **A cost explanation** that separates your software fee from the customer's cloud bill. Dedicated infrastructure for each customer has its own cloud cost, even for a small customer.
+- **A support plan** that works without direct access to customer logs, or an agreed way to get them.
 
 Not every application fits every BYOC tool. Check the architecture a tool supports before you plan around it.
 
