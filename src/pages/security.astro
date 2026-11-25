@@ -41,7 +41,7 @@ const doesNotReceive = ['Database data', 'Cache contents', 'S3 data', 'Applicati
 const notes = [
   {
     title: 'Secrets',
-    text: "Held encrypted until the customer's account connects, then delivered to AWS Secrets Manager there. Values you set for every customer are stored encrypted in Deployz, with two exceptions. Build-time values go to the release build in Deployz’s AWS account as plain environment variables. A change for an account that is already connected passes through the Deployz job queue until the connector collects it.",
+    text: "Held encrypted until the customer's account connects, then delivered to AWS Secrets Manager there. Values you set for every customer are stored and queued encrypted in Deployz. They are decrypted only to send them to the customer's connector over HTTPS, or inside the release build in Deployz’s AWS account. A build-time value can still end up in the release image, depending on your Dockerfile.",
   },
   {
     title: 'Code and AI',
