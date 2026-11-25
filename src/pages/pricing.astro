@@ -25,7 +25,7 @@ const included = [
   'Fix instructions for deployment blockers',
   'Environment variable and secret configuration',
   'Versioned releases built from your repository',
-  'Shareable customer installation links',
+  'Shareable customer install links',
   'AWS resource and cost previews before installation',
   'Network, container, and optional worker provisioning',
   'PostgreSQL or MySQL, Redis-compatible cache, and S3 provisioning',
@@ -76,7 +76,7 @@ const questions = [
   {
     question: 'Do costs continue after I remove an environment?',
     answer:
-      'The Deployz charge stops permanently when removal starts. Removal keeps the database and the S3 bucket, and they continue to cause AWS charges until someone deletes them. You can delete them from the Deployz dashboard. If the customer already removed the connector, Reconnect AWS gives them a link that brings it back only to delete that data.',
+      'The Deployz charge stops permanently when removal starts. Removal keeps the database, its credentials, the S3 bucket, and the network parts the database uses, and they continue to cause AWS charges until someone deletes them. You can delete them from the Deployz dashboard. If the customer already removed the connector, Reconnect AWS gives them a link that brings it back only to delete that data.',
   },
 ];
 ---

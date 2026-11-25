@@ -1,7 +1,7 @@
 ---
 /*
  * "Your customer connects AWS" scene for How It Works step 3. Two browser windows, drawn as
- * the customer sees them: the installation link (resources, cost estimate, IAM actions, and
+ * the customer sees them: the install link (resources, cost estimate, IAM actions, and
  * Launch connector), then their own AWS console, where the connector stack goes from
  * CREATE_IN_PROGRESS to CREATE_COMPLETE inside the customer AWS account boundary.
  * Stack name and values are illustrative. Scene system: src/styles/scene.css.
@@ -13,7 +13,7 @@ import Mark from '@/components/site/scene/Mark.astro';
 
 <figure class="sc inst-sc mx-auto w-full max-w-[1120px]">
   <figcaption class="sr-only">
-    Your customer opens the installation link. It shows the AWS resources, an AWS cost estimate, and every IAM
+    Your customer opens the install link. It shows the AWS resources, an AWS cost estimate, and every IAM
     action requested. They select Launch connector. In their own AWS console, CloudFormation creates the
     connector stack: a Lambda function and a connector role with a permissions boundary. When the stack is
     complete, Deployz can deploy the release in their account.
@@ -21,11 +21,11 @@ import Mark from '@/components/site/scene/Mark.astro';
 
   <div class="sc-stage" aria-hidden="true">
     <div class="sc-flow">
-      <!-- Installation link, in the customer's browser -->
+      <!-- Install link, in the customer's browser -->
       <div class="inst-win">
         <div class="inst-bar">
           <span class="inst-dots"><i></i><i></i><i></i></span>
-          <span class="inst-url"><LinkIcon strokeWidth={2} />Installation link</span>
+          <span class="inst-url"><LinkIcon strokeWidth={2} />Install link</span>
         </div>
         <div class="inst-page">
           <p class="inst-title">Install your app</p>
