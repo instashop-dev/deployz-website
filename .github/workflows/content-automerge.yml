@@ -1,0 +1,94 @@
+# Automated blog publication. The content engine (deployz-marketing, content/README.md) opens a pull
+# request titled "[content-engine] ..." from a "content/<slug>" branch after its own gates pass
+# (claim check, quality scores, blog lint, link checks). This workflow runs the site checks again,
+# then squash-merges and deploys. No person reviews the post (guidelines, section 10).
+#
+# The workflow merges only when all of these are true:
+#   - the repository variable CONTENT_AUTOMERGE is "true" (the kill switch)
+#   - the pull request comes from a branch in this repository named content/<slug>
+#   - the title starts with [content-engine]
+#   - the author is the account in the repository variable CONTENT_ENGINE_ACTOR, if that is set
+#   - every changed file is a blog post (src/content/blog/*.md) or its social image (public/og/blog/*.png)
+#   - unit tests, blog lint, type check, build and browser tests pass
+#
+# Setup: a repository admin sets the variables above and the secrets CLOUDFLARE_API_TOKEN
+# (Workers Scripts: Edit) and CLOUDFLARE_ACCOUNT_ID. A merge made with GITHUB_TOKEN does not start
+# other workflows, so this job deploys the merged main branch itself.
+name: Content auto-merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  automerge:
+    if: >-
+      vars.CONTENT_AUTOMERGE == 'true' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'content/') &&
+      startsWith(github.event.pull_request.title, '[content-engine]') &&
+      !github.event.pull_request.draft &&
+      (vars.CONTENT_ENGINE_ACTOR == '' || github.event.pull_request.user.login == vars.CONTENT_ENGINE_ACTOR)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Allow only blog content changes
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          changed="$(git diff --name-only "$BASE...$HEAD")"
+          echo "Changed files:"; echo "$changed"
+          outside="$(echo "$changed" | grep -Ev '^(src/content/blog/[a-z0-9-]+\.md|public/og/blog/[a-z0-9-]+\.png)$' || true)"
+          if [ -n "$outside" ]; then
+            echo "::error::This pull request changes files outside blog content. A person must review it:"
+            echo "$outside"
+            exit 1
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint rule unit tests
+        run: npm run test:blog
+      - name: Blog lint
+        run: npm run blog:lint
+      - name: Type check
+        run: npm run check
+      - name: Install the Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Build and browser tests
+        run: npm run test:e2e
+      - name: Merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: gh pr merge "$PR" --squash --delete-branch --match-head-commit "$HEAD" --repo "$GITHUB_REPOSITORY"
+      - name: Check out the merged main branch
+        run: |
+          git fetch origin main
+          git checkout --force origin/main
+      - name: Build and deploy
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Summary
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: echo "### Merged and deployed: $TITLE" >> "$GITHUB_STEP_SUMMARY"

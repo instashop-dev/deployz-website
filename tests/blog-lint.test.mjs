@@ -54,6 +54,12 @@ test('a draft without a summary or commercial link gets warnings, a published po
   assert.ok(live.errors.some((e) => e.includes('commercial page')));
 });
 
+test('a published byline must be in authors.json', () => {
+  const live = { ...base, draft: false, pubDate: '2026-11-01', author: 'Jane Invented' };
+  assert.ok(lintPost(post(live, goodBody), [], '', NOW, ['Team Deployz']).errors.some((e) => e.includes('not in src/content/authors.json')));
+  assert.ok(!lintPost(post({ ...live, author: 'Team Deployz' }, goodBody), [], '', NOW, ['Team Deployz']).errors.some((e) => e.includes('authors.json')));
+});
+
 test('banned claims are errors', () => {
   const result = lintPost(post(base, `${goodBody}\nAll data stays in your account and Deployz is SOC 2 certified.\n`), [], '', NOW);
   assert.equal(result.errors.filter((e) => e.startsWith('Unsupported claim')).length, 2);

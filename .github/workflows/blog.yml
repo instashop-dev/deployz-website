@@ -1,7 +1,7 @@
 # Blog quality gate. Runs on each pull request that changes blog content or the blog templates.
 # The content engine (deployz-marketing, content/README.md) opens its draft and publication pull
-# requests against this repository, so every automated change passes these checks before a person
-# reviews and merges it.
+# requests against this repository, so every automated change passes these checks. Content-only
+# pull requests from the engine then merge through content-automerge.yml.
 name: Blog checks
 
 on:

@@ -230,7 +230,7 @@ Internal link rules:
 
 ## 7 Content plan
 
-Follow the blog guidelines for each article: write a brief, verify facts in the product repository, use a real author and get human review. The guidelines set the publication rate at about two articles each month. Quality has priority over this rate.
+Follow the blog guidelines for each article: write a brief, verify facts in the product repository, and pass the publication gates (guidelines, section 10). The content engine publishes one article every 3 days under the "Team Deployz" byline. Quality has priority over this rate: when no topic passes the gates, the engine skips the slot.
 
 ### 7.1 Blog topic candidates (first six months)
 

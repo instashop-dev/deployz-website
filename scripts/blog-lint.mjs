@@ -76,7 +76,7 @@ export function isPublished(data, now = new Date()) {
 }
 
 /** Lints one post. `posts` is every post (for cross-checks); `pageSources` is the text of src/pages. */
-export function lintPost(post, posts, pageSources = '', now = new Date()) {
+export function lintPost(post, posts, pageSources = '', now = new Date(), authors) {
   const errors = [];
   const warnings = [];
   const { data, body, file } = post;
@@ -105,7 +105,8 @@ export function lintPost(post, posts, pageSources = '', now = new Date()) {
     if (/^(in this (article|post|guide)|this (article|post|guide))/i.test(data.summary)) warnings.push('The summary describes the article. Write the answer itself.');
   }
   if (live && !data.author) errors.push('A published post needs a real author.');
-  if (live && !data.reviewedBy) warnings.push('Add `reviewedBy` and `lastReviewed` after the fact check (guidelines, section 8).');
+  // The byline must match an entry in src/content/authors.json, so that no post invents an author.
+  if (live && data.author && authors && !authors.includes(data.author)) errors.push(`The author "${data.author}" is not in src/content/authors.json.`);
 
   // Headings.
   const headingLines = body.replace(/```[\s\S]*?```/g, '').split(/\r?\n/).filter((line) => /^#{1,6}\s/.test(line));
@@ -209,7 +210,8 @@ function main(argv) {
     console.error('A file is not in src/content/blog/.');
     process.exit(2);
   }
-  const results = selected.map((post) => lintPost(post, posts, pageSources));
+  const authors = JSON.parse(readFileSync(join(ROOT, 'src/content/authors.json'), 'utf8')).map((a) => a.name);
+  const results = selected.map((post) => lintPost(post, posts, pageSources, new Date(), authors));
   const errorCount = results.reduce((n, r) => n + r.errors.length, 0);
 
   if (json) console.log(JSON.stringify({ ok: errorCount === 0, results }, null, 2));

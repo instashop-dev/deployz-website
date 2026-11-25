@@ -42,7 +42,7 @@ Choose topics from prospect questions, onboarding, support and real engineering 
 
 Proceed when the topic has a relevant vendor, a concrete problem, an evidence-backed answer and an actionable outcome. Include original value: a tested example, checklist, comparison, diagram or observed lesson. Search volume alone is insufficient.
 
-Balance founder decisions with developer execution. Cover the first deployment and subsequent updates, failures and ownership. Start with three useful articles, then aim for two per month. Quality takes priority over cadence.
+Balance founder decisions with developer execution. Cover the first deployment and subsequent updates, failures and ownership. Publish one article every 3 days. Quality takes priority over cadence: when no topic passes the gates, skip the slot.
 
 ## 4 Titles and briefs
 
@@ -70,7 +70,7 @@ Write as a thoughtful builder speaking to another builder. Use short sentences, 
 
 Use the length the task needs. Remove generic introductions, repeated benefits and filler. Use headings, tables and diagrams when they improve understanding. Avoid forced FAQs and fixed keyword or word-count targets.
 
-AI may assist with research, drafts and editing. A real person remains accountable. Verify citations and test claims. Never invent authors, customers, benchmarks or experience.
+AI may research, draft and edit. The Deployz team remains accountable for each article. Automated articles use the "Team Deployz" byline. Verify citations and test claims. Never invent authors, customers, benchmarks or experience.
 
 Check facts before publication:
 
@@ -113,7 +113,7 @@ Use accurate diagrams and current screenshots. Cover artwork is optional. Optimi
 
 ## 8 Review and maintenance
 
-For each article, check the brief, factual evidence, originality, title, category, internal links, visuals and CTA. Complete accountable human review. Use the existing release process and the task's publication authorization.
+For each article, check the brief, factual evidence, originality, title, category, internal links, visuals and CTA. Complete an accountable review: the automated gates in section 10, or a named reviewer. Use the existing release process.
 
 For content edits, run relevant validation and inspect the rendered article on mobile and desktop. For template or pipeline changes, also verify keyboard use, code and table overflow, metadata, structured data, draft exclusion, future dates, feeds, redirects and 404s. Run the project's applicable build, type, lint and frontend checks. Do not run AWS tests for blog UI work.
 
@@ -123,14 +123,19 @@ Review volatile pricing, comparisons and instructions about every 90 days; revie
 
 ## 10 Automated content pipeline
 
-The content engine in the deployz-marketing repository (`content/README.md`) automates research, briefs, drafts, fact checks, SEO and AEO checks, refresh reminders and distribution drafts. It does not replace section 8. These rules apply to it and to any other automation:
+The content engine in the deployz-marketing repository (`content/README.md`) does research, briefs, drafts, fact checks, SEO and AEO checks, refresh reminders and distribution drafts. A scheduled task runs it every day and publishes one article every 3 days without a human review. These rules apply to it and to any other automation:
 
-1. Automation writes drafts only. It sets `draft: true`. A person sets `draft: false`, the real author and the publication date.
-2. Each draft has a brief (section 4) and a claims report. The report lists each product claim, its source file in the product repository, and a verdict. Do not publish a post with a contradicted or unverified product claim.
-3. `npm run blog:lint` must pass. It checks titles, descriptions, the answer-first `summary`, headings, links, images and the statements to avoid. The blog workflow runs it on each pull request.
-4. Changes arrive as pull requests. A person reviews and merges them. Automation never merges and never deploys a post that a person did not approve.
-5. Record the fact check in `reviewedBy` and `lastReviewed`. Use the name of the person who did the check.
-6. Answer engines: put the direct answer in `summary` and in the first paragraph. Use question headings where they match real reader questions. Cite primary sources in `sources`. The site publishes `/llms.txt`, `/llms-full.txt` and a Markdown copy of each post.
+1. The byline is "Team Deployz" (`src/content/authors.json`). Never invent a person as author or reviewer. Leave `reviewedBy` empty unless a named person did the fact check.
+2. Each article has a brief (section 4) and a claims report. The report lists each claim, its source, and a verdict. A separate verification step writes the report, not the step that wrote the draft.
+3. An article publishes only when every gate passes (`npm run content -- gate <id>`):
+   - no contradicted or unverifiable claim, and no statement to avoid;
+   - each quality score (usefulness, originality, accuracy, clarity) is 4 or more of 5;
+   - `npm run blog:lint` passes;
+   - each `/docs` link goes to a page that exists, and no source URL returns an error.
+4. When a gate fails, the engine revises the draft (at most two times). Then it stops and marks the topic `needs-attention`. A person decides what to do.
+5. Changes arrive as pull requests titled `[content-engine]`. The content auto-merge workflow merges and deploys a pull request only when it changes blog posts and their social images only, and every site check passes. A pull request that changes other files needs a person.
+6. Kill switches: `autopilot.enabled` in deployz-marketing `content/config.json` stops publication; the repository variable `CONTENT_AUTOMERGE` stops the merge. Use them when a published article is wrong. Then correct the article promptly (section 8).
+7. Answer engines: put the direct answer in `summary` and in the first paragraph. Use question headings where they match real reader questions. Cite primary sources in `sources`. The site publishes `/llms.txt`, `/llms-full.txt` and a Markdown copy of each post.
 
 ## 9 Agent entry point
 
