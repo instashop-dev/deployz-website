@@ -349,6 +349,12 @@ const structuredData = {
     font-size: 0.9em;
   }
 
+  /* Inline code such as an IAM action name has no break points. Let it wrap, so that the text never
+     overflows a narrow screen or a zoomed page. Code blocks scroll instead (pre, below). */
+  .post :global(:not(pre) > code) {
+    overflow-wrap: anywhere;
+  }
+
   .post :global(pre) {
     overflow-x: auto;
     border: 1px solid var(--border);

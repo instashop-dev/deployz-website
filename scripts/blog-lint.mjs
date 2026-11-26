@@ -73,6 +73,8 @@ export function linksOf(body) {
 
 /** Posts published from this date need at least one illustration (guidelines, section 7). */
 export const ILLUSTRATION_RULE_START = new Date('2026-11-26');
+/** The content schema allows at most this many sources (src/content.config.ts). */
+export const MAX_SOURCES = 12;
 
 // The blog illustration palette: the site tokens that DESIGN.md section 7 uses in scenes.
 const SVG_PALETTE = new Set([
@@ -165,6 +167,9 @@ export function lintPost(post, posts, pageSources = '', now = new Date(), author
   if (/^\s*(?:[-*+]|\d+\.)\s+\[[ xX]\]\s/m.test(outsideCode)) errors.push('Do not use task-list checkboxes ("- [ ]"). They render as inputs without labels. Use plain bullets.');
   // Raw HTML form controls have the same problem.
   if (/<(?:input|select|textarea|button)\b/i.test(outsideCode)) errors.push('Do not use HTML form controls in a post.');
+  // A long unbroken token wraps only at an arbitrary character on narrow screens: name it in words.
+  const longCode = [...new Set([...outsideCode.matchAll(/`([^`\s]{25,})`/g)].map((m) => m[1]))];
+  if (longCode.length) warnings.push(`Inline code longer than 24 characters breaks mid-word on narrow screens: ${longCode.join(', ')}. Name it in words, or use a code block.`);
   if (headingLines.filter((line) => /^##\s/.test(line)).length < 2) warnings.push('Use at least two h2 sections so that readers and answer engines can find each part.');
   const questionHeadings = headingLines.filter((line) => /\?\s*$/.test(line)).length;
   if (headingLines.length >= 4 && questionHeadings === 0) warnings.push('No heading is a question. Question headings that match real reader questions help answer engines.');
@@ -196,6 +201,8 @@ export function lintPost(post, posts, pageSources = '', now = new Date(), author
   for (const link of links.filter((l) => !l.image && /^http:\/\//.test(l.href))) warnings.push(`Use HTTPS: ${link.href}`);
   for (const link of links.filter((l) => !l.image && /^(click here|here|read more|this)$/i.test(l.text.trim()))) errors.push(`Use descriptive link text, not "${link.text}".`);
   for (const source of data.sources ?? []) if (!/^https:\/\//.test(source.url ?? '')) errors.push(`Source URLs use HTTPS: ${source.url}`);
+  // The same limit as the content schema (src/content.config.ts), so that the lint catches it first.
+  if ((data.sources ?? []).length > MAX_SOURCES) errors.push(`List at most ${MAX_SOURCES} sources (this post has ${data.sources.length}).`);
 
   // Images.
   for (const image of links.filter((l) => l.image)) {
